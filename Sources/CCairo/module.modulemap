@@ -1,0 +1,5 @@
+module CCairo [system] {
+	header "/usr/local/include/cairo/cairo.h"
+	link "cairo"
+	export *
+}

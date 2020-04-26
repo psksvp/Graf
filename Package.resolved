@@ -1,0 +1,25 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "CommonSwift",
+        "repositoryURL": "https://github.com/psksvp/CommonSwift",
+        "state": {
+          "branch": "master",
+          "revision": "cfd12f0d594421dfd3d9f3705eecbd429adbb83b",
+          "version": null
+        }
+      },
+      {
+        "package": "SDL2",
+        "repositoryURL": "https://github.com/ctreffs/SwiftSDL2.git",
+        "state": {
+          "branch": null,
+          "revision": "921b31b632287c3e808d02dc0dbabef9c63d5b65",
+          "version": "1.0.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
