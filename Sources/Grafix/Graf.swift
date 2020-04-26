@@ -82,6 +82,9 @@ class Graf
           SDL_GetMouseState( &x, &y )
           v.handleEvent(Event.mouseMoved(x, y))
         
+        case SDL_MOUSEWHEEL:
+          v.handleEvent(Event.mouseWheel(event.wheel.x, event.wheel.y))
+        
         case SDL_WINDOWEVENT where event.window.event == SDL_WINDOWEVENT_CLOSE.rawValue:
           Log.info("Quiting")
           self.quit()
@@ -121,6 +124,7 @@ class Graf
     case mousePressed(Int32, Int32, UInt8)
     case mouseReleased(Int32, Int32, UInt8)
     case mouseMoved(Int32, Int32)
+    case mouseWheel(Int32, Int32)
   }
   
   struct Size
@@ -249,6 +253,7 @@ class Graf
    
   }
   
+  
   typealias Color = Cairo.Color
   
   ///////////////////\\
@@ -261,15 +266,27 @@ class Graf
     var strokeColor: Color = Color.black
     var strokeWeight: Double = 1.0
     
+    private var _viewRect: Rectangle? = nil
+    var viewRect: Rectangle
+    {
+      get
+      {
+        switch _viewRect
+        {
+          case .some(let v) : return v
+          case .none        : _viewRect = Rectangle(self, 0, 0, width, height)
+                              return _viewRect!
+        }
+      }
+    }
+    
     var width: Double
     {
-      //get {return cairo_image_surface_get_width(surface.csurface)}
       get { context.width }
     }
     
     var height: Double
     {
-      //get {return cairo_image_surface_get_height(surface.csurface)}
       get { context.height }
     }
     
@@ -282,103 +299,42 @@ class Graf
     func clear(_ bgColor: Color = Color.white)
     {
       fillColor = bgColor
-      strokeColor = Color.transparent
-      rect(0, 0, context.width, context.height)
+      viewRect.fill()
     }
     
-    func line(_ x1: Double, _ y1: Double, _ x2: Double, _ y2: Double)
+    func line(_ x1: Double, _ y1: Double, _ x2: Double, _ y2: Double) -> Polygon
     {
-      cairo_move_to(context.cr, x1, y1)
-      cairo_line_to(context.cr, x2, y2)
-      context.stroke(strokeColor)
+      return polygon([(x1, y1), (x2, y2)])
     }
     
-    func rect(_ x: Double, _ y: Double, _ w: Double, _ h: Double)
+    func rect(_ x: Double, _ y: Double, _ w: Double, _ h: Double) -> Rectangle
     {
-      cairo_rectangle(context.cr, x, y, w, h)
-      context.fill(fillColor)
-      cairo_rectangle(context.cr, x, y, w, h)
-      context.stroke(strokeColor)
+      return Rectangle(self, x, y, w, h)
     }
     
-    func arc(_ xc: Double, _ yc: Double, _ r: Double, _ sa: Double, _ ea: Double)
+    func arc(_ xc: Double, _ yc: Double, _ r: Double, _ sa: Double, _ ea: Double) -> Ellipse
     {
-      cairo_arc(context.cr, xc, yc, r, sa, ea)
-      context.fill(fillColor)
-      cairo_arc(context.cr, xc, yc, r, sa, ea)
-      context.stroke(strokeColor)
+      return Ellipse(self, xc, yc, r + r, r + r, startAngle: sa, endAngle: ea)
     }
     
-    func circle(_ xc: Double, _ yc: Double, _ r: Double)
+    func circle(_ xc: Double, _ yc: Double, _ r: Double) -> Circle
     {
-      arc(xc, yc, r, 0, 2 * Double.pi)
+      return Circle(self, xc, yc, r)
     }
     
-    func polygon(_ coords:[(Double, Double)])
+    func polygon(_ coords:[(Double, Double)]) -> Polygon
     {
-      if coords.isEmpty
-      {
-        return
-      }
-      
-      func d()
-      {
-        let (sx, sy) = coords.first!
-        cairo_move_to(context.cr, sx, sy)
-        for (x, y) in coords.dropFirst(1)
-        {
-          cairo_line_to(context.cr, x, y)
-        }
-        cairo_line_to(context.cr, sx, sy)
-      }
-      
-      if fillColor.alphaChannel != 0.0
-      {
-        d()
-        context.fill(fillColor)
-      }
-      
-      d()
-      context.stroke(strokeColor)
+      return Polygon(self, coords)
     }
     
-    func ellipse(_ xc: Double, _ yc: Double, _ w: Double, _ h: Double)
+    func ellipse(_ xc: Double, _ yc: Double, _ w: Double, _ h: Double) -> Ellipse
     {
-      //https://stackoverflow.com/questions/11309596/how-to-get-a-point-on-an-ellipses-outline-given-an-angle
-      func copySign(_ a: Double, _ b: Double) -> Double
-      {
-        let m = fabs(a)
-        return b >= 0 ? m : -m
-      }
-      
-      func pointFromAngle(_ a: Double) -> (Double, Double)
-      {
-        let c = cos(a)
-        let s = sin(a)
-        let ta = tan(a)
-        let rh = w / 2
-        let rv = h / 2
-        let tt = ta * rh / rv
-        let d = 1.0 / sqrt(1.0 + tt * tt)
-        let x = xc + copySign(rh * d, c)
-        let y = yc + copySign(rv * tt * d, s)
-        return (x, y)
-      }
-    
-      let step = 0.1
-      var angle = 0.0
-
-      var coords: [(Double, Double)] = [pointFromAngle(angle)]
-      angle = angle + step
-      while angle < 2 * Double.pi
-      {
-        coords.append(pointFromAngle(angle))
-        angle = angle + step
-      }
-      polygon(coords)
+      return Ellipse(self, xc, yc, w, h)
     }
   } // DrawingContext
   
+  
+  /////
   class Polygon
   {
     let vertices: [(Double, Double)]
@@ -423,6 +379,12 @@ class Graf
         context.fill(dc.fillColor)
       }
     }
+    
+    func strokeAndFill()
+    {
+      fill()
+      stroke()
+    }
   } //Polygon
   
   class Rectangle : Polygon
@@ -431,7 +393,7 @@ class Graf
     {
       super.init(c, [(x, y), (x + w, y), (x + w, y + h), (x, y + h)])
     }
-  }
+  } // Rectangle
   
   class Ellipse : Polygon
   {
@@ -477,5 +439,14 @@ class Graf
       
       super.init(c, coords)
     }
+  } // Ellipse
+  
+  class Circle : Ellipse
+  {
+    init(_ c: DrawingContext, _ xc: Double, _ yc: Double, _ r: Double)
+    {
+      super.init(c, xc, yc, r + r, r + r)
+    }
   }
+  
 } //Graf
