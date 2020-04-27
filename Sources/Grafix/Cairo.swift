@@ -45,22 +45,22 @@ struct Cairo
     
     static var red: Color
     {
-      get {Color(1, 0, 0, 0)}
+      get {Color(1, 0, 0, 1)}
     }
     
     static var green: Color
     {
-      get {Color(0, 1, 0, 0)}
+      get {Color(0, 1, 0, 1)}
     }
     
     static var blue: Color
     {
-      get {Color(0, 0, 1, 0)}
+      get {Color(0, 0, 1, 1)}
     }
     
     static var black: Color
     {
-      get {Color(0, 0, 0, 0)}
+      get {Color(0, 0, 0, 1)}
     }
     
     static var white: Color
@@ -154,16 +154,30 @@ struct Cairo
       cairo_destroy(cr)
     }
     
-    func fill(_ c: Color)
+    func fill(_ c: Color, preserved: Bool = false)
     {
       c.setAsSourceInContext(self)
-      cairo_fill(cr)
+      if preserved
+      {
+        cairo_fill_preserve(cr)
+      }
+      else
+      {
+        cairo_fill(cr)
+      }
     }
     
-    func stroke(_ c: Color)
+    func stroke(_ c: Color, preserved: Bool = false)
     {
       c.setAsSourceInContext(self)
-      cairo_stroke(cr)
+      if preserved
+      {
+        cairo_stroke_preserve(cr)
+      }
+      else
+      {
+        cairo_stroke(cr)
+      }
     }
     
     func push()

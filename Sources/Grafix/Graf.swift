@@ -245,7 +245,7 @@ class Graf
       drawFunc = df
     }
     
-    func onEvent(_ ehf: @escaping (Event) -> Void)
+    func onInputEvent(_ ehf: @escaping (Event) -> Void)
     {
       eventHandlerFunc = ehf
     }
@@ -302,6 +302,12 @@ class Graf
       viewRect.fill()
     }
     
+    func text(_ x: Double, _ y: Double, _ s: String)
+    {
+      cairo_move_to(context.cr, x, y)
+      cairo_show_text(context.cr, s)
+    }
+    
     func line(_ x1: Double, _ y1: Double, _ x2: Double, _ y2: Double) -> Polygon
     {
       return polygon([(x1, y1), (x2, y2)])
@@ -315,6 +321,11 @@ class Graf
     func arc(_ xc: Double, _ yc: Double, _ r: Double, _ sa: Double, _ ea: Double) -> Ellipse
     {
       return Ellipse(self, xc, yc, r + r, r + r, startAngle: sa, endAngle: ea)
+    }
+    
+    func arc(_ xc: Double, _ yc: Double, _ rx: Double, _ ry: Double, _ sa: Double, _ ea: Double) -> Ellipse
+    {
+      return Ellipse(self, xc, yc, rx + rx, ry + ry, startAngle: sa, endAngle: ea)
     }
     
     func circle(_ xc: Double, _ yc: Double, _ r: Double) -> Circle
@@ -351,19 +362,32 @@ class Graf
     private func build()
     {
       guard vertices.count > 0 else {return}
-    
-      let (sx, sy) = vertices.first!
-      cairo_move_to(context.cr, sx, sy)
-      for (x, y) in vertices.dropFirst(1)
+      
+      if 2 == vertices.count
       {
-        cairo_line_to(context.cr, x, y)
+        let (x1, y1) = vertices.first!
+        let (x2, y2) = vertices.last!
+        cairo_move_to(context.cr, x1, y1)
+        cairo_line_to(context.cr, x2, y2)
+        cairo_close_path(context.cr)
       }
-      cairo_line_to(context.cr, sx, sy)
+      else
+      {
+        let (sx, sy) = vertices.first!
+        cairo_move_to(context.cr, sx, sy)
+        for (x, y) in vertices.dropFirst(1)
+        {
+          cairo_line_to(context.cr, x, y)
+        }
+        cairo_line_to(context.cr, sx, sy)
+      }
+
     }
     
     func stroke()
     {
       build()
+      cairo_set_line_width(context.cr, dc.strokeWeight)
       context.stroke(dc.strokeColor)
     }
     
@@ -382,8 +406,9 @@ class Graf
     
     func strokeAndFill()
     {
-      fill()
-      stroke()
+      build()
+      context.stroke(dc.strokeColor, preserved: true)
+      context.fill(dc.fillColor)
     }
   } //Polygon
   
@@ -450,3 +475,25 @@ class Graf
   }
   
 } //Graf
+
+
+/*
+ POINT rotate_point(float cx,float cy,float angle,POINT p)
+ {
+   float s = sin(angle);
+   float c = cos(angle);
+
+   // translate point back to origin:
+   p.x -= cx;
+   p.y -= cy;
+
+   // rotate point
+   float xnew = p.x * c - p.y * s;
+   float ynew = p.x * s + p.y * c;
+
+   // translate point back:
+   p.x = xnew + cx;
+   p.y = ynew + cy;
+   return p;
+ }
+ */

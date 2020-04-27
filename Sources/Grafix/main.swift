@@ -12,23 +12,32 @@ v0.draw
   dc.clear()
   
   
-  dc.strokeColor = Graf.Color(0, 0, 0)
+  dc.strokeColor = Graf.Color.black
   dc.fillColor = Graf.Color(0, 0.8, 0, 0.5)
+  
+  dc.rect(10, 10, 400, 200).stroke()
+  dc.arc(320, 300, 100, 40, 0, Double.pi).fill()
   
   dc.ellipse(x, y, 200, 100).strokeAndFill()
   dc.fillColor = Graf.Color(0.9, 0.8, 0, 0.5)
   dc.ellipse(x, y, 100, 200).strokeAndFill()
-  
-  dc.circle(x, y, 25).fill()
-  dc.strokeColor = Graf.Color(0.2, 0.5, 0)
-  dc.line(0, 0, x, y).stroke()
-  dc.line(0, dc.height, x, y).stroke()
-  dc.line(dc.width, 0, x, y).stroke()
-  dc.line(dc.width, dc.height, x, y).stroke()
 
+  dc.circle(x, y, 25).fill()
+  dc.line(x, 0, x, dc.height).stroke()
+  dc.line(0, y, dc.width, y).stroke()
+  //dc.line(dc.width, 0, x, y).stroke()
+  //dc.line(dc.width, dc.height, x, y).stroke()
+  
+  
+  //dc.text(320, 100, "HelloWorld")
+  
+  dc.rect(10, 10, 400, 200).fill()
+  dc.arc(320, 300, 100, 40, 0, Double.pi).strokeAndFill()
+  
+  
 }
 
-v0.onEvent
+v0.onInputEvent
 {
   evt in
   
