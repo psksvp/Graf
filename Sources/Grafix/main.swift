@@ -9,9 +9,8 @@ var y:Double = 50
 v0.draw
 {
   dc in
+  
   dc.clear()
-  
-  
   dc.strokeColor = Graf.Color.black
   dc.fillColor = Graf.Color(0, 0.8, 0, 0.5)
   
@@ -28,11 +27,15 @@ v0.draw
   //dc.line(dc.width, 0, x, y).stroke()
   //dc.line(dc.width, dc.height, x, y).stroke()
   
+  dc.fillColor = Graf.Color.black
+  dc.fontSize = 20
+  dc.fontFace = "Papyrus"
+  dc.text(400, 100, "HelloWorld")
   
-  //dc.text(320, 100, "HelloWorld")
-  
-  dc.rect(10, 10, 400, 200).fill()
-  dc.arc(320, 300, 100, 40, 0, Double.pi).strokeAndFill()
+  //dc.rect(10, 10, 400, 200).fill()
+  dc.strokeWeight = 5
+  dc.fillColor = Graf.Color(0.3, 0.3, 0.8)
+  dc.arc(320, 400, 100, 100, 0, Double.pi / 2).strokeAndFill()
   
   
 }

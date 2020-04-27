@@ -145,18 +145,15 @@ class Graf
     
     var id: UInt32
     {
-      get {return SDL_GetWindowID(sdlWindow)}
+      SDL_GetWindowID(sdlWindow)
     }
     
     var size: Size
     {
-      get
-      {
-        var w: Int32 = 0
-        var h: Int32 = 0
-        SDL_GetWindowSize(sdlWindow, &w, &h)
-        return Size(width: Uint32(w), height: UInt32(h))
-      }
+       var w: Int32 = 0
+       var h: Int32 = 0
+       SDL_GetWindowSize(sdlWindow, &w, &h)
+       return Size(width: Uint32(w), height: UInt32(h))
     }
     
     init(name: String, size: Size)
@@ -265,30 +262,35 @@ class Graf
     var fillColor: Color = Color.transparent
     var strokeColor: Color = Color.black
     var strokeWeight: Double = 1.0
-    
-    private var _viewRect: Rectangle? = nil
-    var viewRect: Rectangle
     {
-      get
+      didSet
       {
-        switch _viewRect
-        {
-          case .some(let v) : return v
-          case .none        : _viewRect = Rectangle(self, 0, 0, width, height)
-                              return _viewRect!
-        }
+        cairo_set_line_width(context.cr, fabs(strokeWeight))
       }
     }
     
-    var width: Double
+    var fontSize: Double = 14.0
     {
-      get { context.width }
+      didSet
+      {
+        cairo_set_font_size(context.cr, fabs(fontSize))
+      }
     }
     
-    var height: Double
+    var fontFace: String = "Arial"
     {
-      get { context.height }
+      didSet
+      {
+        cairo_select_font_face(context.cr,
+                               fontFace,
+                               CAIRO_FONT_SLANT_NORMAL,
+                               CAIRO_FONT_WEIGHT_NORMAL)
+      }
     }
+    
+    lazy var viewRect: Rectangle = Rectangle(self, 0, 0, width, height)
+    lazy var width: Double = context.width
+    lazy var height: Double = context.height
     
     init(_ w: UInt32, _ h: UInt32, _ data: UnsafeMutablePointer<UInt8>, _ stride: Int32)
     {
@@ -302,8 +304,9 @@ class Graf
       viewRect.fill()
     }
     
-    func text(_ x: Double, _ y: Double, _ s: String)
+    func text(_ x: Double, _ y: Double, _ s: String, size: Double = 30.0)
     {
+      fillColor.setAsSourceInContext(context)
       cairo_move_to(context.cr, x, y)
       cairo_show_text(context.cr, s)
     }
@@ -379,7 +382,7 @@ class Graf
         {
           cairo_line_to(context.cr, x, y)
         }
-        cairo_line_to(context.cr, sx, sy)
+        cairo_close_path(context.cr)
       }
 
     }
@@ -387,7 +390,6 @@ class Graf
     func stroke()
     {
       build()
-      cairo_set_line_width(context.cr, dc.strokeWeight)
       context.stroke(dc.strokeColor)
     }
     

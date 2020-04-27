@@ -8,8 +8,10 @@
 import Foundation
 import CCairo
 
-struct Cairo
+struct Cairo //namespace
 {
+  private init() {} // stop it from being used as an instance
+  
   class Color
   {
     private var component = [0.0, 0.0, 0.0, 0.0]
@@ -40,32 +42,32 @@ struct Cairo
     
     static var transparent: Color
     {
-      get {Color(0, 0, 0, 0)}
+      Color(0, 0, 0, 0)
     }
     
     static var red: Color
     {
-      get {Color(1, 0, 0, 1)}
+      Color(1, 0, 0, 1)
     }
     
     static var green: Color
     {
-      get {Color(0, 1, 0, 1)}
+      Color(0, 1, 0, 1)
     }
     
     static var blue: Color
     {
-      get {Color(0, 0, 1, 1)}
+      Color(0, 0, 1, 1)
     }
     
     static var black: Color
     {
-      get {Color(0, 0, 0, 1)}
+      Color(0, 0, 0, 1)
     }
     
     static var white: Color
     {
-      get {Color(1, 1, 1, 1)}
+      Color(1, 1, 1, 1)
     }
     
     init(_ r: Double, _ g: Double, _ b: Double, _ a: Double = 1.0)
