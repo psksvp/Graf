@@ -21,23 +21,23 @@ v0.draw
   dc.fillColor = Graf.Color(0.9, 0.8, 0, 0.5)
   dc.ellipse(x, y, 100, 200).strokeAndFill()
 
-  dc.circle(x, y, 25).fill()
-  dc.line(x, 0, x, dc.height).stroke()
-  dc.line(0, y, dc.width, y).stroke()
+  
   //dc.line(dc.width, 0, x, y).stroke()
   //dc.line(dc.width, dc.height, x, y).stroke()
   
-  dc.fillColor = Graf.Color.black
+  dc.fillColor = Graf.Color(0.3, 0.8, 0.3)
   dc.fontSize = 20
   dc.fontFace = "Papyrus"
   dc.text(400, 100, "HelloWorld")
   
   //dc.rect(10, 10, 400, 200).fill()
   dc.strokeWeight = 5
-  dc.fillColor = Graf.Color(0.3, 0.3, 0.8)
+  dc.fillColor = Graf.Color(0.8, 0.3, 0.8)
   dc.arc(320, 400, 100, 100, 0, Double.pi / 2).strokeAndFill()
   
-  
+  dc.circle(x, y, 25).fill()
+  dc.line(x, 0, x, dc.height).stroke()
+  dc.line(0, y, dc.width, y).stroke()
 }
 
 v0.onInputEvent
