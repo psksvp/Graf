@@ -6,8 +6,11 @@ let v0 = graf.newView(name: "HelloWorld0", size: Graf.Size(width: 640, height: 6
 var x:Double = 0
 var y:Double = 50
 
-let locText = Graf.Text(320, 100, "")
-
+//let locText = Graf.Text(320, 100, "")
+let cross = Graf.Ellipse(320, 300, 30, 60)
+var angle = 0.0
+var sx = 1.0
+var sy = 1.0
 v0.draw
 {
   dc in
@@ -15,6 +18,11 @@ v0.draw
   dc.clear()
   dc.strokeColor = Graf.Color.black
   dc.fillColor = Graf.Color(0, 0.8, 0, 0.5)
+  
+  //cross.rotate(angle).moveTo(x, y).draw(dc)
+  
+  cross.moveTo(x, y).scale(sx, sy).draw(dc)
+  
   
 //  dc.rect(10, 10, 400, 200).stroke()
 //  dc.arc(320, 300, 100, 40, 0, Double.pi).fill()
@@ -35,17 +43,17 @@ v0.draw
 //  dc.fillColor = Graf.Color(0.8, 0.3, 0.8)
 //  dc.arc(320, 400, 100, 100, 0, Double.pi / 2).strokeAndFill()
 //
-  Graf.Circle(x, y, 25).draw(dc)
-  Graf.Line(x, 0, x, dc.height).draw(dc)
-  Graf.Line(0, y, dc.width, y).draw(dc)
-  
-  dc.fillColor = Graf.Color(0.3, 0.8, 0.3)
-  dc.fontSize = 20
-  dc.fontFace = "Papyrus"
-  //Graf.Text(320, 100, "\(x) , \(y)").draw(dc)
-  locText.text = "\(x) , \(y)"
-  locText.coord = (x, y)
-  locText.draw(dc)
+//  Graf.Circle(x, y, 25).draw(dc)
+//  Graf.Line(x, 0, x, dc.height).draw(dc)
+//  Graf.Line(0, y, dc.width, y).draw(dc)
+//
+//  dc.fillColor = Graf.Color(0.3, 0.8, 0.3)
+//  dc.fontSize = 20
+//  dc.fontFace = "Papyrus"
+//  //Graf.Text(320, 100, "\(x) , \(y)").draw(dc)
+//  locText.text = "\(x) , \(y)"
+//  locText.coord = (x, y)
+//  locText.draw(dc)
 }
 
 v0.onInputEvent
@@ -67,6 +75,13 @@ v0.onInputEvent
     
     case .mouseWheel(let dx, let dy) :
       print("wheel \(dx) \(dy)")
+      sx = sx + Double(dx) / 100.0
+      sy = sy + Double(dy) / 100.0
+//      angle = angle + (Double(dy) / 10.0)
+//      if angle > 360.0
+//      {
+//        angle = 360.0
+//      }
     
     default:
       break

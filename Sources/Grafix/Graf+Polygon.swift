@@ -13,11 +13,26 @@ extension Graf
   {
     var vertices: [SIMD3<Double>] = []
     
+    var center: SIMD3<Double>
+    {
+      let sum = vertices.reduce(SIMD3<Double>(0, 0, 0))
+                {
+                  a, b in
+                
+                  SIMD3<Double>(a.x + b.x, a.y + b.y, a.z + b.z)
+                }
+      
+      let n = Double(vertices.count)
+      return SIMD3<Double>(sum.x / n,
+                           sum.y / n,
+                           sum.z / n)
+    }
+    
     init(_ p: [(Double, Double)])
     {
       for v in p
       {
-        vertices.append(SIMD3<Double>(x: v.0, y: v.1, z: 1))
+        vertices.append(SIMD3<Double>(v.0, v.1, 1))
       }
     }
   }
@@ -91,14 +106,3 @@ extension Graf
     }
   }
 }
-
-
-//extension Shape.Polygon
-//{
-//  
-//  
-//  func translate(_ dx: Double, _ dy: Double)
-//  {
-//    
-//  }
-//}
