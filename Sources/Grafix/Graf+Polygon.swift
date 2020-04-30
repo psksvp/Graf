@@ -28,16 +28,16 @@ extension Graf
                            sum.z / n)
     }
     
-    var boundary: Rectangle
+    var boundary: Polygon
     {
-      guard vertices.count > 0 else {return Rectangle(0, 0, 0, 0)}
+      guard vertices.count > 0 else {return rect(0, 0, 0, 0)}
       
       let minX = vertices.min{ a, b in a.x < b.x}!.x
       let minY = vertices.min{ a, b in a.y < b.y}!.y
       let maxX = vertices.min{ a, b in a.x > b.x}!.x
       let maxY = vertices.min{ a, b in a.y > b.y}!.y
       
-      return Rectangle(minX, minY, maxX - minX, maxY - minY)
+      return rect(minX, minY, maxX - minX, maxY - minY)
     }
     
     init(_ p: [(Double, Double)])
@@ -47,74 +47,78 @@ extension Graf
         vertices.append(SIMD3<Double>(v.0, v.1, 1))
       }
     }
+  } // Polygon
+  
+  class func line(_ x1: Double, _ y1: Double, _ x2: Double, _ y2: Double) -> Polygon
+  {
+    return Polygon([(x1, y1), (x2, y2)])
   }
   
-  class Line : Polygon
+  class func rect(_ x: Double, _ y: Double, _ w: Double, _ h: Double) -> Polygon
   {
-    init(_ x1: Double, _ y1: Double, _ x2: Double, _ y2: Double)
-    {
-      super.init([(x1, y1), (x2, y2)])
-    }
+    return Polygon([(x, y), (x + w, y), (x + w, y + h), (x, y + h)])
   }
   
-  class Rectangle : Polygon
+  class func arc(_ xc: Double,
+                 _ yc: Double,
+                 _ w: Double,
+                 _ h: Double,
+                 startAngle: Double,
+                 endAngle: Double,
+                 step: Double = 0.1 ) -> Polygon
   {
-    init(_ x: Double, _ y: Double, _ w: Double, _ h: Double)
+    //https://stackoverflow.com/questions/11309596/how-to-get-a-point-on-an-ellipses-outline-given-an-angle
+    func copySign(_ a: Double, _ b: Double) -> Double
     {
-      super.init([(x, y), (x + w, y), (x + w, y + h), (x, y + h)])
+      let m = fabs(a)
+      return b >= 0 ? m : -m
     }
-  } // Rectangle
-  
-  class Ellipse : Polygon
-  {
-    init(_ xc: Double,
-         _ yc: Double,
-         _ w: Double,
-         _ h: Double,
-         startAngle: Double = 0.0,
-         endAngle: Double = 2 * Double.pi,
-         step: Double = 0.1 )
+    
+    func pointFromAngle(_ a: Double) -> (Double, Double)
     {
-      //https://stackoverflow.com/questions/11309596/how-to-get-a-point-on-an-ellipses-outline-given-an-angle
-      func copySign(_ a: Double, _ b: Double) -> Double
-      {
-        let m = fabs(a)
-        return b >= 0 ? m : -m
-      }
-      
-      func pointFromAngle(_ a: Double) -> (Double, Double)
-      {
-        let c = cos(a)
-        let s = sin(a)
-        let ta = tan(a)
-        let rh = w / 2
-        let rv = h / 2
-        let tt = ta * rh / rv
-        let d = 1.0 / sqrt(1.0 + tt * tt)
-        let x = xc + copySign(rh * d, c)
-        let y = yc + copySign(rv * tt * d, s)
-        return (x, y)
-      }
-      
-      var angle = startAngle
+      let c = cos(a)
+      let s = sin(a)
+      let ta = tan(a)
+      let rh = w / 2
+      let rv = h / 2
+      let tt = ta * rh / rv
+      let d = 1.0 / sqrt(1.0 + tt * tt)
+      let x = xc + copySign(rh * d, c)
+      let y = yc + copySign(rv * tt * d, s)
+      return (x, y)
+    }
+    
+    var angle = startAngle
 
-      var coords: [(Double, Double)] = [pointFromAngle(angle)]
-      angle = angle + step
-      while angle < endAngle
-      {
-        coords.append(pointFromAngle(angle))
-        angle = angle + step
-      }
-      
-      super.init(coords)
-    }
-  } // Ellipse
-  
-  class Circle : Ellipse
-  {
-    init(_ xc: Double, _ yc: Double, _ r: Double)
+    var coords: [(Double, Double)] = [pointFromAngle(angle)]
+    angle = angle + step
+    while angle < endAngle
     {
-      super.init(xc, yc, r + r, r + r)
+      coords.append(pointFromAngle(angle))
+      angle = angle + step
     }
+    
+    return Polygon(coords)
+  }
+  
+  class func ellipse(_ xc: Double,
+                     _ yc: Double,
+                     _ w: Double,
+                     _ h: Double,
+                     step s: Double = 0.1) -> Polygon
+  {
+    return arc(xc, yc, w, h, startAngle: 0.0, endAngle: 2 * Double.pi, step: s)
+  }
+  
+  class func circle(_ xc: Double, _ yc: Double, _ r: Double, step s: Double = 0.1)-> Polygon
+  {
+    return ellipse(xc, yc, r, r, step: s)
+  }
+  
+  class func triangle(_ x1: Double, _ y1: Double,
+                      _ x2: Double, _ y2: Double,
+                      _ x3: Double, _ y3: Double) -> Polygon
+  {
+    return Polygon([(x1, y1), (x2, y2), (x3, y3)])
   }
 }

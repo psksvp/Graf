@@ -45,7 +45,7 @@ extension Graf
       }
     }
     
-    lazy var viewRect: Rectangle = Rectangle(0, 0, width, height)
+    lazy var viewRect = rect(0, 0, width, height)
     lazy var width: Double = context.width
     lazy var height: Double = context.height
     
