@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Graf+View.swift
 //  
 //
 //  Created by psksvp on 29/4/20.

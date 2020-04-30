@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Graf+Polygon+Draw.swift
 //  
 //
 //  Created by psksvp on 29/4/20.
@@ -9,7 +9,7 @@ import Foundation
 import CCairo
 import CommonSwift
 
-extension Graf.Polygon
+extension Graf.Polygon : Drawable
 {
   func draw(_ dc: Graf.DrawingContext, stroke: Bool = true, fill: Bool = true)
   {

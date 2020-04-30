@@ -33,6 +33,14 @@ extension Graf.Polygon
     return transform(m)
   }
   
+  @discardableResult func shear(_ sx: Double, _ sy: Double) -> Graf.Polygon
+  {
+    let m = double3x3(rows: [SIMD3<Double>(1,  sx, 0),
+                             SIMD3<Double>(sy,  1, 0),
+                             SIMD3<Double>(0,   0, 1)])
+    return transform(m)
+  }
+  
   @discardableResult func rotate(_ angle: Double) -> Graf.Polygon
   {
     let m = double3x3(rows: [SIMD3<Double>(cos(angle), sin(angle), 0),
@@ -50,4 +58,5 @@ extension Graf.Polygon
     
     return self
   }
+  
 }

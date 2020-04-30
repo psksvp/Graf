@@ -7,8 +7,8 @@ var x:Double = 0
 var y:Double = 50
 
 //let locText = Graf.Text(320, 100, "")
-let cross = Graf.Ellipse(320, 300, 30, 60)
-var angle = 0.0
+let cross = Graf.Ellipse(320, 300, 100, 160, step: 0.8)
+var angle = 0.01
 var sx = 1.0
 var sy = 1.0
 v0.draw
@@ -19,9 +19,11 @@ v0.draw
   dc.strokeColor = Graf.Color.black
   dc.fillColor = Graf.Color(0, 0.8, 0, 0.5)
   
-  //cross.rotate(angle).moveTo(x, y).draw(dc)
+  cross.rotate(angle).moveTo(x, y).draw(dc)
   
-  cross.moveTo(x, y).scale(sx, sy).draw(dc)
+  //cross.moveTo(x, y).draw(dc)
+  
+  cross.boundary.draw(dc, fill: false)
   
   
 //  dc.rect(10, 10, 400, 200).stroke()
@@ -72,16 +74,10 @@ v0.onInputEvent
 
     case .mousePressed(_ , _, let button) :
       print("button \(button)")
+      cross.shear(1, 0)
     
     case .mouseWheel(let dx, let dy) :
       print("wheel \(dx) \(dy)")
-      sx = sx + Double(dx) / 100.0
-      sy = sy + Double(dy) / 100.0
-//      angle = angle + (Double(dy) / 10.0)
-//      if angle > 360.0
-//      {
-//        angle = 360.0
-//      }
     
     default:
       break

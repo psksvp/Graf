@@ -28,6 +28,18 @@ extension Graf
                            sum.z / n)
     }
     
+    var boundary: Rectangle
+    {
+      guard vertices.count > 0 else {return Rectangle(0, 0, 0, 0)}
+      
+      let minX = vertices.min{ a, b in a.x < b.x}!.x
+      let minY = vertices.min{ a, b in a.y < b.y}!.y
+      let maxX = vertices.min{ a, b in a.x > b.x}!.x
+      let maxY = vertices.min{ a, b in a.y > b.y}!.y
+      
+      return Rectangle(minX, minY, maxX - minX, maxY - minY)
+    }
+    
     init(_ p: [(Double, Double)])
     {
       for v in p

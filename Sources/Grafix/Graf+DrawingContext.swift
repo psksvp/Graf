@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Graf+DrawingContext.swift
 //  
 //
 //  Created by psksvp on 29/4/20.
@@ -61,4 +61,13 @@ extension Graf
       viewRect.draw(self, stroke: false)
     }
   } // DrawingContext
+  
+  ///////
 }
+
+
+protocol Drawable
+{
+  func draw(_ dc: Graf.DrawingContext, stroke: Bool, fill: Bool)
+}
+
