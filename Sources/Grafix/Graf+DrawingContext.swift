@@ -61,8 +61,6 @@ extension Graf
       viewRect.draw(self, stroke: false)
     }
   } // DrawingContext
-  
-  ///////
 }
 
 

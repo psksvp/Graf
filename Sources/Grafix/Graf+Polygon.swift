@@ -11,7 +11,7 @@ extension Graf
 {
   class Polygon
   {
-    var vertices: [SIMD3<Double>] = []
+    let vertices: [SIMD3<Double>]
     
     var center: SIMD3<Double>
     {
@@ -42,11 +42,39 @@ extension Graf
     
     init(_ p: [(Double, Double)])
     {
-      for v in p
-      {
-        vertices.append(SIMD3<Double>(v.0, v.1, 1))
-      }
+      vertices = p.map { SIMD3<Double>($0.0, $0.1, 1) }
     }
+    
+    init(_ p: [SIMD3<Double>])
+    {
+      vertices = p
+    }
+    
+    func hitTest(_ p: (Double, Double)) -> Bool
+    {
+      guard vertices.count > 0 else {return false}
+      
+      //https://wrf.ecse.rpi.edu/Research/Short_Notes/pnpoly.html
+      var hit = false
+      var i = 0
+      var j = vertices.count - 1
+      while i < vertices.count
+      {
+        let (x, y) = p
+        let vi = vertices[i]
+        let vj = vertices[j]
+        if (vi.y > y) != (vj.y > y) &&
+           (x < (vj.x - vi.x) * (y - vi.y) / (vj.y - vi.y) + vi.x)
+        {
+          hit = !hit
+        }
+        j = i
+        i = i + 1
+      }
+      return hit
+    }
+    
+    
   } // Polygon
   
   class func line(_ x1: Double, _ y1: Double, _ x2: Double, _ y2: Double) -> Polygon

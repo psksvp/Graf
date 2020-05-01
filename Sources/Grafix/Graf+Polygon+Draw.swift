@@ -15,7 +15,7 @@ extension Graf.Polygon : Drawable
   {
     func buildPath()
     {
-      guard vertices.count > 0 else {return}
+      guard self.vertices.count > 0 else {return}
       
       let sp = vertices.first!
       cairo_move_to(dc.context.cr, sp.x, sp.y)

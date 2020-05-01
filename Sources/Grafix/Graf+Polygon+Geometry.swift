@@ -54,9 +54,8 @@ extension Graf.Polygon
   
   @discardableResult func transform(_ m: double3x3) -> Graf.Polygon
   {
-    vertices = vertices.map { $0 * m }
-    
-    return self
+    return Graf.Polygon(vertices.map { $0 * m })
+
   }
   
 }
