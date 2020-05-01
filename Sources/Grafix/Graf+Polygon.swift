@@ -140,7 +140,7 @@ extension Graf
   
   class func circle(_ xc: Double, _ yc: Double, _ r: Double, step s: Double = 0.1)-> Polygon
   {
-    return ellipse(xc, yc, r, r, step: s)
+    return ellipse(xc, yc, r + r, r + r, step: s)
   }
   
   class func triangle(_ x1: Double, _ y1: Double,

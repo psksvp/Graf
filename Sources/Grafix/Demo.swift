@@ -100,7 +100,8 @@ func demoDrawWithEvent()
 func demoHitTest()
 {
   let poly = [Graf.ellipse(320, 200, 100, 200),
-              Graf.rect(10, 10, 100, 150)]
+              Graf.rect(10, 10, 100, 150),
+              Graf.triangle(10, 300, 50, 300, 25, 200)]
   
   let v = Graf.shared().newView(name: "hit testing", size: Graf.Size(width: 640, height: 600))
   var x:Double = 0
@@ -142,5 +143,68 @@ func demoHitTest()
   }
   Graf.shared().run()
 }
+
+func demoBall()
+{
+  let v = Graf.shared().newView(name: "hit testing", size: Graf.Size(width: 640, height: 600))
+  var x = Double(v.size.width / 2)
+  var y = Double(v.size.height / 2)
+  var r = 50.0
+  var vx = Double.random(in: -10.0 ... 10.0)
+  var vy = Double.random(in: -10.0 ... 10.0)
+  
+  func distance(_ x1: Double, _ y1: Double, _ x2: Double, _ y2: Double) -> Double
+  {
+    let dx = x1 - x2
+    let dy = y1 - y2
+    return sqrt( dx * dx + dy * dy )
+  }
+  
+  v.draw
+  {
+    dc in
+    
+    dc.clear()
+    
+    Graf.circle(x, y, r).draw(dc, fill: false)
+    
+    x = x + vx
+    y = y + vy
+    
+    if x + r >= dc.width || x - r <= 0
+    {
+      vx = -vx
+    }
+    
+    if y + r >= dc.height || y - r <= 0
+    {
+      vy = -vy
+    }
+  }
+  
+  v.onInputEvent
+  {
+    evt in
+    
+    switch evt
+    {
+      case .mousePressed(let mx, let my, _):
+        print(evt)
+        if distance(Double(mx), Double(my), x, y) <= r
+        {
+          r = Double.random(in: 20 ... 60)
+          vx = Double.random(in: -10.0 ... 10.0)
+          vy = Double.random(in: -10.0 ... 10.0)
+        }
+      
+      default: break
+    }
+  }
+  
+  
+  
+  Graf.shared().run()
+}
+
 
 
