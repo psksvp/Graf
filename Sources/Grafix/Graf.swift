@@ -30,8 +30,7 @@ class Graf
   
   private init()
   {
-    SDL_Init(SDL_INIT_VIDEO)
-    SDL_InitSubSystem(SDL_INIT_VIDEO)
+    SDL_InitSubSystem(SDL_INIT_VIDEO|SDL_INIT_AUDIO)
   }
   
   deinit
@@ -134,4 +133,20 @@ class Graf
   }
 
   typealias Color = Cairo.Color
+  
+  class func playAudio(fileName f:String)
+  {
+    DispatchQueue.global(qos: .background).async
+    {
+      if #available(OSX 10.13, *)
+      {
+        OS.spawn(["/usr/bin/afplay", f], nil)
+      }
+      else
+      {
+        Log.error("spawn is unavailable.")
+      }
+    }
+    
+  }
 } //Graf

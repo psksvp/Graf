@@ -22,7 +22,7 @@ extension Graf
       coord = (x, y)
     }
     
-    func draw(_ dc: Graf.DrawingContext, stroke: Bool, fill: Bool)
+    func draw(_ dc: Graf.DrawingContext, stroke: Bool = true, fill: Bool = true)
     {
       dc.fillColor.setAsSourceInContext(dc.context)
       

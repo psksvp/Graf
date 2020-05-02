@@ -1,7 +1,7 @@
 print("Hello, world!")
 
 
-demoBall()
-
-
-
+demoDrawWithEvent()
+//demoBall()
+//demoHitTest()
+//demoStaticDraw()

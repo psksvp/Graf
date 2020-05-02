@@ -11,7 +11,7 @@ extension Graf
 {
   class Polygon
   {
-    let vertices: [SIMD3<Double>]
+    var vertices: [SIMD3<Double>]
     
     var center: SIMD3<Double>
     {
@@ -34,8 +34,8 @@ extension Graf
       
       let minX = vertices.min{ a, b in a.x < b.x}!.x
       let minY = vertices.min{ a, b in a.y < b.y}!.y
-      let maxX = vertices.min{ a, b in a.x > b.x}!.x
-      let maxY = vertices.min{ a, b in a.y > b.y}!.y
+      let maxX = vertices.max{ a, b in a.x < b.x}!.x
+      let maxY = vertices.max{ a, b in a.y < b.y}!.y
       
       return rect(minX, minY, maxX - minX, maxY - minY)
     }
@@ -54,6 +54,7 @@ extension Graf
     {
       guard vertices.count > 0 else {return false}
       
+      //https://stackoverflow.com/questions/217578/how-can-i-determine-whether-a-2d-point-is-within-a-polygon
       //https://wrf.ecse.rpi.edu/Research/Short_Notes/pnpoly.html
       var hit = false
       var i = 0

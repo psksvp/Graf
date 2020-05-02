@@ -54,8 +54,32 @@ extension Graf.Polygon
   
   @discardableResult func transform(_ m: double3x3) -> Graf.Polygon
   {
-    return Graf.Polygon(vertices.map { $0 * m })
-
+    vertices = vertices.map { $0 * m }
+    return self
+  }
+  
+  func overlapWith(_ p: Graf.Polygon) -> Bool
+  {
+    guard self.vertices.count > 0 &&
+             p.vertices.count > 0 else {return false}
+     
+    for v in self.vertices
+    {
+      if p.hitTest((v.x, v.y))
+      {
+        return true
+      }
+    }
+    
+    for v in p.vertices
+    {
+      if self.hitTest((v.x, v.y))
+      {
+        return true
+      }
+    }
+    
+    return false
   }
   
 }
