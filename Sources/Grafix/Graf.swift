@@ -15,6 +15,7 @@ class Graf
 {
   private static var sharedGraf: Graf? = nil
   
+  @discardableResult 
   class func shared() -> Graf
   {
     switch sharedGraf
@@ -38,14 +39,14 @@ class Graf
     SDL_Quit()
   }
   
-  func newView(name n: String, size s: Size) -> View
+  class func newView(name n: String, size s: Size) -> View
   {
     let v = View(name: n, size: s)
-    views[v.id] = v
+    Graf.shared().views[v.id] = v
     return v
   }
   
-  func run()
+  class func run()
   {
     func mouseState(_ e: SDL_Event) -> (Int32, Int32)
     {
@@ -57,7 +58,7 @@ class Graf
     
     func dispatchEvent(_ vid: UInt32, _ e: SDL_Event)
     {
-      guard let v = views[vid] else { return }
+      guard let v = Graf.shared().views[vid] else { return }
       var x: Int32 = 0
       var y: Int32 = 0
       
@@ -93,11 +94,11 @@ class Graf
       }
     }
     
-    looping = true
+    Graf.shared().looping = true
     var event: SDL_Event = SDL_Event()
-    while looping
+    while Graf.shared().looping
     {
-      for v in views.values
+      for v in Graf.shared().views.values
       {
         v.render()
       }
@@ -109,9 +110,9 @@ class Graf
     }
   }
   
-  func quit()
+  class func quit()
   {
-    self.looping = false
+    Graf.shared().looping = false
   }
   
   ///////
@@ -128,8 +129,14 @@ class Graf
   
   struct Size
   {
-    var width: UInt32
-    var height: UInt32
+    let width: UInt32
+    let height: UInt32
+    
+    init(_ w: UInt32, _ h: UInt32)
+    {
+      width = w
+      height = h
+    }
   }
 
   typealias Color = Cairo.Color

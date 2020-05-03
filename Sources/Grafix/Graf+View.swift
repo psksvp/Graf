@@ -32,8 +32,11 @@ extension Graf
        var w: Int32 = 0
        var h: Int32 = 0
        SDL_GetWindowSize(sdlWindow, &w, &h)
-       return Size(width: Uint32(w), height: UInt32(h))
+       return Size( Uint32(w), UInt32(h))
     }
+    
+    let width: Double
+    let height: Double
     
     init(name: String, size: Size)
     {
@@ -49,6 +52,9 @@ extension Graf
                                           Int32(SDL_TEXTUREACCESS_STREAMING.rawValue),
                                           Int32(size.width),
                                           Int32(size.height))
+      
+      self.width = Double(size.width)
+      self.height = Double(size.height)
     }
     
     deinit

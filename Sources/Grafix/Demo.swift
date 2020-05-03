@@ -10,9 +10,7 @@ import Foundation
 
 func demoStaticDraw()
 {
-  let graf = Graf.shared()
-
-  let v = graf.newView(name: "static", size: Graf.Size(width: 640, height: 600))
+  let v = Graf.newView(name: "static", size: Graf.Size(640, 600))
   
   v.draw
   {
@@ -36,20 +34,18 @@ func demoStaticDraw()
     Graf.Text(200, 400, "Helloworld").draw(dc)
   }
   
-  graf.run()
+  Graf.run()
 }
 
 func demoDrawWithEvent()
 {
-  let graf = Graf.shared()
-
-  let v = graf.newView(name: "events", size: Graf.Size(width: 640, height: 600))
+  let v = Graf.newView(name: "events", size: Graf.Size( 640, 600))
   var x:Double = 0
   var y:Double = 50
 
   //let locText = Graf.Text(320, 100, "")
   let cross = Graf.ellipse(320, 300, 100, 160, step: 0.1)
-  let l = Graf.line(320, 200, 320, 400)
+  let l = Graf.rect(320, 200, 10, 400)
   let r = Graf.rect(300, 10, 100, 300)
   let angle = 0.01
 
@@ -86,7 +82,7 @@ func demoDrawWithEvent()
       case .keyPressed(let code) :
         print("keycode \(code)")
       case .keyReleased(let code) where code == 44 :
-        graf.quit()
+        Graf.quit()
       case .mouseMoved(let mx, let my) :
         x = Double(mx)
         y = Double(my)
@@ -103,7 +99,7 @@ func demoDrawWithEvent()
     }
   }
   
-  graf.run()
+  Graf.run()
 }
 
 func demoHitTest()
@@ -112,7 +108,7 @@ func demoHitTest()
               Graf.rect(100, 100, 100, 150),
               Graf.triangle(400, 300, 50, 300, 25, 200)]
   
-  let v = Graf.shared().newView(name: "hit testing", size: Graf.Size(width: 640, height: 600))
+  let v = Graf.newView(name: "hit testing", size: Graf.Size( 640, 600))
   var x:Double = 0
   var y:Double = 0
   let angle = 0.01
@@ -151,12 +147,13 @@ func demoHitTest()
       default: break
     }
   }
-  Graf.shared().run()
+  Graf.run()
 }
 
 func demoBall()
 {
-  let v = Graf.shared().newView(name: "hit testing", size: Graf.Size(width: 640, height: 600))
+  Graf.shared()
+  let v = Graf.newView(name: "hit testing", size: Graf.Size(640, 600))
   var x = Double(v.size.width / 2)
   var y = Double(v.size.height / 2)
   var r = 50.0
@@ -192,13 +189,13 @@ func demoBall()
     if x + r >= dc.width || x - r <= 0
     {
       vx = -vx + (Double.random(in: -1.0 ... 1.0)) * sign(-vx)
-      Graf.playAudio(fileName: "/Users/psksvp/Downloads/beep.aiff")
+      Graf.playAudio(fileName: "/Users/psksvp/Downloads/beep.mp3")
     }
     
     if y + r >= dc.height || y - r <= 0
     {
       vy = -vy + (Double.random(in: -1.0 ... 1.0)) * sign(-vy)
-      Graf.playAudio(fileName: "/Users/psksvp/Downloads/beep.aiff")
+      Graf.playAudio(fileName: "/Users/psksvp/Downloads/beep.mp3")
     }
   }
   
@@ -223,7 +220,94 @@ func demoBall()
   
   
   
-  Graf.shared().run()
+  Graf.run()
+}
+
+func demoPong()
+{
+  Graf.shared()
+  let barWidth = 20.0
+  let view = Graf.newView(name: "Pong", size: Graf.Size(900, 480))
+  let topBar = Graf.rect(0, 0, view.width, barWidth)
+  let bottomBar = Graf.rect(0, view.height - barWidth,  view.width, barWidth)
+  let leftBar = Graf.rect(0, barWidth, barWidth, view.height - barWidth)
+  let rightPaddle = Graf.rect(view.width - 50, 100, barWidth/2, 100)
+  let ball = Graf.circle(view.width / 2, view.height / 2, 20)
+  
+  var vel = SIMD3<Double>(Double.random(in: 3 ... 9), Double.random(in: 3 ... 9), 1)
+
+  
+  view.draw
+  {
+    dc in
+    
+    dc.clear()
+    
+    topBar.draw(dc)
+    bottomBar.draw(dc)
+    leftBar.draw(dc)
+    rightPaddle.draw(dc)
+    ball.draw(dc)
+    
+    if ball.overlapWith(topBar)
+    {
+      vel = topBar.refect(vector: vel, onSide: 2)!.0 * Double.random(in: 3 ... 9)
+    }
+    else if ball.overlapWith(bottomBar)
+    {
+      vel = bottomBar.refect(vector: vel, onSide: 0)!.0 * Double.random(in: 3 ... 9)
+    }
+    else if ball.overlapWith(leftBar)
+    {
+      vel = leftBar.refect(vector: vel, onSide: 1)!.0 * Double.random(in: 3 ... 9)
+    }
+    else if ball.overlapWith(rightPaddle)
+    {
+      vel = rightPaddle.refect(vector: vel, onSide: 3)!.0 * Double.random(in: 3 ... 9)
+    }
+    
+      
+    ball.translate(vel.x, vel.y)
+    
+    if(ball.center.x > dc.width)
+    {
+      dc.fillColor = Graf.Color.black
+      dc.fontSize = 30
+      Graf.Text(dc.width / 2, dc.height / 2, "GAME OVER!").draw(dc)
+    }
+    
+    
+    let c = rightPaddle.center
+    let (_, nl) = rightPaddle.normal(ofSide: 3)!
+    Graf.line(c.x, c.y, c.x + nl.x, c.y + nl.y).draw(dc)
+    
+    //let r = rightPaddle.refect(vector: vel, onSide: 3)!
+    //print(r)
+  }
+  
+  view.onInputEvent
+  {
+    evt in
+    
+    switch evt
+    {
+      case .mouseMoved(_ , let my):
+        rightPaddle.moveTo(Double(view.size.width - 50), Double(my))
+      case .mouseWheel(_ , let dy):
+        if dy > 0
+        {
+          rightPaddle.rotate(0.1)
+        }
+        else if dy < 0
+        {
+          rightPaddle.rotate(-0.1)
+        }
+      
+      default: break
+    }
+  }
+  
+  Graf.run()
 }
 
 
