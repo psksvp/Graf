@@ -40,6 +40,7 @@ extension Graf
       return rect(minX, minY, maxX - minX, maxY - minY)
     }
     
+    
     init(_ p: [(Double, Double)])
     {
       vertices = p.map { SIMD3<Double>($0.0, $0.1, 1) }
@@ -50,7 +51,21 @@ extension Graf
       vertices = p
     }
     
-    func hitTest(_ p: (Double, Double)) -> Bool
+    func edge(_ s:Int) -> Edge?
+    {
+      guard s >= 0 && s < self.vertices.count else {return nil}
+      
+      let p1 = self.vertices[s]
+      let p2 = self.vertices[(s + 1) % self.vertices.count]
+      return Edge(p1, p2)
+    }
+    
+    func contains(_ v: SIMD3<Double>) -> Bool
+    {
+      return contains((v.x, v.y))
+    }
+    
+    func contains(_ p: (Double, Double)) -> Bool
     {
       guard vertices.count > 0 else {return false}
       

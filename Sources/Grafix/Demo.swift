@@ -39,12 +39,13 @@ func demoStaticDraw()
 
 func demoDrawWithEvent()
 {
+  Graf.shared()
   let v = Graf.newView(name: "events", size: Graf.Size( 640, 600))
   var x:Double = 0
   var y:Double = 50
 
   //let locText = Graf.Text(320, 100, "")
-  let cross = Graf.ellipse(320, 300, 100, 160, step: 0.1)
+  let cross = Graf.rect(320, 300, 100, 160) //, step: 0.1)
   let l = Graf.rect(320, 200, 10, 400)
   let r = Graf.rect(300, 10, 100, 300)
   let angle = 0.01
@@ -122,7 +123,7 @@ func demoHitTest()
     poly[2].rotate(angle).draw(dc)
     for s in poly
     {
-      if s.hitTest((x, y))
+      if s.contains((x, y))
       {
         dc.fillColor = Graf.Color.red
       }
@@ -150,79 +151,6 @@ func demoHitTest()
   Graf.run()
 }
 
-func demoBall()
-{
-  Graf.shared()
-  let v = Graf.newView(name: "hit testing", size: Graf.Size(640, 600))
-  var x = Double(v.size.width / 2)
-  var y = Double(v.size.height / 2)
-  var r = 50.0
-  var vx = Double.random(in: -10.0 ... 10.0)
-  var vy = Double.random(in: -10.0 ... 10.0)
-  
-  let ball = Graf.circle(320, 230, r)
-  
-  func distance(_ x1: Double, _ y1: Double, _ x2: Double, _ y2: Double) -> Double
-  {
-    let dx = x1 - x2
-    let dy = y1 - y2
-    return sqrt( dx * dx + dy * dy )
-  }
-  
-  func sign(_ d: Double) -> Double
-  {
-    return d >= 0.0 ? 1.0 : -1.0
-  }
-  
-  v.draw
-  {
-    dc in
-    
-    dc.clear()
-    
-    ball.moveTo(x, y).draw(dc)
-    
-    x = x + vx
-    y = y + vy
-    
-    
-    if x + r >= dc.width || x - r <= 0
-    {
-      vx = -vx + (Double.random(in: -1.0 ... 1.0)) * sign(-vx)
-      Graf.playAudio(fileName: "/Users/psksvp/Downloads/beep.mp3")
-    }
-    
-    if y + r >= dc.height || y - r <= 0
-    {
-      vy = -vy + (Double.random(in: -1.0 ... 1.0)) * sign(-vy)
-      Graf.playAudio(fileName: "/Users/psksvp/Downloads/beep.mp3")
-    }
-  }
-  
-  v.onInputEvent
-  {
-    evt in
-    
-    switch evt
-    {
-      case .mousePressed(let mx, let my, _):
-        print(evt)
-        if ball.hitTest((Double(mx), Double(my)))
-        {
-          r = Double.random(in: 20 ... 60)
-          vx = Double.random(in: -10.0 ... 10.0)
-          vy = Double.random(in: -10.0 ... 10.0)
-        }
-      
-      default: break
-    }
-  }
-  
-  
-  
-  Graf.run()
-}
-
 func demoPong()
 {
   Graf.shared()
@@ -232,17 +160,14 @@ func demoPong()
   let bottomBar = Graf.rect(0, view.height - barWidth,  view.width, barWidth)
   let leftBar = Graf.rect(0, barWidth, barWidth, view.height - barWidth)
   let rightPaddle = Graf.rect(view.width - 50, 100, barWidth/2, 100)
-  let ball = Graf.circle(view.width / 2, view.height / 2, 20)
-  
+  let ball = Graf.circle(view.width / 2, view.height / 2, 25, step: 0.5)
   var vel = SIMD3<Double>(Double.random(in: 3 ... 9), Double.random(in: 3 ... 9), 1)
-
   
   view.draw
   {
     dc in
     
     dc.clear()
-    
     topBar.draw(dc)
     bottomBar.draw(dc)
     leftBar.draw(dc)
@@ -251,25 +176,25 @@ func demoPong()
     
     if ball.overlapWith(topBar)
     {
-      vel = topBar.refect(vector: vel, onSide: 2)!.0 * Double.random(in: 3 ... 9)
+      vel = topBar.edge(2)!.reflect(vector: vel).0 * Double.random(in: 5 ... 9)
     }
     else if ball.overlapWith(bottomBar)
     {
-      vel = bottomBar.refect(vector: vel, onSide: 0)!.0 * Double.random(in: 3 ... 9)
+      vel = bottomBar.edge(0)!.reflect(vector: vel).0 * Double.random(in: 5 ... 9)
     }
     else if ball.overlapWith(leftBar)
     {
-      vel = leftBar.refect(vector: vel, onSide: 1)!.0 * Double.random(in: 3 ... 9)
+      vel = leftBar.edge(1)!.reflect(vector: vel).0 * Double.random(in: 5 ... 9)
     }
     else if ball.overlapWith(rightPaddle)
     {
-      vel = rightPaddle.refect(vector: vel, onSide: 3)!.0 * Double.random(in: 3 ... 9)
+      vel = rightPaddle.edge(3)!.reflect(vector: vel).0 * Double.random(in: 5 ... 9)
     }
     
       
     ball.translate(vel.x, vel.y)
     
-    if(ball.center.x > dc.width)
+    if(!dc.viewRect.contains(ball.center))
     {
       dc.fillColor = Graf.Color.black
       dc.fontSize = 30
@@ -278,11 +203,9 @@ func demoPong()
     
     
     let c = rightPaddle.center
-    let (_, nl) = rightPaddle.normal(ofSide: 3)!
+    let (_, nl) = rightPaddle.edge(3)!.normal
     Graf.line(c.x, c.y, c.x + nl.x, c.y + nl.y).draw(dc)
     
-    //let r = rightPaddle.refect(vector: vel, onSide: 3)!
-    //print(r)
   }
   
   view.onInputEvent

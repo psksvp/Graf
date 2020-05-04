@@ -7,6 +7,7 @@
 
 import Foundation
 import simd
+import CommonSwift
 
 
 extension Graf.Polygon
@@ -64,56 +65,84 @@ extension Graf.Polygon
   {
     guard self.vertices.count > 0 &&
              p.vertices.count > 0 else {return false}
-     
-    for v in self.vertices
+    
+    func boundaryIntersected() -> Bool
     {
-      if p.hitTest((v.x, v.y))
+      let b1 = self.boundary
+      let r1 = NSRect(x: b1.vertices[0].x,
+                      y: b1.vertices[0].y,
+                      width: b1.vertices[2].x - b1.vertices[0].x,
+                      height: b1.vertices[2].y - b1.vertices[0].y)
+
+      let b2 = p.boundary
+      let r2 = NSRect(x: b2.vertices[0].x,
+                      y: b2.vertices[0].y,
+                      width: b2.vertices[2].x - b2.vertices[0].x,
+                      height: b2.vertices[2].y - b2.vertices[0].y)
+      
+
+      if NSIntersectsRect(r1, r2)
       {
+        let ir = NSIntersectionRect(r1, r2)
+        print(ir.width, ir.height)
         return true
       }
-    }
-    
-    for v in p.vertices
-    {
-      if self.hitTest((v.x, v.y))
+      else
       {
-        return true
+        return false
       }
+      
+      //return NSIntersectsRect(r1, r2)
     }
     
-    return false
-  }
-  
-  func normal(ofSide s: Int) -> (SIMD3<Double>, SIMD3<Double>)?
-  {
-    //https://stackoverflow.com/questions/1243614/how-do-i-calculate-the-normal-vector-of-a-line-segment/1243676#1243676
-    //if we define dx=x2-x1 and dy=y2-y1, then the normals are (-dy, dx) and (dy, -dx).
-    
-    guard s >= 0 && s < self.vertices.count else {return nil}
-    
-    let p1 = self.vertices[s]
-    let p2 = self.vertices[(s + 1) % self.vertices.count]
-    
-    let d = p2 - p1
-    return (SIMD3<Double>(-d.y, d.x, 1.0), SIMD3<Double>(d.y, -d.x, 1.0))
-  }
-  
-  func refect(vector v: SIMD3<Double>, onSide s: Int) -> (SIMD3<Double>, SIMD3<Double>)?
-  {
-    func refect(_ incident: SIMD3<Double>, _ normal: SIMD3<Double>) -> SIMD3<Double>
+    func edgeIntersect() -> Bool
     {
-      return simd_reflect(simd_normalize(incident),
-                          simd_normalize(normal))
+      // fucking n^2
+      for i in 0 ..< self.vertices.count
+      {
+        for j in 0 ..< p.vertices.count
+        {
+          if let e1 = self.edge(i),
+             let e2 = p.edge(j)
+          {
+            if e1.intersect(e2)
+            {
+              return true
+            }
+          }
+          else
+          {
+            Log.error("i -> \(i) or j -> \(j) is out of range")
+            return false
+          }
+        }
+      }
+    
+      return false
+    }
+
+    func vertexInShape() -> Bool
+    {
+      for v in self.vertices
+      {
+        if p.contains((v.x, v.y))
+        {
+          return true
+        }
+      }
+
+      for v in p.vertices
+      {
+        if self.contains((v.x, v.y))
+        {
+          return true
+        }
+      }
+
+      return false
     }
     
-    if let (n1, n2) = self.normal(ofSide: s)
-    {
-      return (refect(v, n1), refect(v, n2))
-    }
-    else
-    {
-      return nil
-    }
+
+    return edgeIntersect()
   }
-  
 }
