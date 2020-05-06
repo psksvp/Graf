@@ -1,3 +1,5 @@
-# Grafix
+# Graf
 
-A description of this package.
+Graf is a crossed platform graphics library inspired by [Processing](processing.org).
+
+

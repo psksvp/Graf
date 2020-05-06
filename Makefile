@@ -17,6 +17,7 @@ commit:
 	
 push: commit
 	git push
+	git push github
 	
 clean: 
 	rm -rf .build DerivedData Package.resolved
