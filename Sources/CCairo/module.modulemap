@@ -1,5 +1,6 @@
-module CCairo [system] {
-	header "/usr/local/include/cairo/cairo.h"
+module CCairo [system][extern_c]
+{
+	umbrella header "umbrella.h"
 	link "cairo"
 	export *
 }

@@ -10,6 +10,7 @@ import Foundation
 
 func demoStaticDraw()
 {
+  Graf.shared()
   let v = Graf.newView(name: "static", size: Graf.Size(640, 600))
   
   v.draw
@@ -160,7 +161,7 @@ func demoPong()
   let bottomBar = Graf.rect(0, view.height - barWidth,  view.width, barWidth)
   let leftBar = Graf.rect(0, barWidth, barWidth, view.height - barWidth)
   let rightPaddle = Graf.rect(view.width - 50, 100, barWidth/2, 100)
-  let ball = Graf.circle(view.width / 2, view.height / 2, 25, step: 0.5)
+  let ball = Graf.circle(view.width / 2, view.height / 2, 50, step: 0.5)
   var vel = SIMD3<Double>(Double.random(in: 3 ... 9), Double.random(in: 3 ... 9), 1)
   
   view.draw
@@ -173,6 +174,7 @@ func demoPong()
     leftBar.draw(dc)
     rightPaddle.draw(dc)
     ball.draw(dc)
+    ball.translate(vel.x, vel.y)
     
     if ball.overlapWith(topBar)
     {
@@ -192,8 +194,6 @@ func demoPong()
     }
     
       
-    ball.translate(vel.x, vel.y)
-    
     if(!dc.viewRect.contains(ball.center))
     {
       dc.fillColor = Graf.Color.black

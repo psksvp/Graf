@@ -8,7 +8,6 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
-				.package(name: "SDL2", url: "https://github.com/ctreffs/SwiftSDL2.git", from: "1.0.0"),
 				.package(name: "CommonSwift", url: "https://github.com/psksvp/CommonSwift", .branch("master"))
     ],
     targets: [
@@ -20,6 +19,19 @@ let package = Package(
         .testTarget(
             name: "GrafixTests",
             dependencies: ["Grafix"]),		
-				.systemLibrary(name: "CCairo")
+				.systemLibrary(name: "CCairo",
+				            pkgConfig: "cairo",
+				            providers: [
+				                .brew(["cairo"]),
+				                .apt(["libcairo2-dev"])
+				            ]),
+        .systemLibrary(
+            name: "CSDL2",
+            pkgConfig: "sdl2",
+            providers: [
+                .brew(["sdl2"]),
+                .apt(["libsdl2-dev"])
+            ]),
+				.target(name: "SDL2", dependencies: ["CSDL2"])
     ]
 )

@@ -80,22 +80,32 @@ extension Graf.Polygon
                       width: b2.vertices[2].x - b2.vertices[0].x,
                       height: b2.vertices[2].y - b2.vertices[0].y)
       
-
-      if NSIntersectsRect(r1, r2)
-      {
-        let ir = NSIntersectionRect(r1, r2)
-        print(ir.width, ir.height)
-        return true
-      }
-      else
-      {
-        return false
-      }
-      
-      //return NSIntersectsRect(r1, r2)
+      return NSIntersectsRect(r1, r2)
     }
     
-    func edgeIntersect() -> Bool
+    func vertexInShape() -> Bool
+    {
+      for v in self.vertices
+      {
+        if p.contains((v.x, v.y))
+        {
+          return true
+        }
+      }
+
+      for v in p.vertices
+      {
+        if self.contains((v.x, v.y))
+        {
+          return true
+        }
+      }
+
+      return false
+    }
+    
+    
+    func edgeIntersected() -> Bool
     {
       // fucking n^2
       for i in 0 ..< self.vertices.count
@@ -121,28 +131,8 @@ extension Graf.Polygon
       return false
     }
 
-    func vertexInShape() -> Bool
-    {
-      for v in self.vertices
-      {
-        if p.contains((v.x, v.y))
-        {
-          return true
-        }
-      }
-
-      for v in p.vertices
-      {
-        if self.contains((v.x, v.y))
-        {
-          return true
-        }
-      }
-
-      return false
-    }
     
 
-    return edgeIntersect()
+    return boundaryIntersected()
   }
 }

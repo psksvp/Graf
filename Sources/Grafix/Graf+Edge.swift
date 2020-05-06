@@ -35,24 +35,6 @@ extension Graf
     func intersect(_ e: Edge) -> Bool
     {
       //http://web.archive.org/web/20141127210836/http://content.gpwiki.org/index.php/Polygon_Collision
-      /*
-       double determinant(Vector2D vec1, Vector2D vec2){
-           return vec1.x * vec2.y - vec1.y * vec2.x;
-       }
-  
-       //one edge is a-b, the other is c-d
-       Vector2D edgeIntersection(Vector2D a, Vector2D b, Vector2D c, Vector2D d){
-           double det = determinant(b - a, c - d);
-           double t   = determinant(c - a, c - d) / det;
-           double u   = determinant(b - a, c - a) / det;
-           if ((t < 0) || (u < 0) || (t > 1) || (u > 1)) {
-               return NO_INTERSECTION;
-           } else {
-               return a * (1 - t) + t * b;
-           }
-       }
-       */
-  
       func determinant(_ v1: SIMD3<Double>, _ v2: SIMD3<Double>) -> Double
       {
         return v1.x * v2.y - v1.y * v2.x
