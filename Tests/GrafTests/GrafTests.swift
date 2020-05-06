@@ -1,7 +1,7 @@
 import XCTest
 import class Foundation.Bundle
 
-final class GrafixTests: XCTestCase {
+final class GrafTests: XCTestCase {
     func testExample() throws {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct
@@ -12,7 +12,7 @@ final class GrafixTests: XCTestCase {
             return
         }
 
-        let fooBinary = productsDirectory.appendingPathComponent("Grafix")
+        let fooBinary = productsDirectory.appendingPathComponent("Graf")
 
         let process = Process()
         process.executableURL = fooBinary
