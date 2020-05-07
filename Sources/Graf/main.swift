@@ -2,7 +2,7 @@ print("Hello, world!")
 
 
 //demoDrawWithEvent()
-demoHitTest()
+//demoHitTest()
 //demoStaticDraw()
 
-//demoPong()
+demoPong()
