@@ -11,6 +11,7 @@ import Foundation
 typealias Vector3 = SIMD3<Double>
 #else
 import SGLMath
+typealias Vector3 = Vector3<Double>
 #endif
 
 
