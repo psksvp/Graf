@@ -150,6 +150,7 @@ func demoHitTest()
       case .mouseMoved(let mx, let my) :
         x = Double(mx)
         y = Double(my)
+        print(x, y)
       
       default: break
     }
