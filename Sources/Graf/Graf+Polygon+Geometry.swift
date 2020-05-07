@@ -71,12 +71,19 @@ extension Graf.Polygon
     return moveTo(0, 0).transform(m).moveTo(c.x, c.y)
   }
   
-  
+  #if os(macOS)
   @discardableResult func transform(_ m: double3x3) -> Graf.Polygon
   {
     vertices = vertices.map { $0 * m }
     return self
   }
+  #else
+  @discardableResult func transform(_ m: Matrix3x3<Double>) -> Graf.Polygon
+  {
+    vertices = vertices.map { $0 * m }
+    return self
+  }
+  #endif
   
   func overlapWith(_ p: Graf.Polygon) -> Bool
   {
