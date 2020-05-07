@@ -7,6 +7,10 @@
 
 import Foundation
 
+#if !os(macOS)
+import SGLMath
+#endif
+
 
 func demoStaticDraw()
 {

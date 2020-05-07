@@ -26,7 +26,7 @@ extension Graf
       #if os(macOS)
       return simd_distance(p1, p2)
       #else
-      return length(p1, p2)
+      return distance(p1, p2)
       #endif
     }
   
