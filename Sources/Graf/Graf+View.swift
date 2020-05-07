@@ -47,8 +47,15 @@ extension Graf
                                         Int32(size.height),
                                         SDL_WINDOW_SHOWN.rawValue | SDL_WINDOW_ALLOW_HIGHDPI.rawValue)
       self.sdlRenderer = SDL_CreateRenderer(sdlWindow, -1, SDL_RENDERER_PRESENTVSYNC.rawValue)
+      
+      #if os(macOS)
+      let pixFmt = SDL_PIXELFORMAT_ARGB8888.rawValue
+      #else
+      let pixFmt = UInt32(SDL_PIXELFORMAT_ARGB8888)
+      #endif
+      
       self.sdlTexture = SDL_CreateTexture(sdlRenderer,
-                                          SDL_PIXELFORMAT_ARGB8888,
+                                          pixFmt,
                                           Int32(SDL_TEXTUREACCESS_STREAMING.rawValue),
                                           Int32(size.width),
                                           Int32(size.height))
