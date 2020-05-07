@@ -18,17 +18,15 @@ extension Graf.Polygon
 {
   //https://developer.apple.com/documentation/accelerate/working_with_vectors
   
-  #if os(macOS)
-  func matrix(_ r0: Vector3e, _ r1: Vector3e, _ r2: Vector3e) -> double3x3
+  func matrix(_ r0: Vector3e, _ r1: Vector3e, _ r2: Vector3e) -> Matrix3e
   {
+    #if os(macOS)
     return double3x3(rows: [r0, r1, r2])
-  }
-  #else
-  func matrix(_ r0: Vector3e, _ r1: Vector3e, _ r2: Vector3e) -> Matrix3x3<Double>
-  {
+    #else
     return Matrix3x3<Double>(r0, r1, r2).transpose
+    #endif
   }
-  #endif
+
   
   @discardableResult func moveTo(_ x: Double, _ y: Double) -> Graf.Polygon
   {
@@ -71,19 +69,11 @@ extension Graf.Polygon
     return moveTo(0, 0).transform(m).moveTo(c.x, c.y)
   }
   
-  #if os(macOS)
-  @discardableResult func transform(_ m: double3x3) -> Graf.Polygon
+  @discardableResult func transform(_ m: Matrix3e) -> Graf.Polygon
   {
     vertices = vertices.map { $0 * m }
     return self
   }
-  #else
-  @discardableResult func transform(_ m: Matrix3x3<Double>) -> Graf.Polygon
-  {
-    vertices = vertices.map { $0 * m }
-    return self
-  }
-  #endif
   
   func overlapWith(_ p: Graf.Polygon) -> Bool
   {

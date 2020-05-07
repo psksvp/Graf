@@ -8,10 +8,13 @@
 import Foundation
 
 #if os(macOS)
+import simd
 typealias Vector3e = SIMD3<Double>
+typealias Matrix3e = double3x3
 #else
 import SGLMath
 typealias Vector3e = Vector3<Double>
+typealias Matrix3e = Matrix3x3<Double>
 #endif
 
 
