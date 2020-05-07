@@ -70,10 +70,14 @@ extension Graf
         return simd_reflect(simd_normalize(incident),
                             simd_normalize(normal))
       }
-      #endif
-      
       let (n1, n2) = self.normal
       return (reflect(v, n1), reflect(v, n2))
+      #else
+      let (n1, n2) = self.normal
+      return (reflect(v, n1), reflect(v, n2))
+      #endif
+      
+      
     }
   } // class Edge
 } // extension Graf

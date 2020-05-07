@@ -48,7 +48,7 @@ extension Graf
                                         SDL_WINDOW_SHOWN.rawValue | SDL_WINDOW_ALLOW_HIGHDPI.rawValue)
       self.sdlRenderer = SDL_CreateRenderer(sdlWindow, -1, SDL_RENDERER_PRESENTVSYNC.rawValue)
       self.sdlTexture = SDL_CreateTexture(sdlRenderer,
-                                          SDL_PIXELFORMAT_ARGB8888.rawValue,
+                                          SDL_PIXELFORMAT_ARGB8888,
                                           Int32(SDL_TEXTUREACCESS_STREAMING.rawValue),
                                           Int32(size.width),
                                           Int32(size.height))
