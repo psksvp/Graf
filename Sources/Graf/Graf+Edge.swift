@@ -63,16 +63,14 @@ extension Graf
     
     func reflect(vector v: Vector3e) -> (Vector3e, Vector3e)
     {
+      #if os(macOS)
       func reflect(_ incident: Vector3e, _ normal: Vector3e) -> Vector3e
       {
-        #if os(macOS)
+       
         return simd_reflect(simd_normalize(incident),
                             simd_normalize(normal))
-        #else
-        return reflect(normalize(incident),
-                       normalize(normal))
-        #endif
       }
+      #endif
       
       let (n1, n2) = self.normal
       return (reflect(v, n1), reflect(v, n2))
