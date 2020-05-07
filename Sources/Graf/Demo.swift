@@ -181,22 +181,32 @@ func demoPong()
     rightPaddle.draw(dc)
     ball.draw(dc)
     ball.translate(vel.x, vel.y)
+    var hit = false
     
     if ball.overlapWith(topBar)
     {
       vel = topBar.edge(2)!.reflectRay(vector: vel).0 * Double.random(in: 5 ... 9)
+      hit = true
     }
     else if ball.overlapWith(bottomBar)
     {
       vel = bottomBar.edge(0)!.reflectRay(vector: vel).0 * Double.random(in: 5 ... 9)
+      hit = true
     }
     else if ball.overlapWith(leftBar)
     {
       vel = leftBar.edge(1)!.reflectRay(vector: vel).0 * Double.random(in: 5 ... 9)
+      hit = true
     }
     else if ball.overlapWith(rightPaddle)
     {
       vel = rightPaddle.edge(3)!.reflectRay(vector: vel).0 * Double.random(in: 5 ... 9)
+      hit = true
+    }
+    
+    if hit
+    {
+      Graf.playAudio(fileName: "\(NSHomeDirectory())/Downloads/beep.mp3")
     }
     
       

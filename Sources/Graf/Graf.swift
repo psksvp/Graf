@@ -143,11 +143,17 @@ class Graf
   
   class func playAudio(fileName f:String)
   {
+    #if os(macOS)
+    let cmd = ["/usr/bin/afplay", f]
+    #else
+    let cmd = ["/usr/bin/ffplay", "-nodisp", "-autoexit", f]
+    #endif
+    
     DispatchQueue.global(qos: .background).async
     {
       if #available(OSX 10.13, *)
       {
-        OS.spawn(["/usr/bin/afplay", f], nil)
+        OS.spawn(cmd, nil)
       }
       else
       {
