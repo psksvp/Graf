@@ -1,8 +1,8 @@
 print("Hello, world!")
 
 
-demoDrawWithEvent()
-//demoHitTest()
+//demoDrawWithEvent()
+demoHitTest()
 //demoStaticDraw()
 
 //demoPong()

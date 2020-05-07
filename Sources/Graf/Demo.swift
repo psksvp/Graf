@@ -110,6 +110,7 @@ func demoDrawWithEvent()
 
 func demoHitTest()
 {
+  Graf.shared()
   let poly = [Graf.ellipse(320, 200, 100, 200),
               Graf.rect(100, 100, 100, 150),
               Graf.triangle(400, 300, 50, 300, 25, 200)]
