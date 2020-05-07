@@ -162,7 +162,7 @@ func demoPong()
   let leftBar = Graf.rect(0, barWidth, barWidth, view.height - barWidth)
   let rightPaddle = Graf.rect(view.width - 50, 100, barWidth/2, 100)
   let ball = Graf.circle(view.width / 2, view.height / 2, 50, step: 0.5)
-  var vel = SIMD3<Double>(Double.random(in: 3 ... 9), Double.random(in: 3 ... 9), 1)
+  var vel = Vector3(Double.random(in: 3 ... 9), Double.random(in: 3 ... 9), 1)
   
   view.draw
   {

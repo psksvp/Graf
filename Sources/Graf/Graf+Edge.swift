@@ -6,27 +6,37 @@
 //
 
 import Foundation
+
+#if os(macOS)
 import simd
+#else
+import SGLMath
+#endif
+
 
 extension Graf
 {
   class Edge
   {
-    let p1:SIMD3<Double>
-    let p2:SIMD3<Double>
+    let p1:Vector3
+    let p2:Vector3
   
     var length: Double
     {
-      simd_distance(p1, p2)
+      #if os(macOS)
+      return simd_distance(p1, p2)
+      #else
+      return length(p1, p2)
+      #endif
     }
   
-    var normal: (SIMD3<Double>, SIMD3<Double>)
+    var normal: (Vector3, Vector3)
     {
       let d = p2 - p1
-      return (SIMD3<Double>(-d.y, d.x, 1.0), SIMD3<Double>(d.y, -d.x, 1.0))
+      return (Vector3(-d.y, d.x, 1.0), Vector3(d.y, -d.x, 1.0))
     }
   
-    init(_ p:SIMD3<Double>, _ q:SIMD3<Double>)
+    init(_ p:Vector3, _ q:Vector3)
     {
       p1 = p
       p2 = q
@@ -35,7 +45,7 @@ extension Graf
     func intersect(_ e: Edge) -> Bool
     {
       //http://web.archive.org/web/20141127210836/http://content.gpwiki.org/index.php/Polygon_Collision
-      func determinant(_ v1: SIMD3<Double>, _ v2: SIMD3<Double>) -> Double
+      func determinant(_ v1: Vector3, _ v2: Vector3) -> Double
       {
         return v1.x * v2.y - v1.y * v2.x
       }
@@ -51,12 +61,17 @@ extension Graf
       return !((t < 0) || (u < 0) || (t > 1) || (u > 1))
     }
     
-    func reflect(vector v: SIMD3<Double>) -> (SIMD3<Double>, SIMD3<Double>)
+    func reflect(vector v: Vector3) -> (Vector3, Vector3)
     {
-      func reflect(_ incident: SIMD3<Double>, _ normal: SIMD3<Double>) -> SIMD3<Double>
+      func reflect(_ incident: Vector3, _ normal: Vector3) -> Vector3
       {
+        #if os(macOS)
         return simd_reflect(simd_normalize(incident),
                             simd_normalize(normal))
+        #else
+        return reflect(normalize(incident),
+                       normalize(normal))
+        #endif
       }
       
       let (n1, n2) = self.normal

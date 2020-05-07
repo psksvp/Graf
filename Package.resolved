@@ -6,7 +6,16 @@
         "repositoryURL": "https://github.com/psksvp/CommonSwift",
         "state": {
           "branch": "master",
-          "revision": "591e7e8b22e17a4832ad55e7f186d90dfbe9a042",
+          "revision": "cc6610f59c386144f9b1e5d060d9cb2706991d8b",
+          "version": null
+        }
+      },
+      {
+        "package": "SGLMath",
+        "repositoryURL": "https://github.com/SwiftGL/Math.git",
+        "state": {
+          "branch": "master",
+          "revision": "8bdd2e542f28828d0c224c1ea8e046c6f652ec40",
           "version": null
         }
       }

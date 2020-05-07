@@ -16,7 +16,7 @@ commit:
 	git commit -m "$(MSG)"
 	
 push: commit
-	git push
+	git push bb
 	git push github
 	
 clean: 
