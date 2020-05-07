@@ -61,7 +61,7 @@ extension Graf
       return !((t < 0) || (u < 0) || (t > 1) || (u > 1))
     }
     
-    func reflect(vector v: Vector3e) -> (Vector3e, Vector3e)
+    func reflectRay(vector v: Vector3e) -> (Vector3e, Vector3e)
     {
       #if os(macOS)
       func reflect(_ incident: Vector3e, _ normal: Vector3e) -> Vector3e
@@ -74,12 +74,10 @@ extension Graf
       return (reflect(v, n1), reflect(v, n2))
       #else
       let (n1, n2) = self.normal
-      let r1 = SGLMath.reflect(v, n1)
-      let r2 = SGLMath.reflect(v, n2)
+      let r1 = reflect(v, n1)
+      let r2 = reflect(v, n2)
       return (r1, r2)
       #endif
-      
-      
     }
   } // class Edge
 } // extension Graf

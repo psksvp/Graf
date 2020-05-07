@@ -182,19 +182,19 @@ func demoPong()
     
     if ball.overlapWith(topBar)
     {
-      vel = topBar.edge(2)!.reflect(vector: vel).0 * Double.random(in: 5 ... 9)
+      vel = topBar.edge(2)!.reflectRay(vector: vel).0 * Double.random(in: 5 ... 9)
     }
     else if ball.overlapWith(bottomBar)
     {
-      vel = bottomBar.edge(0)!.reflect(vector: vel).0 * Double.random(in: 5 ... 9)
+      vel = bottomBar.edge(0)!.reflectRay(vector: vel).0 * Double.random(in: 5 ... 9)
     }
     else if ball.overlapWith(leftBar)
     {
-      vel = leftBar.edge(1)!.reflect(vector: vel).0 * Double.random(in: 5 ... 9)
+      vel = leftBar.edge(1)!.reflectRay(vector: vel).0 * Double.random(in: 5 ... 9)
     }
     else if ball.overlapWith(rightPaddle)
     {
-      vel = rightPaddle.edge(3)!.reflect(vector: vel).0 * Double.random(in: 5 ... 9)
+      vel = rightPaddle.edge(3)!.reflectRay(vector: vel).0 * Double.random(in: 5 ... 9)
     }
     
       
