@@ -8,10 +8,10 @@
 import Foundation
 
 #if os(macOS)
-typealias Vector3 = SIMD3<Double>
+typealias Vector3e = SIMD3<Double>
 #else
 import SGLMath
-typealias Vector3 = Vector3<Double>
+typealias Vector3e = Vector3<Double>
 #endif
 
 
@@ -19,19 +19,19 @@ extension Graf
 {
   class Polygon
   {
-    var vertices: [Vector3]
+    var vertices: [Vector3e]
     
-    var center: Vector3
+    var center: Vector3e
     {
-      let sum = vertices.reduce(Vector3(0, 0, 0))
+      let sum = vertices.reduce(Vector3e(0, 0, 0))
                 {
                   a, b in
                 
-                  Vector3(a.x + b.x, a.y + b.y, a.z + b.z)
+                  Vector3e(a.x + b.x, a.y + b.y, a.z + b.z)
                 }
       
       let n = Double(vertices.count)
-      return Vector3(sum.x / n,
+      return Vector3e(sum.x / n,
                            sum.y / n,
                            sum.z / n)
     }
@@ -51,10 +51,10 @@ extension Graf
     
     init(_ p: [(Double, Double)])
     {
-      vertices = p.map { Vector3($0.0, $0.1, 1) }
+      vertices = p.map { Vector3e($0.0, $0.1, 1) }
     }
     
-    init(_ p: [Vector3])
+    init(_ p: [Vector3e])
     {
       vertices = p
     }
@@ -68,7 +68,7 @@ extension Graf
       return Edge(p1, p2)
     }
     
-    func contains(_ v: Vector3) -> Bool
+    func contains(_ v: Vector3e) -> Bool
     {
       return contains((v.x, v.y))
     }

@@ -19,14 +19,14 @@ extension Graf.Polygon
   //https://developer.apple.com/documentation/accelerate/working_with_vectors
   
   #if os(macOS)
-  func matrix(_ r0: Vector3, _ r1: Vector3, _ r2: Vector3) -> double3x3
+  func matrix(_ r0: Vector3e, _ r1: Vector3e, _ r2: Vector3e) -> double3x3
   {
     return double3x3(rows: [r0, r1, r2])
   }
   #else
-  func matrix(_ r0: Vector3, _ r1: Vector3, _ r2: Vector3) -> Matrix3x3<Double>
+  func matrix(_ r0: Vector3e, _ r1: Vector3e, _ r2: Vector3e) -> Matrix3x3<Double>
   {
-    return Matrix3x3Double(r0, r1, r2)
+    return Matrix3x3<Double>(r0, r1, r2)
   }
   #endif
   
@@ -38,34 +38,34 @@ extension Graf.Polygon
   
   @discardableResult func translate(_ dx: Double, _ dy: Double) -> Graf.Polygon
   {
-    let m = matrix(Vector3(1,   0, 0),
-                   Vector3(0,   1, 0),
-                   Vector3(dx, dy, 1))
+    let m = matrix(Vector3e(1,   0, 0),
+                   Vector3e(0,   1, 0),
+                   Vector3e(dx, dy, 1))
     
     return transform(m)
   }
   
   @discardableResult func scale(_ sx: Double, _ sy: Double) -> Graf.Polygon
   {
-    let m = matrix(Vector3(sx,  0, 0),
-                   Vector3(0,  sy, 0),
-                   Vector3(0,   0, 1))
+    let m = matrix(Vector3e(sx,  0, 0),
+                   Vector3e(0,  sy, 0),
+                   Vector3e(0,   0, 1))
     return transform(m)
   }
   
   @discardableResult func shear(_ sx: Double, _ sy: Double) -> Graf.Polygon
   {
-    let m = matrix(Vector3(1,  sx, 0),
-                  Vector3(sy,  1, 0),
-                  Vector3(0,   0, 1))
+    let m = matrix(Vector3e(1,  sx, 0),
+                  Vector3e(sy,  1, 0),
+                  Vector3e(0,   0, 1))
     return transform(m)
   }
   
   @discardableResult func rotate(_ angle: Double) -> Graf.Polygon
   {
-    let m = matrix(Vector3(cos(angle), sin(angle), 0),
-                   Vector3(-sin(angle), cos(angle), 0),
-                   Vector3(0, 0, 1))
+    let m = matrix(Vector3e(cos(angle), sin(angle), 0),
+                   Vector3e(-sin(angle), cos(angle), 0),
+                   Vector3e(0, 0, 1))
     
     let c = self.center
     return moveTo(0, 0).transform(m).moveTo(c.x, c.y)

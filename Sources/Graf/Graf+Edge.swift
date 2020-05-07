@@ -18,8 +18,8 @@ extension Graf
 {
   class Edge
   {
-    let p1:Vector3
-    let p2:Vector3
+    let p1:Vector3e
+    let p2:Vector3e
   
     var length: Double
     {
@@ -30,13 +30,13 @@ extension Graf
       #endif
     }
   
-    var normal: (Vector3, Vector3)
+    var normal: (Vector3e, Vector3e)
     {
       let d = p2 - p1
-      return (Vector3(-d.y, d.x, 1.0), Vector3(d.y, -d.x, 1.0))
+      return (Vector3e(-d.y, d.x, 1.0), Vector3e(d.y, -d.x, 1.0))
     }
   
-    init(_ p:Vector3, _ q:Vector3)
+    init(_ p:Vector3e, _ q:Vector3e)
     {
       p1 = p
       p2 = q
@@ -45,7 +45,7 @@ extension Graf
     func intersect(_ e: Edge) -> Bool
     {
       //http://web.archive.org/web/20141127210836/http://content.gpwiki.org/index.php/Polygon_Collision
-      func determinant(_ v1: Vector3, _ v2: Vector3) -> Double
+      func determinant(_ v1: Vector3e, _ v2: Vector3e) -> Double
       {
         return v1.x * v2.y - v1.y * v2.x
       }
@@ -61,9 +61,9 @@ extension Graf
       return !((t < 0) || (u < 0) || (t > 1) || (u > 1))
     }
     
-    func reflect(vector v: Vector3) -> (Vector3, Vector3)
+    func reflect(vector v: Vector3e) -> (Vector3e, Vector3e)
     {
-      func reflect(_ incident: Vector3, _ normal: Vector3) -> Vector3
+      func reflect(_ incident: Vector3e, _ normal: Vector3e) -> Vector3e
       {
         #if os(macOS)
         return simd_reflect(simd_normalize(incident),
