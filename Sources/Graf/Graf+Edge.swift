@@ -74,8 +74,8 @@ extension Graf
       return (reflect(v, n1), reflect(v, n2))
       #else
       let (n1, n2) = self.normal
-      let r1 = reflect(v, n1)
-      let r2 = reflect(v, n2)
+      let r1 = SGLMath.reflect(v, n1)
+      let r2 = SGLMath.reflect(v, n2)
       return (r1, r2)
       #endif
       
