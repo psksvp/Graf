@@ -26,7 +26,7 @@ extension Graf.Polygon
   #else
   func matrix(_ r0: Vector3e, _ r1: Vector3e, _ r2: Vector3e) -> Matrix3x3<Double>
   {
-    return Matrix3x3<Double>(r0, r1, r2)
+    return tranMatrix3x3<Double>(r0, r1, r2).transpose
   }
   #endif
   
