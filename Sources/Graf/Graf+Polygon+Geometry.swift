@@ -104,7 +104,7 @@ extension Graf.Polygon
       return NSIntersectsRect(r1, r2)
     }
     
-    // more expensive
+    // more expensive but has flaws
     func vertexInShape() -> Bool
     {
       for v in self.vertices
@@ -159,6 +159,6 @@ extension Graf.Polygon
     
     guard boundaryIntersected() else { return false }
     
-    return boundaryIntersected()
+    return edgeIntersected()
   }
 }
