@@ -39,6 +39,11 @@ public class Graf
     SDL_Quit()
   }
   
+  public class func initialize()
+  {
+    Graf.shared()
+  }
+  
   public class func newView(_ n: String, _ w: UInt32, _ h: UInt32) -> View
   {
     let v = View(n, w, h)
