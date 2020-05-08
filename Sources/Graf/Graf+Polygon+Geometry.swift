@@ -104,7 +104,7 @@ extension Graf.Polygon
       return NSIntersectsRect(r1, r2)
     }
     
-    // most expensive
+    // more expensive
     func vertexInShape() -> Bool
     {
       for v in self.vertices
@@ -126,7 +126,7 @@ extension Graf.Polygon
       return false
     }
     
-    // most expensive
+    // the most expensive
     func edgeIntersected() -> Bool
     {
       // fucking n^2
