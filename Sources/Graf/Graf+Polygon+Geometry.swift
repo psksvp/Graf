@@ -86,7 +86,7 @@ extension Graf.Polygon
     guard self.vertices.count > 0 &&
              p.vertices.count > 0 else {return false}
     
-    // cheapest
+    // cheapest but less accurate
     func boundaryIntersected() -> Bool
     {
       let b1 = self.boundary
@@ -126,7 +126,7 @@ extension Graf.Polygon
       return false
     }
     
-    // the most expensive
+    // the most expensive but very accurate.
     func edgeIntersected() -> Bool
     {
       // fucking n^2
@@ -157,6 +157,7 @@ extension Graf.Polygon
     // would it do a short circult?
     //return boundaryIntersected() && edgeIntersected()
     
+    //
     guard boundaryIntersected() else { return false }
     
     return edgeIntersected()
