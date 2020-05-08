@@ -70,6 +70,14 @@ struct Cairo //namespace
       Color(1, 1, 1, 1)
     }
     
+    static var random:Color
+    {
+      Color(Double.random(in: 0 ... 1),
+            Double.random(in: 0 ... 1),
+            Double.random(in: 0 ... 1),
+            Double.random(in: 0 ... 1))
+    }
+    
     init(_ r: Double, _ g: Double, _ b: Double, _ a: Double = 1.0)
     {
       redChannel = r
@@ -78,10 +86,20 @@ struct Cairo //namespace
       alphaChannel = a
     }
     
+    var argbBytes: [UInt8]
+    {
+      [UInt8(alphaChannel * 255),
+       UInt8(redChannel * 255),
+       UInt8(greenChannel * 255),
+       UInt8(blueChannel * 255)]
+    }
+    
     func setAsSourceInContext(_ c: Context)
     {
       cairo_set_source_rgba(c.cr, redChannel, greenChannel, blueChannel, alphaChannel)
     }
+    
+    
   }
   
   class Surface

@@ -49,16 +49,35 @@ extension Graf
     lazy var width: Double = context.width
     lazy var height: Double = context.height
     
+    private let pixels: UnsafeMutablePointer<UInt8>
+    
     init(_ w: UInt32, _ h: UInt32, _ data: UnsafeMutablePointer<UInt8>, _ stride: Int32)
     {
       surface = Cairo.BitmapSurface(w, h, data, stride)
       context = surface.context
+      pixels = data
     }
     
     func clear(_ bgColor: Color = Color.white)
     {
       fillColor = bgColor
       viewRect.draw(self, stroke: false)
+    }
+    
+    func setPixel(_ x: UInt32, _ y: UInt32, _ color: Color)
+    {
+      guard x < UInt32(width) && y < UInt32(height) else
+      {
+        Log.warn("x > width || y > height")
+        return
+      }
+      let addr = Int((y * UInt32(width) + x) * 4) // 4 channels per pix
+      let a = UnsafeMutableBufferPointer(start: pixels, count: Int(width) * Int(height) * 4)
+      let c = color.argbBytes
+      a[addr] = c[0]
+      a[addr + 1] = c[1]
+      a[addr + 2] = c[2]
+      a[addr + 3] = c[3]
     }
   } // DrawingContext
 }

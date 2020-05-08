@@ -1,8 +1,10 @@
 print("Hello, world!")
 
 
-//demoDrawWithEvent()
+demoDrawWithEvent()
 //demoHitTest()
 //demoStaticDraw()
 
-demoPong()
+//demoPong()
+
+//demoSetPixel()

@@ -11,6 +11,39 @@ import Foundation
 import SGLMath
 #endif
 
+func demoSetPixel()
+{
+  Graf.shared()
+  let v = Graf.newView(name: "static", size: Graf.Size(320, 240))
+  
+  var x:UInt32 = 0
+  var y:UInt32 = 0
+  
+  v.draw
+  {
+    dc in
+    
+
+    dc.setPixel(x, y, Cairo.Color.random)
+
+  }
+  
+  v.onInputEvent
+  {
+    evt in
+    
+    switch evt
+    {
+      case .mousePressed(let mx, let my, let button) :
+        print("button \(button)")
+        x = UInt32(mx)
+        y = UInt32(my)
+      
+      default: break
+    }
+  }
+  Graf.run()
+}
 
 func demoStaticDraw()
 {
@@ -167,7 +200,7 @@ func demoPong()
   let bottomBar = Graf.rect(0, view.height - barWidth,  view.width, barWidth)
   let leftBar = Graf.rect(0, barWidth, barWidth, view.height - barWidth)
   let rightPaddle = Graf.rect(view.width - 50, 100, barWidth/2, 100)
-  let ball = Graf.circle(view.width / 2, view.height / 2, 50, step: 0.5)
+  let ball = Graf.circle(view.width / 2, view.height / 2, 50, step: 0.8)
   var vel = Vector3e(Double.random(in: 3 ... 9), Double.random(in: 3 ... 9), 1)
   
   view.draw
@@ -206,6 +239,7 @@ func demoPong()
     
     if hit
     {
+      print(vel)
       Graf.playAudio(fileName: "\(NSHomeDirectory())/Downloads/beep.mp3")
     }
     
