@@ -8,6 +8,10 @@
 import Foundation
 import Graf
 
+#if os(Linux)
+import SGLMath
+#endif
+
 func demoSetPixel()
 {
   Graf.initialize()
