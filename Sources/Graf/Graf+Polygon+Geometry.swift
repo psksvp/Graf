@@ -86,6 +86,7 @@ extension Graf.Polygon
     guard self.vertices.count > 0 &&
              p.vertices.count > 0 else {return false}
     
+    // cheapest
     func boundaryIntersected() -> Bool
     {
       let b1 = self.boundary
@@ -103,6 +104,7 @@ extension Graf.Polygon
       return NSIntersectsRect(r1, r2)
     }
     
+    // most expensive
     func vertexInShape() -> Bool
     {
       for v in self.vertices
@@ -124,7 +126,7 @@ extension Graf.Polygon
       return false
     }
     
-    
+    // most expensive
     func edgeIntersected() -> Bool
     {
       // fucking n^2
@@ -152,7 +154,11 @@ extension Graf.Polygon
     }
 
     
-
-    return edgeIntersected()
+    // would it do a short circult?
+    //return boundaryIntersected() && edgeIntersected()
+    
+    guard boundaryIntersected() else { return false }
+    
+    return boundaryIntersected()
   }
 }

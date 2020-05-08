@@ -16,7 +16,7 @@ public class Graf
   private static var sharedGraf: Graf? = nil
   
   @discardableResult 
-  public class func shared() -> Graf
+  class func shared() -> Graf
   {
     switch sharedGraf
     {
@@ -38,6 +38,20 @@ public class Graf
   {
     SDL_Quit()
   }
+  
+  ///////////
+  public enum Event
+  {
+    case keyPressed(keyCode: UInt32)
+    case keyReleased(keyCode: UInt32)
+    case mousePressed(mouseX: Int32, mouseY: Int32, button: UInt8)
+    case mouseReleased(mouseX: Int32, mouseY: Int32, button: UInt8)
+    case mouseMoved(mouseX: Int32, mouseY: Int32)
+    case mouseWheel(deltaX: Int32, deltaY: Int32)
+  }
+  
+
+  public typealias Color = Cairo.Color
   
   public class func initialize()
   {
@@ -70,25 +84,29 @@ public class Graf
       switch(SDL_EventType(e.type))
       {
         case SDL_KEYDOWN:
-          v.handleEvent(Event.keyPressed(e.key.keysym.scancode.rawValue))
+          v.handleEvent(Event.keyPressed(keyCode: e.key.keysym.scancode.rawValue))
         
         case SDL_KEYUP:
-          v.handleEvent(Event.keyReleased(e.key.keysym.scancode.rawValue))
+          v.handleEvent(Event.keyReleased(keyCode: e.key.keysym.scancode.rawValue))
         
         case SDL_MOUSEBUTTONDOWN:
           SDL_GetMouseState( &x, &y )
-          v.handleEvent(Event.mousePressed(x, y, e.button.button))
+          v.handleEvent(Event.mousePressed(mouseX: x,
+                                           mouseY: y,
+                                           button: e.button.button))
         
         case SDL_MOUSEBUTTONUP:
           SDL_GetMouseState( &x, &y )
-          v.handleEvent(Event.mouseReleased(x, y, e.button.button))
+          v.handleEvent(Event.mouseReleased(mouseX: x,
+                                            mouseY: y,
+                                            button: e.button.button))
         
         case SDL_MOUSEMOTION:
           SDL_GetMouseState( &x, &y )
-          v.handleEvent(Event.mouseMoved(x, y))
+          v.handleEvent(Event.mouseMoved(mouseX: x, mouseY: y))
         
         case SDL_MOUSEWHEEL:
-          v.handleEvent(Event.mouseWheel(event.wheel.x, event.wheel.y))
+          v.handleEvent(Event.mouseWheel(deltaX: event.wheel.x, deltaY: event.wheel.y))
         
         case SDL_WINDOWEVENT where event.window.event == SDL_WINDOWEVENT_CLOSE.rawValue:
           Log.info("Quiting")
@@ -122,18 +140,7 @@ public class Graf
   
   ///////
   
-  public enum Event
-  {
-    case keyPressed(UInt32)
-    case keyReleased(UInt32)
-    case mousePressed(Int32, Int32, UInt8)
-    case mouseReleased(Int32, Int32, UInt8)
-    case mouseMoved(Int32, Int32)
-    case mouseWheel(Int32, Int32)
-  }
   
-
-  public typealias Color = Cairo.Color
   
   public class func playAudio(fileName f:String)
   {

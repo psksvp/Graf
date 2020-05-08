@@ -8,13 +8,9 @@
 import Foundation
 import Graf
 
-//#if !os(macOS)
-//import SGLMath
-//#endif
-
 func demoSetPixel()
 {
-  Graf.shared()
+  Graf.initialize()
   let v = Graf.newView("static", 320, 240)
   
   var x:UInt32 = 0
@@ -48,7 +44,7 @@ func demoSetPixel()
 
 func demoStaticDraw()
 {
-  Graf.shared()
+  Graf.initialize()
   let v = Graf.newView("static", 640, 600)
   
   v.draw
@@ -78,7 +74,7 @@ func demoStaticDraw()
 
 func demoDrawWithEvent()
 {
-  Graf.shared()
+  Graf.initialize()
   let v = Graf.newView("events", 640, 600)
   var x:Double = 0
   var y:Double = 50
@@ -119,19 +115,19 @@ func demoDrawWithEvent()
     
     switch evt
     {
-      case .keyPressed(let code) :
+      case let .keyPressed(code) :
         print("keycode \(code)")
       case .keyReleased(let code) where code == 44 :
         Graf.quit()
-      case .mouseMoved(let mx, let my) :
+      case let .mouseMoved(mx, my) :
         x = Double(mx)
         y = Double(my)
-
-      case .mousePressed(_ , _, let button) :
+ 
+      case let .mousePressed(_ , _, button) :
         print("button \(button)")
         cross.shear(1, 0)
       
-      case .mouseWheel(let dx, let dy) :
+      case let .mouseWheel(dx, dy) :
         print("wheel \(dx) \(dy)")
       
       default:
@@ -144,7 +140,7 @@ func demoDrawWithEvent()
 
 func demoHitTest()
 {
-  Graf.shared()
+  Graf.initialize()
   let poly = [Graf.ellipse(320, 200, 100, 200),
               Graf.rect(100, 100, 100, 150),
               Graf.triangle(400, 300, 50, 300, 25, 200)]
@@ -194,14 +190,14 @@ func demoHitTest()
 
 func demoPong()
 {
-  Graf.shared()
+  Graf.initialize()
   let barWidth = 20.0
   let view = Graf.newView("Pong", 900, 480)
   let topBar = Graf.rect(0, 0, view.width, barWidth)
   let bottomBar = Graf.rect(0, view.height - barWidth,  view.width, barWidth)
   let leftBar = Graf.rect(0, barWidth, barWidth, view.height - barWidth)
   let rightPaddle = Graf.rect(view.width - 50, 100, barWidth/2, 100)
-  let ball = Graf.circle(view.width / 2, view.height / 2, 50, step: 0.8)
+  let ball = Graf.circle(view.width / 2, view.height / 2, 50, step: 0.1)
   var vel = Vector3e(Double.random(in: 3 ... 9), Double.random(in: 3 ... 9), 1)
   
   view.draw
@@ -240,7 +236,7 @@ func demoPong()
     
     if hit
     {
-      print(vel)
+      //print(vel)
       Graf.playAudio(fileName: "\(NSHomeDirectory())/Downloads/beep.mp3")
     }
     
