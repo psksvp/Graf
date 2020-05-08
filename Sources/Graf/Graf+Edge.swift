@@ -16,12 +16,12 @@ import SGLMath
 
 extension Graf
 {
-  class Edge
+  public class Edge
   {
-    let p1:Vector3e
-    let p2:Vector3e
+    public let p1:Vector3e
+    public let p2:Vector3e
   
-    var length: Double
+    public var length: Double
     {
       #if os(macOS)
       return simd_distance(p1, p2)
@@ -30,19 +30,19 @@ extension Graf
       #endif
     }
   
-    var normal: (Vector3e, Vector3e)
+    public var normal: (Vector3e, Vector3e)
     {
       let d = p2 - p1
       return (Vector3e(-d.y, d.x, 1.0), Vector3e(d.y, -d.x, 1.0))
     }
   
-    init(_ p:Vector3e, _ q:Vector3e)
+    public init(_ p:Vector3e, _ q:Vector3e)
     {
       p1 = p
       p2 = q
     }
   
-    func intersect(_ e: Edge) -> Bool
+    public func intersect(_ e: Edge) -> Bool
     {
       //http://web.archive.org/web/20141127210836/http://content.gpwiki.org/index.php/Polygon_Collision
       func determinant(_ v1: Vector3e, _ v2: Vector3e) -> Double
@@ -61,7 +61,7 @@ extension Graf
       return !((t < 0) || (u < 0) || (t > 1) || (u > 1))
     }
     
-    func reflectRay(vector v: Vector3e) -> (Vector3e, Vector3e)
+    public func reflectRay(vector v: Vector3e) -> (Vector3e, Vector3e)
     {
       #if os(macOS)
       func reflect(_ incident: Vector3e, _ normal: Vector3e) -> Vector3e

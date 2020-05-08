@@ -11,12 +11,12 @@ import CCairo
 import CommonSwift
 
 
-class Graf
+public class Graf
 {
   private static var sharedGraf: Graf? = nil
   
   @discardableResult 
-  class func shared() -> Graf
+  public class func shared() -> Graf
   {
     switch sharedGraf
     {
@@ -39,14 +39,14 @@ class Graf
     SDL_Quit()
   }
   
-  class func newView(name n: String, size s: Size) -> View
+  public class func newView(_ n: String, _ w: UInt32, _ h: UInt32) -> View
   {
-    let v = View(name: n, size: s)
+    let v = View(n, w, h)
     Graf.shared().views[v.id] = v
     return v
   }
   
-  class func run()
+  public class func run()
   {
     func mouseState(_ e: SDL_Event) -> (Int32, Int32)
     {
@@ -110,14 +110,14 @@ class Graf
     }
   }
   
-  class func quit()
+  public class func quit()
   {
     Graf.shared().looping = false
   }
   
   ///////
   
-  enum Event
+  public enum Event
   {
     case keyPressed(UInt32)
     case keyReleased(UInt32)
@@ -127,21 +127,10 @@ class Graf
     case mouseWheel(Int32, Int32)
   }
   
-  struct Size
-  {
-    let width: UInt32
-    let height: UInt32
-    
-    init(_ w: UInt32, _ h: UInt32)
-    {
-      width = w
-      height = h
-    }
-  }
 
-  typealias Color = Cairo.Color
+  public typealias Color = Cairo.Color
   
-  class func playAudio(fileName f:String)
+  public class func playAudio(fileName f:String)
   {
     #if os(macOS)
     let cmd = ["/usr/bin/afplay", f]

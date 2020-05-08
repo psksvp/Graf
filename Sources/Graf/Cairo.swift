@@ -8,69 +8,69 @@
 import Foundation
 import CCairo
 
-struct Cairo //namespace
+public struct Cairo //namespace
 {
   private init() {} // stop it from being used as an instance
   
-  class Color
+  public class Color
   {
     private var component = [0.0, 0.0, 0.0, 0.0]
     
-    var redChannel: Double
+    public var redChannel: Double
     {
       get { component[0] }
       set { component[0] = newValue}
     }
     
-    var greenChannel: Double
+    public var greenChannel: Double
     {
       get { component[1] }
       set { component[1] = newValue}
     }
     
-    var blueChannel: Double
+    public var blueChannel: Double
     {
       get { component[2] }
       set { component[2] = newValue}
     }
     
-    var alphaChannel: Double
+    public var alphaChannel: Double
     {
       get { component[3] }
       set { component[3] = newValue}
     }
     
-    static var transparent: Color
+    public static var transparent: Color
     {
       Color(0, 0, 0, 0)
     }
     
-    static var red: Color
+    public static var red: Color
     {
       Color(1, 0, 0, 1)
     }
     
-    static var green: Color
+    public static var green: Color
     {
       Color(0, 1, 0, 1)
     }
     
-    static var blue: Color
+    public static var blue: Color
     {
       Color(0, 0, 1, 1)
     }
     
-    static var black: Color
+    public static var black: Color
     {
       Color(0, 0, 0, 1)
     }
     
-    static var white: Color
+    public static var white: Color
     {
       Color(1, 1, 1, 1)
     }
     
-    static var random:Color
+    public static var random:Color
     {
       Color(Double.random(in: 0 ... 1),
             Double.random(in: 0 ... 1),
@@ -78,7 +78,7 @@ struct Cairo //namespace
             Double.random(in: 0 ... 1))
     }
     
-    init(_ r: Double, _ g: Double, _ b: Double, _ a: Double = 1.0)
+    public init(_ r: Double, _ g: Double, _ b: Double, _ a: Double = 1.0)
     {
       redChannel = r
       greenChannel = g
@@ -86,7 +86,7 @@ struct Cairo //namespace
       alphaChannel = a
     }
     
-    var argbBytes: [UInt8]
+    public var argbBytes: [UInt8]
     {
       [UInt8(alphaChannel * 255),
        UInt8(redChannel * 255),

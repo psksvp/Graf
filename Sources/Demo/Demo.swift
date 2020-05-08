@@ -6,15 +6,16 @@
 //
 
 import Foundation
+import Graf
 
-#if !os(macOS)
-import SGLMath
-#endif
+//#if !os(macOS)
+//import SGLMath
+//#endif
 
 func demoSetPixel()
 {
   Graf.shared()
-  let v = Graf.newView(name: "static", size: Graf.Size(320, 240))
+  let v = Graf.newView("static", 320, 240)
   
   var x:UInt32 = 0
   var y:UInt32 = 0
@@ -24,7 +25,7 @@ func demoSetPixel()
     dc in
     
 
-    dc.setPixel(x, y, Cairo.Color.random)
+    dc.setPixel(x, y, Graf.Color.random)
 
   }
   
@@ -48,7 +49,7 @@ func demoSetPixel()
 func demoStaticDraw()
 {
   Graf.shared()
-  let v = Graf.newView(name: "static", size: Graf.Size(640, 600))
+  let v = Graf.newView("static", 640, 600)
   
   v.draw
   {
@@ -78,7 +79,7 @@ func demoStaticDraw()
 func demoDrawWithEvent()
 {
   Graf.shared()
-  let v = Graf.newView(name: "events", size: Graf.Size( 640, 600))
+  let v = Graf.newView("events", 640, 600)
   var x:Double = 0
   var y:Double = 50
 
@@ -148,7 +149,7 @@ func demoHitTest()
               Graf.rect(100, 100, 100, 150),
               Graf.triangle(400, 300, 50, 300, 25, 200)]
   
-  let v = Graf.newView(name: "hit testing", size: Graf.Size( 640, 600))
+  let v = Graf.newView("hit testing", 640, 600)
   var x:Double = 0
   var y:Double = 0
   let angle = 0.01
@@ -195,7 +196,7 @@ func demoPong()
 {
   Graf.shared()
   let barWidth = 20.0
-  let view = Graf.newView(name: "Pong", size: Graf.Size(900, 480))
+  let view = Graf.newView("Pong", 900, 480)
   let topBar = Graf.rect(0, 0, view.width, barWidth)
   let bottomBar = Graf.rect(0, view.height - barWidth,  view.width, barWidth)
   let leftBar = Graf.rect(0, barWidth, barWidth, view.height - barWidth)
@@ -265,7 +266,7 @@ func demoPong()
     switch evt
     {
       case .mouseMoved(_ , let my):
-        rightPaddle.moveTo(Double(view.size.width - 50), Double(my))
+        rightPaddle.moveTo(view.width - 50, Double(my))
       case .mouseWheel(_ , let dy):
         if dy > 0
         {

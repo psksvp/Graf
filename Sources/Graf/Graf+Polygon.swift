@@ -9,22 +9,22 @@ import Foundation
 
 #if os(macOS)
 import simd
-typealias Vector3e = SIMD3<Double>
-typealias Matrix3e = double3x3
+public typealias Vector3e = SIMD3<Double>
+public typealias Matrix3e = double3x3
 #else
 import SGLMath
-typealias Vector3e = Vector3<Double>
-typealias Matrix3e = Matrix3x3<Double>
+public typealias Vector3e = Vector3<Double>
+public typealias Matrix3e = Matrix3x3<Double>
 #endif
 
 
 extension Graf
 {
-  class Polygon
+  public class Polygon
   {
     var vertices: [Vector3e]
     
-    var center: Vector3e
+    public var center: Vector3e
     {
       let sum = vertices.reduce(Vector3e(0, 0, 0))
                 {
@@ -39,7 +39,7 @@ extension Graf
                            sum.z / n)
     }
     
-    var boundary: Polygon
+    public var boundary: Polygon
     {
       guard vertices.count > 0 else {return rect(0, 0, 0, 0)}
       
@@ -52,17 +52,17 @@ extension Graf
     }
     
     
-    init(_ p: [(Double, Double)])
+    public init(_ p: [(Double, Double)])
     {
       vertices = p.map { Vector3e($0.0, $0.1, 1) }
     }
     
-    init(_ p: [Vector3e])
+    public init(_ p: [Vector3e])
     {
       vertices = p
     }
     
-    func edge(_ s:Int) -> Edge?
+    public func edge(_ s:Int) -> Edge?
     {
       guard s >= 0 && s < self.vertices.count else {return nil}
       
@@ -71,12 +71,12 @@ extension Graf
       return Edge(p1, p2)
     }
     
-    func contains(_ v: Vector3e) -> Bool
+    public func contains(_ v: Vector3e) -> Bool
     {
       return contains((v.x, v.y))
     }
     
-    func contains(_ p: (Double, Double)) -> Bool
+    public func contains(_ p: (Double, Double)) -> Bool
     {
       guard vertices.count > 0 else {return false}
       
@@ -104,17 +104,17 @@ extension Graf
     
   } // Polygon
   
-  class func line(_ x1: Double, _ y1: Double, _ x2: Double, _ y2: Double) -> Polygon
+  public class func line(_ x1: Double, _ y1: Double, _ x2: Double, _ y2: Double) -> Polygon
   {
     return Polygon([(x1, y1), (x2, y2)])
   }
   
-  class func rect(_ x: Double, _ y: Double, _ w: Double, _ h: Double) -> Polygon
+  public class func rect(_ x: Double, _ y: Double, _ w: Double, _ h: Double) -> Polygon
   {
     return Polygon([(x, y), (x + w, y), (x + w, y + h), (x, y + h)])
   }
   
-  class func arc(_ xc: Double,
+  public class func arc(_ xc: Double,
                  _ yc: Double,
                  _ w: Double,
                  _ h: Double,
@@ -156,7 +156,7 @@ extension Graf
     return Polygon(coords)
   }
   
-  class func ellipse(_ xc: Double,
+  public class func ellipse(_ xc: Double,
                      _ yc: Double,
                      _ w: Double,
                      _ h: Double,
@@ -165,12 +165,12 @@ extension Graf
     return arc(xc, yc, w, h, startAngle: 0.0, endAngle: 2 * Double.pi, step: s)
   }
   
-  class func circle(_ xc: Double, _ yc: Double, _ r: Double, step s: Double = 0.1)-> Polygon
+  public class func circle(_ xc: Double, _ yc: Double, _ r: Double, step s: Double = 0.1)-> Polygon
   {
     return ellipse(xc, yc, r + r, r + r, step: s)
   }
   
-  class func triangle(_ x1: Double, _ y1: Double,
+  public class func triangle(_ x1: Double, _ y1: Double,
                       _ x2: Double, _ y2: Double,
                       _ x3: Double, _ y3: Double) -> Polygon
   {

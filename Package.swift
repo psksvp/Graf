@@ -8,10 +8,14 @@ import PackageDescription
 
 let package = Package(
     name: "Graf",
+    products: [
+         .library(name: "Graf", targets: ["Graf"]),
+         .executable(name: "Demo", targets: ["Demo"])
+        ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
-				.package(name: "CommonSwift", url: "https://github.com/psksvp/CommonSwift", .branch("master")),
+        .package(name: "CommonSwift", url: "https://github.com/psksvp/CommonSwift", .branch("master")),
         .package(name: "SGLMath", url: "https://github.com/SwiftGL/Math.git", .branch("master"))
     ],
     targets: [
@@ -20,15 +24,18 @@ let package = Package(
         .target(
             name: "Graf",
             dependencies: ["SDL2", "CCairo", "CommonSwift", "SGLMath"]),
+        .target(
+            name: "Demo",
+            dependencies: ["Graf"]),
         .testTarget(
             name: "GrafTests",
             dependencies: ["Graf"]),		
-				.systemLibrary(name: "CCairo",
-				            pkgConfig: "cairo",
-				            providers: [
-				                .brew(["cairo"]),
-				                .apt(["libcairo2-dev"])
-				            ]),
+        .systemLibrary(name: "CCairo",
+                    pkgConfig: "cairo",
+                    providers: [
+                        .brew(["cairo"]),
+                        .apt(["libcairo2-dev"])
+                    ]),
         .systemLibrary(
             name: "CSDL2",
             pkgConfig: "sdl2",
@@ -36,6 +43,6 @@ let package = Package(
                 .brew(["sdl2"]),
                 .apt(["libsdl2-dev"])
             ]),
-				.target(name: "SDL2", dependencies: ["CSDL2"])
+        .target(name: "SDL2", dependencies: ["CSDL2"])
     ]
 )

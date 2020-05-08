@@ -11,14 +11,14 @@ import CommonSwift
 
 extension Graf
 {
-  class DrawingContext
+  public class DrawingContext
   {
     let surface: Cairo.BitmapSurface
     let context: Cairo.Context
     
-    var fillColor: Color = Color.transparent
-    var strokeColor: Color = Color.black
-    var strokeWeight: Double = 1.0
+    public var fillColor: Color = Color.transparent
+    public var strokeColor: Color = Color.black
+    public var strokeWeight: Double = 1.0
     {
       didSet
       {
@@ -26,7 +26,7 @@ extension Graf
       }
     }
     
-    var fontSize: Double = 14.0
+    public var fontSize: Double = 14.0
     {
       didSet
       {
@@ -34,7 +34,7 @@ extension Graf
       }
     }
     
-    var fontFace: String = "Arial"
+    public var fontFace: String = "Arial"
     {
       didSet
       {
@@ -45,9 +45,9 @@ extension Graf
       }
     }
     
-    lazy var viewRect = rect(0, 0, width, height)
-    lazy var width: Double = context.width
-    lazy var height: Double = context.height
+    public lazy var viewRect = rect(0, 0, width, height)
+    public lazy var width: Double = context.width
+    public lazy var height: Double = context.height
     
     private let pixels: UnsafeMutablePointer<UInt8>
     
@@ -58,13 +58,13 @@ extension Graf
       pixels = data
     }
     
-    func clear(_ bgColor: Color = Color.white)
+    public func clear(_ bgColor: Color = Color.white)
     {
       fillColor = bgColor
       viewRect.draw(self, stroke: false)
     }
     
-    func setPixel(_ x: UInt32, _ y: UInt32, _ color: Color)
+    public func setPixel(_ x: UInt32, _ y: UInt32, _ color: Color)
     {
       guard x < UInt32(width) && y < UInt32(height) else
       {

@@ -11,18 +11,18 @@ import CommonSwift
 
 extension Graf
 {
-  class Text : Drawable
+  public class Text : Drawable
   {
     var text: String = ""
     var coord: (Double, Double) = (0.0, 0.0)
     
-    init(_ x: Double, _ y: Double, _ s: String)
+    public init(_ x: Double, _ y: Double, _ s: String)
     {
       text = s
       coord = (x, y)
     }
     
-    func draw(_ dc: Graf.DrawingContext, stroke: Bool = true, fill: Bool = true)
+    public func draw(_ dc: Graf.DrawingContext, stroke: Bool = true, fill: Bool = true)
     {
       dc.fillColor.setAsSourceInContext(dc.context)
       
@@ -40,7 +40,7 @@ extension Graf
       cairo_show_text(dc.context.cr, text)
     }
     
-    func extend(_ dc: DrawingContext) -> (Double, Double)
+    public func extend(_ dc: DrawingContext) -> (Double, Double)
     {
       var ex = cairo_text_extents_t()
       

@@ -28,13 +28,15 @@ extension Graf.Polygon
   }
 
   
-  @discardableResult func moveTo(_ x: Double, _ y: Double) -> Graf.Polygon
+  @discardableResult
+  public func moveTo(_ x: Double, _ y: Double) -> Graf.Polygon
   {
     let c = self.center
     return translate(x - c.x, y - c.y)
   }
   
-  @discardableResult func translate(_ dx: Double, _ dy: Double) -> Graf.Polygon
+  @discardableResult
+  public func translate(_ dx: Double, _ dy: Double) -> Graf.Polygon
   {
     let m = matrix(Vector3e(1,   0, 0),
                    Vector3e(0,   1, 0),
@@ -43,7 +45,8 @@ extension Graf.Polygon
     return transform(m)
   }
   
-  @discardableResult func scale(_ sx: Double, _ sy: Double) -> Graf.Polygon
+  @discardableResult
+  public func scale(_ sx: Double, _ sy: Double) -> Graf.Polygon
   {
     let m = matrix(Vector3e(sx,  0, 0),
                    Vector3e(0,  sy, 0),
@@ -51,7 +54,8 @@ extension Graf.Polygon
     return transform(m)
   }
   
-  @discardableResult func shear(_ sx: Double, _ sy: Double) -> Graf.Polygon
+  @discardableResult
+  public func shear(_ sx: Double, _ sy: Double) -> Graf.Polygon
   {
     let m = matrix(Vector3e(1,  sx, 0),
                   Vector3e(sy,  1, 0),
@@ -59,7 +63,8 @@ extension Graf.Polygon
     return transform(m)
   }
   
-  @discardableResult func rotate(_ angle: Double) -> Graf.Polygon
+  @discardableResult
+  public func rotate(_ angle: Double) -> Graf.Polygon
   {
     let m = matrix(Vector3e(cos(angle), sin(angle), 0),
                    Vector3e(-sin(angle), cos(angle), 0),
@@ -69,13 +74,14 @@ extension Graf.Polygon
     return moveTo(0, 0).transform(m).moveTo(c.x, c.y)
   }
   
-  @discardableResult func transform(_ m: Matrix3e) -> Graf.Polygon
+  @discardableResult
+  public func transform(_ m: Matrix3e) -> Graf.Polygon
   {
     vertices = vertices.map { $0 * m }
     return self
   }
   
-  func overlapWith(_ p: Graf.Polygon) -> Bool
+  public func overlapWith(_ p: Graf.Polygon) -> Bool
   {
     guard self.vertices.count > 0 &&
              p.vertices.count > 0 else {return false}

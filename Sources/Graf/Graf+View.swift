@@ -12,7 +12,7 @@ import CommonSwift
 
 extension Graf
 {
-  class View
+  public class View
   {
     private let sdlWindow: OpaquePointer
     private let sdlRenderer: OpaquePointer
@@ -22,29 +22,21 @@ extension Graf
     private var drawFunc: ((DrawingContext) -> Void)? = nil
     private var eventHandlerFunc: ((Event) -> Void)? = nil
     
-    var id: UInt32
+    public var id: UInt32
     {
       SDL_GetWindowID(sdlWindow)
     }
     
-    var size: Size
-    {
-       var w: Int32 = 0
-       var h: Int32 = 0
-       SDL_GetWindowSize(sdlWindow, &w, &h)
-       return Size( Uint32(w), UInt32(h))
-    }
+    public let width: Double
+    public let height: Double
     
-    let width: Double
-    let height: Double
-    
-    init(name: String, size: Size)
+    init(_ name: String, _ w: UInt32, _ h: UInt32)
     {
       self.sdlWindow = SDL_CreateWindow(name,
                                         -1,
                                         -1,
-                                        Int32(size.width),
-                                        Int32(size.height),
+                                        Int32(w),
+                                        Int32(h),
                                         SDL_WINDOW_SHOWN.rawValue | SDL_WINDOW_ALLOW_HIGHDPI.rawValue)
       self.sdlRenderer = SDL_CreateRenderer(sdlWindow, -1, SDL_RENDERER_PRESENTVSYNC.rawValue)
       
@@ -57,11 +49,11 @@ extension Graf
       self.sdlTexture = SDL_CreateTexture(sdlRenderer,
                                           pixFmt,
                                           Int32(SDL_TEXTUREACCESS_STREAMING.rawValue),
-                                          Int32(size.width),
-                                          Int32(size.height))
+                                          Int32(w),
+                                          Int32(h))
       
-      self.width = Double(size.width)
-      self.height = Double(size.height)
+      self.width = Double(w)
+      self.height = Double(h)
     }
     
     deinit
@@ -75,7 +67,7 @@ extension Graf
       SDL_DestroyWindow(sdlWindow)
     }
     
-    func fucus()
+    public func fucus()
     {
       SDL_ShowWindow(sdlWindow)
       SDL_RaiseWindow(sdlWindow)
@@ -98,7 +90,7 @@ extension Graf
       endDraw()
     }
      
-    func beginDraw() -> DrawingContext
+    public func beginDraw() -> DrawingContext
     {
       if drawing
       {
@@ -111,10 +103,10 @@ extension Graf
                       &pixels,
                       &pitch)
       drawing = true
-      return DrawingContext(size.width, size.height, UnsafeMutablePointer<UInt8>(OpaquePointer(pixels!)), pitch)
+      return DrawingContext(UInt32(width), UInt32(height), UnsafeMutablePointer<UInt8>(OpaquePointer(pixels!)), pitch)
     }
     
-    func endDraw()
+    public func endDraw()
     {
       guard drawing else
       {
@@ -129,12 +121,12 @@ extension Graf
     }
     
     // hooks
-    func draw(_ df:  @escaping (DrawingContext) -> Void)
+    public func draw(_ df:  @escaping (DrawingContext) -> Void)
     {
       drawFunc = df
     }
     
-    func onInputEvent(_ ehf: @escaping (Event) -> Void)
+    public func onInputEvent(_ ehf: @escaping (Event) -> Void)
     {
       eventHandlerFunc = ehf
     }

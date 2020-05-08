@@ -11,7 +11,7 @@ import CommonSwift
 
 extension Graf.Polygon : Drawable
 {
-  func draw(_ dc: Graf.DrawingContext, stroke: Bool = true, fill: Bool = true)
+  public func draw(_ dc: Graf.DrawingContext, stroke: Bool = true, fill: Bool = true)
   {
     func buildPath()
     {
