@@ -24,7 +24,7 @@ extension Graf
     
     public func draw(_ dc: Graf.DrawingContext, stroke: Bool = true, fill: Bool = true)
     {
-      dc.fillColor.setAsSourceInContext(dc.context)
+      dc.fill.cPattern.setAsSourceInContext(dc.context)
       
 //      if(centerAtCoord)
 //      {

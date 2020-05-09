@@ -57,19 +57,19 @@ func demoStaticDraw()
     
     dc.clear()
     dc.strokeColor = Graf.Color.black
-    dc.fillColor = Graf.Color(0.8, 0.5, 0.9, 0.6)
+    dc.fill = Graf.Fill.color(0.8, 0.5, 0.9, 0.6)
   
     Graf.line(0, 0, dc.width, dc.height).draw(dc)
     Graf.line(0, dc.height, dc.width, 0).draw(dc)
   
     Graf.rect(10, 10, 100, 100).draw(dc)
-    dc.fillColor = Graf.Color(0.2, 0.5, 0.9, 0.6)
+    dc.fill = Graf.Fill.color(0.2, 0.5, 0.9, 0.6)
     Graf.ellipse(dc.width/2, dc.height/2, 200, 100).draw(dc)
-    dc.fillColor = Graf.Color(0.2, 0.5, 0.3, 0.6)
+    dc.fill = Graf.Fill.color(0.2, 0.5, 0.3, 0.6)
     Graf.circle(dc.width - 100, 50, 50).draw(dc)
     
     dc.fontSize = 30
-    dc.fillColor = Graf.Color(0.2, 0.3, 0.6)
+    dc.fill = Graf.Fill.color(0.2, 0.3, 0.6)
     Graf.Text(200, 400, "Helloworld").draw(dc)
   }
   
@@ -95,7 +95,7 @@ func demoDrawWithEvent()
     
     dc.clear()
     dc.strokeColor = Graf.Color.black
-    dc.fillColor = Graf.Color(0, 0.8, 0, 0.5)
+    dc.fill = Graf.Fill.color(0, 0.8, 0, 0.5)
     
     cross.rotate(angle).moveTo(x, y).draw(dc)
     
@@ -165,11 +165,11 @@ func demoHitTest()
     {
       if s.contains((x, y))
       {
-        dc.fillColor = Graf.Color.red
+        dc.fill = Graf.Fill.image("./media/chessboard.png")
       }
       else
       {
-        dc.fillColor = Graf.Color.green
+        dc.fill = Graf.Fill.colorGreen
       }
       s.draw(dc)
     }
@@ -241,13 +241,13 @@ func demoPong()
     if hit
     {
       //print(vel)
-      Graf.playAudio(fileName: "\(NSHomeDirectory())/Downloads/beep.mp3")
+      Graf.playAudio(fileName: "./media/beep.mp3")
     }
     
       
     if(!dc.viewRect.contains(ball.center))
     {
-      dc.fillColor = Graf.Color.black
+      dc.fill = Graf.Fill.color(0, 0, 0)
       dc.fontSize = 30
       Graf.Text(dc.width / 2, dc.height / 2, "GAME OVER!").draw(dc)
     }

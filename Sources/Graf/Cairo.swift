@@ -98,8 +98,51 @@ public struct Cairo //namespace
     {
       cairo_set_source_rgba(c.cr, redChannel, greenChannel, blueChannel, alphaChannel)
     }
+  }
+  
+  class FillPattern
+  {
+    let pattern: OpaquePointer
     
+    init(_ s: Surface)
+    {
+      self.pattern = cairo_pattern_create_for_surface(s.csurface)
+    }
     
+    init(_ c: Color)
+    {
+      self.pattern = cairo_pattern_create_rgba(c.redChannel,
+                                               c.greenChannel,
+                                               c.blueChannel,
+                                               c.alphaChannel)
+    }
+    
+    init(_ x0: Double, _ y0: Double, _ x1: Double, _ y1: Double)
+    {
+      self.pattern = cairo_pattern_create_linear(x0, y0, x1, y1)
+    }
+    
+    init(_ cx0: Double, _ cy0: Double, _ radius0: Double,
+         _ cx1: Double, _ cy1: Double, _ radius1: Double)
+    {
+      self.pattern = cairo_pattern_create_radial(cx0,
+                                                 cy0,
+                                                 radius0,
+                                                 cx1,
+                                                 cy1,
+                                                 radius1)
+    }
+    
+    deinit
+    {
+      cairo_pattern_destroy(pattern)
+    }
+    
+    func setAsSourceInContext(_ c: Context)
+    {
+      cairo_set_source(c.cr, pattern);
+      cairo_pattern_set_extend(cairo_get_source(c.cr), CAIRO_EXTEND_REPEAT);
+    }
   }
   
   class Surface
@@ -174,7 +217,7 @@ public struct Cairo //namespace
       cairo_destroy(cr)
     }
     
-    func fill(_ c: Color, preserved: Bool = false)
+    func fill(_ c: FillPattern, preserved: Bool = false)
     {
       c.setAsSourceInContext(self)
       if preserved

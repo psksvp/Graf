@@ -29,9 +29,11 @@ extension Graf
     
     public let width: Double
     public let height: Double
+    public let name: String
     
-    init(_ name: String, _ w: UInt32, _ h: UInt32)
+    init(_ n: String, _ w: UInt32, _ h: UInt32)
     {
+      self.name = n
       self.sdlWindow = SDL_CreateWindow(name,
                                         -1,
                                         -1,

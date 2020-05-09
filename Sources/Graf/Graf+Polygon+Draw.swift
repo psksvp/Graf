@@ -41,7 +41,7 @@ extension Graf.Polygon : Drawable
       else
       {
         buildPath()
-        dc.context.fill(dc.fillColor)
+        dc.context.fill(dc.fill.cPattern)
       }
     }
     
@@ -49,7 +49,7 @@ extension Graf.Polygon : Drawable
     {
       buildPath()
       dc.context.stroke(dc.strokeColor, preserved: true)
-      dc.context.fill(dc.fillColor)
+      dc.context.fill(dc.fill.cPattern)
     }
     
     switch (stroke, fill)

@@ -50,7 +50,6 @@ public class Graf
     case mouseWheel(deltaX: Int32, deltaY: Int32)
   }
   
-
   public typealias Color = Cairo.Color
   
   public class func initialize()
@@ -63,6 +62,19 @@ public class Graf
     let v = View(n, w, h)
     Graf.shared().views[v.id] = v
     return v
+  }
+  
+  public class func view(_ n: String) -> View?
+  {
+    for v in Graf.shared().views.values
+    {
+      if v.name == n
+      {
+        return v
+      }
+    }
+    
+    return nil
   }
   
   public class func run()

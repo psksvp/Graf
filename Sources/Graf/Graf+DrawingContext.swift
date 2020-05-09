@@ -16,7 +16,7 @@ extension Graf
     let surface: Cairo.BitmapSurface
     let context: Cairo.Context
     
-    public var fillColor: Color = Color.transparent
+    public var fill: Fill = Fill.color(Color.transparent)
     public var strokeColor: Color = Color.black
     public var strokeWeight: Double = 1.0
     {
@@ -46,8 +46,8 @@ extension Graf
     }
     
     public lazy var viewRect = rect(0, 0, width, height)
-    public lazy var width: Double = context.width
-    public lazy var height: Double = context.height
+    public lazy var  width: Double = context.width
+    public lazy var  height: Double = context.height
     
     private let pixels: UnsafeMutablePointer<UInt8>
     
@@ -60,7 +60,7 @@ extension Graf
     
     public func clear(_ bgColor: Color = Color.white)
     {
-      fillColor = bgColor
+      fill = Fill.color(bgColor)
       viewRect.draw(self, stroke: false)
     }
     
