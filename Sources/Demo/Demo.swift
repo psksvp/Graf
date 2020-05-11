@@ -209,10 +209,12 @@ func demoPong()
     dc in
     
     dc.clear()
+    dc.fill = Graf.Fill.image("./media/chessboard.png")
     topBar.draw(dc)
     bottomBar.draw(dc)
     leftBar.draw(dc)
     rightPaddle.draw(dc)
+    dc.fill = Graf.Fill.image("./media/ball.png")
     ball.draw(dc)
     ball.translate(vel.x, vel.y)
     var hit = false

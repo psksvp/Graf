@@ -16,7 +16,7 @@ public class Graf
   private static var sharedGraf: Graf? = nil
   
   @discardableResult 
-  class func shared() -> Graf
+  class func single() -> Graf
   {
     switch sharedGraf
     {
@@ -54,19 +54,19 @@ public class Graf
   
   public class func initialize()
   {
-    Graf.shared()
+    Graf.single()
   }
   
   public class func newView(_ n: String, _ w: UInt32, _ h: UInt32) -> View
   {
     let v = View(n, w, h)
-    Graf.shared().views[v.id] = v
+    Graf.single().views[v.id] = v
     return v
   }
   
   public class func view(_ n: String) -> View?
   {
-    for v in Graf.shared().views.values
+    for v in Graf.single().views.values
     {
       if v.name == n
       {
@@ -89,7 +89,7 @@ public class Graf
     
     func dispatchEvent(_ vid: UInt32, _ e: SDL_Event)
     {
-      guard let v = Graf.shared().views[vid] else { return }
+      guard let v = Graf.single().views[vid] else { return }
       var x: Int32 = 0
       var y: Int32 = 0
       
@@ -129,11 +129,11 @@ public class Graf
       }
     }
     
-    Graf.shared().looping = true
+    Graf.single().looping = true
     var event: SDL_Event = SDL_Event()
-    while Graf.shared().looping
+    while Graf.single().looping
     {
-      for v in Graf.shared().views.values
+      for v in Graf.single().views.values
       {
         v.render()
       }
@@ -147,7 +147,7 @@ public class Graf
   
   public class func quit()
   {
-    Graf.shared().looping = false
+    Graf.single().looping = false
   }
   
   ///////
