@@ -2,6 +2,6 @@ module CSDL2 [system][extern_c]
 {
   umbrella header "umbrella.h"
   link "SDL2"
-	//link "SDL2_gfx"
+   //link "SDL2_gfx"
   export *
 }

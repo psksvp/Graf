@@ -59,14 +59,14 @@ func demoStaticDraw()
     dc.strokeColor = Graf.Color.black
     dc.fill = Graf.Fill.color(0.8, 0.5, 0.9, 0.6)
   
-    Graf.line(0, 0, dc.width, dc.height).draw(dc)
-    Graf.line(0, dc.height, dc.width, 0).draw(dc)
+    Graf.line(0, 0, Double(dc.width), Double(dc.height)).draw(dc)
+    Graf.line(0, Double(dc.height), Double(dc.width), 0).draw(dc)
   
     Graf.rect(10, 10, 100, 100).draw(dc)
     dc.fill = Graf.Fill.color(0.2, 0.5, 0.9, 0.6)
-    Graf.ellipse(dc.width/2, dc.height/2, 200, 100).draw(dc)
+    Graf.ellipse(Double(dc.width/2), Double(dc.height/2), 200, 100).draw(dc)
     dc.fill = Graf.Fill.color(0.2, 0.5, 0.3, 0.6)
-    Graf.circle(dc.width - 100, 50, 50).draw(dc)
+    Graf.circle(Double(dc.width - 100), 50, 50).draw(dc)
     
     dc.fontSize = 30
     dc.fill = Graf.Fill.color(0.2, 0.3, 0.6)
@@ -196,54 +196,67 @@ func demoPong()
 {
   Graf.initialize()
   let barWidth = 20.0
-  let view = Graf.newView("Pong", 900, 480)
-  let topBar = Graf.rect(0, 0, view.width, barWidth)
-  let bottomBar = Graf.rect(0, view.height - barWidth,  view.width, barWidth)
-  let leftBar = Graf.rect(0, barWidth, barWidth, view.height - barWidth)
-  let rightPaddle = Graf.rect(view.width - 50, 100, barWidth/2, 100)
-  let ball = Graf.circle(view.width / 2, view.height / 2, 50, step: 0.1)
+  let view = Graf.newView("Pong", 800, 480)
+  let topBar = Graf.rect(0, 0, Double(view.width), barWidth)
+  let bottomBar = Graf.rect(0, Double(view.height) - barWidth,  Double(view.width), barWidth)
+  let leftBar = Graf.rect(0, barWidth, barWidth, Double(view.height) - barWidth)
+  let rightPaddle = Graf.rect(Double(view.width - 50), 100, barWidth/2, 200)
+  let ball = Graf.circle(Double(view.width / 2), Double(view.height / 2), 25, step: 0.1)
   var vel = Vector3e(Double.random(in: 3 ... 9), Double.random(in: 3 ... 9), 1)
+  
+  func moveAwayFrom(_ p: Graf.Polygon, _ reflectRay: Vector3e)
+  {
+    while ball.overlapWith(p)
+    {
+      ball.translate(reflectRay.x, reflectRay.y)
+      print("moving away \(reflectRay)")
+    }
+  }
   
   view.draw
   {
     dc in
     
     dc.clear()
-    dc.fill = Graf.Fill.image("./media/chessboard.png")
     topBar.draw(dc)
     bottomBar.draw(dc)
     leftBar.draw(dc)
     rightPaddle.draw(dc)
-    dc.fill = Graf.Fill.image("./media/ball.png")
-    ball.draw(dc)
+    ball.draw(dc, fill: false)
     ball.translate(vel.x, vel.y)
+    
     var hit = false
     
     if ball.overlapWith(topBar)
     {
-      vel = topBar.edge(2)!.reflectRay(vector: vel).0 * Double.random(in: 5 ... 9)
+      vel = topBar.edge(2)!.reflectRay(vector: vel).0
+      moveAwayFrom(topBar, vel)
       hit = true
     }
     else if ball.overlapWith(bottomBar)
     {
-      vel = bottomBar.edge(0)!.reflectRay(vector: vel).0 * Double.random(in: 5 ... 9)
+      vel = bottomBar.edge(0)!.reflectRay(vector: vel).0
+      moveAwayFrom(bottomBar, vel)
       hit = true
     }
     else if ball.overlapWith(leftBar)
     {
-      vel = leftBar.edge(1)!.reflectRay(vector: vel).0 * Double.random(in: 5 ... 9)
+      vel = leftBar.edge(1)!.reflectRay(vector: vel).0
+      moveAwayFrom(leftBar, vel)
       hit = true
     }
     else if ball.overlapWith(rightPaddle)
     {
-      vel = rightPaddle.edge(3)!.reflectRay(vector: vel).0 * Double.random(in: 5 ... 9)
+      vel = rightPaddle.edge(3)!.reflectRay(vector: vel).0
+      moveAwayFrom(rightPaddle, vel)
       hit = true
     }
     
     if hit
     {
       //print(vel)
-      Graf.playAudio(fileName: "./media/beep.mp3")
+      vel = vel * Double.random(in: 9 ... 15)
+      //Graf.playAudio(fileName: "./media/beep.mp3")
     }
     
       
@@ -251,14 +264,13 @@ func demoPong()
     {
       dc.fill = Graf.Fill.color(0, 0, 0)
       dc.fontSize = 30
-      Graf.Text(dc.width / 2, dc.height / 2, "GAME OVER!").draw(dc)
+      Graf.Text(Double(dc.width / 2), Double(dc.height / 2), "GAME OVER!").draw(dc)
     }
     
     
     let c = rightPaddle.center
     let (_, nl) = rightPaddle.edge(3)!.normal
     Graf.line(c.x, c.y, c.x + nl.x, c.y + nl.y).draw(dc)
-    
   }
   
   view.onInputEvent
@@ -267,8 +279,9 @@ func demoPong()
     
     switch evt
     {
-      case .mouseMoved(_ , let my):
-        rightPaddle.moveTo(view.width - 50, Double(my))
+      case .mouseMoved(let mx , let my):
+        rightPaddle.moveTo(Double(mx), Double(my))
+
       case .mouseWheel(_ , let dy):
         if dy > 0
         {
@@ -278,6 +291,9 @@ func demoPong()
         {
           rightPaddle.rotate(-0.1)
         }
+      case .keyPressed(keyCode: _) :
+        ball.moveTo(Double(view.width / 2), Double(view.height / 2))
+        vel = Vector3e(Double.random(in: -9 ... 9), Double.random(in: -9 ... 9), 1)
       
       default: break
     }

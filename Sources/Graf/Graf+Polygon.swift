@@ -176,4 +176,9 @@ extension Graf
   {
     return Polygon([(x1, y1), (x2, y2), (x3, y3)])
   }
+  
+  public class func centerDistance(_ p1: Polygon, _ p2: Polygon) -> Double
+  {
+    return simd_distance(p1.center, p2.center)
+  }
 }

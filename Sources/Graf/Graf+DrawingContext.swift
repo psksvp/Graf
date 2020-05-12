@@ -45,9 +45,9 @@ extension Graf
       }
     }
     
-    public lazy var viewRect = rect(0, 0, width, height)
-    public lazy var  width: Double = context.width
-    public lazy var  height: Double = context.height
+    public lazy var viewRect = rect(0, 0, Double(width), Double(height))
+    public lazy var width: UInt32 = UInt32(context.width)
+    public lazy var height: UInt32 = UInt32(context.height)
     
     private let pixels: UnsafeMutablePointer<UInt8>
     

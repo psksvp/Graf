@@ -27,8 +27,8 @@ extension Graf
       SDL_GetWindowID(sdlWindow)
     }
     
-    public let width: Double
-    public let height: Double
+    public let width: UInt32
+    public let height: UInt32
     public let name: String
     
     init(_ n: String, _ w: UInt32, _ h: UInt32)
@@ -54,8 +54,8 @@ extension Graf
                                           Int32(w),
                                           Int32(h))
       
-      self.width = Double(w)
-      self.height = Double(h)
+      self.width = w
+      self.height = h
     }
     
     deinit

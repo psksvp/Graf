@@ -15,27 +15,29 @@ extension Graf
   {
     var text: String = ""
     var coord: (Double, Double) = (0.0, 0.0)
+    var alignCenter: Bool = true
     
-    public init(_ x: Double, _ y: Double, _ s: String)
+    public init(_ x: Double, _ y: Double, _ s: String, centerAtCoord: Bool = true)
     {
       text = s
       coord = (x, y)
+      alignCenter = centerAtCoord
     }
     
     public func draw(_ dc: Graf.DrawingContext, stroke: Bool = true, fill: Bool = true)
     {
       dc.fill.cPattern.setAsSourceInContext(dc.context)
       
-//      if(centerAtCoord)
-//      {
-//        let (w, h) = extend(dc)
-//        let (x, y) = (coord.0 + w / 2, coord.1 + h / 2)
-//        cairo_move_to(dc.context.cr, x, y)
-//      }
-//      else
-//      {
-//        cairo_move_to(dc.context.cr, coord.0, coord.1)
-//      }
+      if(alignCenter)
+      {
+        let (w, h) = extend(dc)
+        let (x, y) = (coord.0 + w / 2, coord.1 + h / 2)
+        cairo_move_to(dc.context.cr, x, y)
+      }
+      else
+      {
+        cairo_move_to(dc.context.cr, coord.0, coord.1)
+      }
       cairo_move_to(dc.context.cr, coord.0, coord.1)
       cairo_show_text(dc.context.cr, text)
     }
