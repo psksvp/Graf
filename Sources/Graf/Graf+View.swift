@@ -7,16 +7,14 @@
 
 import Foundation
 import SDL2
-import CCairo
 import CommonSwift
 
 extension Graf
 {
   public class View
   {
-    private let sdlWindow: OpaquePointer
-    private let sdlRenderer: OpaquePointer
-    private let sdlTexture: OpaquePointer
+    let sdlWindow: OpaquePointer
+    let sdlRenderer: OpaquePointer
     
     private var drawing = false
     private var drawFunc: ((DrawingContext) -> Void)? = nil
@@ -27,8 +25,8 @@ extension Graf
       SDL_GetWindowID(sdlWindow)
     }
     
-    public let width: Double
-    public let height: Double
+    public let width: UInt32
+    public let height: UInt32
     public let name: String
     
     init(_ n: String, _ w: UInt32, _ h: UInt32)
@@ -41,21 +39,8 @@ extension Graf
                                         Int32(h),
                                         SDL_WINDOW_SHOWN.rawValue | SDL_WINDOW_ALLOW_HIGHDPI.rawValue)
       self.sdlRenderer = SDL_CreateRenderer(sdlWindow, -1, SDL_RENDERER_PRESENTVSYNC.rawValue)
-      
-      #if os(macOS)
-      let pixFmt = SDL_PIXELFORMAT_ARGB8888.rawValue
-      #else
-      let pixFmt = UInt32(SDL_PIXELFORMAT_ARGB8888)
-      #endif
-      
-      self.sdlTexture = SDL_CreateTexture(sdlRenderer,
-                                          pixFmt,
-                                          Int32(SDL_TEXTUREACCESS_STREAMING.rawValue),
-                                          Int32(w),
-                                          Int32(h))
-      
-      self.width = Double(w)
-      self.height = Double(h)
+      self.width = w
+      self.height = h
     }
     
     deinit
@@ -64,7 +49,6 @@ extension Graf
       {
         endDraw()
       }
-      SDL_DestroyTexture(sdlTexture)
       SDL_DestroyRenderer(sdlRenderer)
       SDL_DestroyWindow(sdlWindow)
     }
@@ -98,14 +82,9 @@ extension Graf
       {
         endDraw()
       }
-      var pitch: Int32 = 0
-      var pixels: UnsafeMutableRawPointer? = nil
-      SDL_LockTexture(self.sdlTexture,
-                      nil,
-                      &pixels,
-                      &pitch)
+
       drawing = true
-      return DrawingContext(UInt32(width), UInt32(height), UnsafeMutablePointer<UInt8>(OpaquePointer(pixels!)), pitch)
+      return DrawingContext(self)
     }
     
     public func endDraw()
@@ -116,8 +95,6 @@ extension Graf
         return
       }
       
-      SDL_UnlockTexture(sdlTexture)
-      SDL_RenderCopy(sdlRenderer, sdlTexture, nil, nil);
       SDL_RenderPresent(sdlRenderer)
       drawing = false
     }

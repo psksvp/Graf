@@ -6,58 +6,36 @@
 //
 
 import Foundation
-import CCairo
+import SDL2
 import CommonSwift
 
 extension Graf.Polygon : Drawable
 {
   public func draw(_ dc: Graf.DrawingContext, stroke: Bool = true, fill: Bool = true)
   {
-    func buildPath()
+    if self.xPoints.count < vertices.count
     {
-      guard self.vertices.count > 0 else {return}
-      
-      let sp = vertices.first!
-      cairo_move_to(dc.context.cr, sp.x, sp.y)
-      for p in vertices.dropFirst(1)
-      {
-        cairo_line_to(dc.context.cr, p.x, p.y)
-      }
-      cairo_close_path(dc.context.cr)
+      self.xPoints.reserveCapacity(vertices.count)
+      self.yPoints.reserveCapacity(vertices.count)
     }
     
-    func doStroke()
+    self.xPoints.removeAll(keepingCapacity: true)
+    self.yPoints.removeAll(keepingCapacity: true)
+    
+    for v in vertices
     {
-      buildPath()
-      dc.context.stroke(dc.strokeColor)
+      self.xPoints.append(Int16(v.x))
+      self.yPoints.append(Int16(v.y))
     }
     
-    func doFill()
+    if fill
     {
-      if vertices.count <= 2
-      {
-        doStroke()
-      }
-      else
-      {
-        buildPath()
-        dc.context.fill(dc.fill.cPattern)
-      }
+      dc.fillPolygon(self.xPoints, self.yPoints)
     }
     
-    func doStrokeAndFill()
+    if stroke
     {
-      buildPath()
-      dc.context.stroke(dc.strokeColor, preserved: true)
-      dc.context.fill(dc.fill.cPattern)
-    }
-    
-    switch (stroke, fill)
-    {
-      case (true, true)  : doStrokeAndFill()
-      case (true, false) : doStroke()
-      case (false, true) : doFill()
-      case (false, false): Log.warn("draw without stroke and fill")
+      dc.stokePolygon(self.xPoints, self.yPoints)
     }
     
   }

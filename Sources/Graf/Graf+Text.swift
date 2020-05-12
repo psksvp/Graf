@@ -11,41 +11,5 @@ import CommonSwift
 
 extension Graf
 {
-  public class Text : Drawable
-  {
-    var text: String = ""
-    var coord: (Double, Double) = (0.0, 0.0)
-    
-    public init(_ x: Double, _ y: Double, _ s: String)
-    {
-      text = s
-      coord = (x, y)
-    }
-    
-    public func draw(_ dc: Graf.DrawingContext, stroke: Bool = true, fill: Bool = true)
-    {
-      dc.fill.cPattern.setAsSourceInContext(dc.context)
-      
-//      if(centerAtCoord)
-//      {
-//        let (w, h) = extend(dc)
-//        let (x, y) = (coord.0 + w / 2, coord.1 + h / 2)
-//        cairo_move_to(dc.context.cr, x, y)
-//      }
-//      else
-//      {
-//        cairo_move_to(dc.context.cr, coord.0, coord.1)
-//      }
-      cairo_move_to(dc.context.cr, coord.0, coord.1)
-      cairo_show_text(dc.context.cr, text)
-    }
-    
-    public func extend(_ dc: DrawingContext) -> (Double, Double)
-    {
-      var ex = cairo_text_extents_t()
-      
-      cairo_text_extents(dc.context.cr, text, &ex)
-      return (ex.width, ex.height)
-    }
-  }
+
 }

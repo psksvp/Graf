@@ -24,6 +24,9 @@ extension Graf
   {
     var vertices: [Vector3e]
     
+    var xPoints:[Int16] = []
+    var yPoints:[Int16] = []
+    
     public var center: Vector3e
     {
       let sum = vertices.reduce(Vector3e(0, 0, 0))

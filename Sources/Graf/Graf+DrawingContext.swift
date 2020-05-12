@@ -6,79 +6,88 @@
 //
 
 import Foundation
-import CCairo
 import CommonSwift
+import SDL2
 
 extension Graf
 {
   public class DrawingContext
   {
-    let surface: Cairo.BitmapSurface
-    let context: Cairo.Context
+    public let width: UInt32
+    public let height: UInt32
     
-    public var fill: Fill = Fill.color(Color.transparent)
-    public var strokeColor: Color = Color.black
-    public var strokeWeight: Double = 1.0
+    public var strokeColor = Color.black
+    public var fill:Graf.Fill = .color(Color.white)
+    
+    let sdlRenderer: OpaquePointer
+  
+    init(_ v: Graf.View)
     {
-      didSet
+      width = v.width
+      height = v.height
+      sdlRenderer = v.sdlRenderer
+    }
+    
+    public func clear(_ bgColor: Graf.Color = Graf.Color.white)
+    {
+      boxRGBA(sdlRenderer,
+              0,0,
+              Int16(width),
+              Int16(height),
+              bgColor.greenChannel,
+              bgColor.greenChannel,
+              bgColor.blueChannel,
+              bgColor.alphaChannel)
+    }
+    
+    public func setPixel(_ x: Int16, _ y: Int16, _ c: Graf.Color)
+    {
+      pixelRGBA(sdlRenderer, x, y,
+                c.redChannel,
+                c.greenChannel,
+                c.blueChannel,
+                c.alphaChannel)
+    }
+    
+    public func line(_ x1: Int16, _ y1: Int16, _ x2: Int16, _ y2: Int16)
+    {
+      aalineRGBA(sdlRenderer,x1,
+                             y1,
+                             x2,
+                             y2,
+                            strokeColor.redChannel,
+                            strokeColor.greenChannel,
+                            strokeColor.blueChannel,
+                            strokeColor.alphaChannel)
+    }
+    
+    
+    public func stokePolygon(_ xs:[Int16], _ ys:[Int16], _ c: Graf.Color = Graf.Color.black)
+    {
+      aapolygonRGBA(sdlRenderer, xs, ys, Int32(xs.count), strokeColor.redChannel,
+                                                          strokeColor.greenChannel,
+                                                          strokeColor.blueChannel,
+                                                          strokeColor.alphaChannel)
+    }
+    
+    public func fillPolygon(_ xs:[Int16], _ ys:[Int16])
+    {
+      switch fill
       {
-        cairo_set_line_width(context.cr, fabs(strokeWeight))
+        case let .color(c) :filledPolygonRGBA(sdlRenderer,
+                                              xs, ys, Int32(xs.count),
+                                              c.redChannel,
+                                              c.greenChannel,
+                                              c.blueChannel,
+                                              c.alphaChannel)
+        case let .texture(image): texturedPolygon(sdlRenderer,
+                                                  xs, ys, Int32(xs.count),
+                                                  image.surface,
+                                                  0, 0)
       }
     }
     
-    public var fontSize: Double = 14.0
-    {
-      didSet
-      {
-        cairo_set_font_size(context.cr, fabs(fontSize))
-      }
-    }
-    
-    public var fontFace: String = "Arial"
-    {
-      didSet
-      {
-        cairo_select_font_face(context.cr,
-                               fontFace,
-                               CAIRO_FONT_SLANT_NORMAL,
-                               CAIRO_FONT_WEIGHT_NORMAL)
-      }
-    }
-    
-    public lazy var viewRect = rect(0, 0, width, height)
-    public lazy var  width: Double = context.width
-    public lazy var  height: Double = context.height
-    
-    private let pixels: UnsafeMutablePointer<UInt8>
-    
-    init(_ w: UInt32, _ h: UInt32, _ data: UnsafeMutablePointer<UInt8>, _ stride: Int32)
-    {
-      surface = Cairo.BitmapSurface(w, h, data, stride)
-      context = surface.context
-      pixels = data
-    }
-    
-    public func clear(_ bgColor: Color = Color.white)
-    {
-      fill = Fill.color(bgColor)
-      viewRect.draw(self, stroke: false)
-    }
-    
-    public func setPixel(_ x: UInt32, _ y: UInt32, _ color: Color)
-    {
-      guard x < UInt32(width) && y < UInt32(height) else
-      {
-        Log.warn("x > width || y > height")
-        return
-      }
-      let addr = Int((y * UInt32(width) + x) * 4) // 4 channels per pix
-      let a = UnsafeMutableBufferPointer(start: pixels, count: Int(width) * Int(height) * 4)
-      let c = color.argbBytes
-      a[addr] = c[0]
-      a[addr + 1] = c[1]
-      a[addr + 2] = c[2]
-      a[addr + 3] = c[3]
-    }
+
   } // DrawingContext
 }
 

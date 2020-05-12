@@ -7,7 +7,6 @@
 
 import Foundation
 import SDL2
-import CCairo
 import CommonSwift
 
 
@@ -32,10 +31,16 @@ public class Graf
   private init()
   {
     SDL_InitSubSystem(SDL_INIT_VIDEO|SDL_INIT_AUDIO)
+    let f = Int32(IMG_INIT_JPG.rawValue|IMG_INIT_PNG.rawValue)
+    if f != IMG_Init(f) & f
+    {
+      Log.error("IMG_Init error")
+    }
   }
   
   deinit
   {
+    IMG_Quit()
     SDL_Quit()
   }
   
@@ -50,7 +55,7 @@ public class Graf
     case mouseWheel(deltaX: Int32, deltaY: Int32)
   }
   
-  public typealias Color = Cairo.Color
+  //public typealias Color = Cairo.Color
   
   public class func initialize()
   {

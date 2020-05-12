@@ -72,4 +72,5 @@
 #include "/usr/local/include/SDL2/begin_code.h"
 #include "/usr/local/include/SDL2/close_code.h"
 
-//#include "/usr/local/include/SDL2/SDL2_gfxPrimitives.h"
+#include "/usr/local/include/SDL2/SDL2_gfxPrimitives.h"
+#include "/usr/local/include/SDL2/SDL_image.h"
