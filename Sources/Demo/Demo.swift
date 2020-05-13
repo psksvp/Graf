@@ -4,9 +4,46 @@
 //
 //  Created by psksvp on 1/5/20.
 //
+/*
+*  The BSD 3-Clause License
+*  Copyright (c) 2018. by Pongsak Suvanpong (psksvp@gmail.com)
+*  All rights reserved.
+*
+*  Redistribution and use in source and binary forms, with or without modification,
+*  are permitted provided that the following conditions are met:
+*
+*  1. Redistributions of source code must retain the above copyright notice,
+*  this list of conditions and the following disclaimer.
+*
+*  2. Redistributions in binary form must reproduce the above copyright notice,
+*  this list of conditions and the following disclaimer in the documentation
+*  and/or other materials provided with the distribution.
+*
+*  3. Neither the name of the copyright holder nor the names of its contributors may
+*  be used to endorse or promote products derived from this software without
+*  specific prior written permission.
+*
+*  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+*  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+*  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+*  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+*  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+*  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+*  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+*  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+*  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+*  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*
+* This information is provided for personal educational purposes only.
+*
+* The author does not guarantee the accuracy of this information.
+*
+* By using the provided information, libraries or software, you solely take the risks of damaging your hardwares.
+*/
 
 import Foundation
 import Graf
+import CommonSwift
 
 #if os(Linux)
 import SGLMath
@@ -17,16 +54,24 @@ func demoSetPixel()
   Graf.initialize()
   let v = Graf.newView("static", 320, 240)
   
-  var x:UInt32 = 0
-  var y:UInt32 = 0
+  var x:UInt32 = v.width / 2
+  var y:UInt32 = v.height / 2
   
   v.draw
   {
     dc in
+    dc.clear()
+  
+    for _ in 0 ..< 300
+    {
+      let gx = UInt32.random(in: x - 20 ... x + 20)
+      let gy = UInt32.random(in: y - 20 ... y + 20)
+      dc.setPixel(gx, gy, Graf.Color.red)
+    }
     
-
-    dc.setPixel(x, y, Graf.Color.random)
-
+    dc.strokeColor = Graf.Color(1, 0, 0)
+    Graf.QuickDraw(dc).vline(v.width/2, 0, length: v.height)
+    Graf.ellipse(Double(x), Double(y), 100, 50).draw(dc, fill:false)
   }
   
   v.onInputEvent
@@ -104,7 +149,7 @@ func demoDrawWithEvent()
     r.rotate(angle).draw(dc)
    
     
-    if l.overlapWith(cross)
+    if let _ = l.overlapWith(cross)
     {
       cross.boundary.draw(dc, fill: false)
       l.boundary.draw(dc, fill: false)
@@ -200,16 +245,16 @@ func demoPong()
   let topBar = Graf.rect(0, 0, Double(view.width), barWidth)
   let bottomBar = Graf.rect(0, Double(view.height) - barWidth,  Double(view.width), barWidth)
   let leftBar = Graf.rect(0, barWidth, barWidth, Double(view.height) - barWidth)
-  let rightPaddle = Graf.rect(Double(view.width - 50), 100, barWidth/2, 200)
+  let rightPaddle = Graf.rect(Double(view.width - 50), 100, barWidth, 150)
   let ball = Graf.circle(Double(view.width / 2), Double(view.height / 2), 25, step: 0.1)
   var vel = Vector3e(Double.random(in: 3 ... 9), Double.random(in: 3 ... 9), 1)
   
   func moveAwayFrom(_ p: Graf.Polygon, _ reflectRay: Vector3e)
   {
-    while ball.overlapWith(p)
+    while nil != ball.overlapWith(p)
     {
       ball.translate(reflectRay.x, reflectRay.y)
-      print("moving away \(reflectRay)")
+      //print("moving away \(reflectRay)")
     }
   }
   
@@ -218,34 +263,37 @@ func demoPong()
     dc in
     
     dc.clear()
+    dc.fill = Graf.Fill.colorBlack
     topBar.draw(dc)
     bottomBar.draw(dc)
     leftBar.draw(dc)
+    dc.fill = Graf.Fill.colorBlue
     rightPaddle.draw(dc)
-    ball.draw(dc, fill: false)
+    dc.fill = Graf.Fill.colorRed
+    ball.draw(dc)
     ball.translate(vel.x, vel.y)
     
     var hit = false
     
-    if ball.overlapWith(topBar)
+    if let _ = ball.overlapWith(topBar)
     {
       vel = topBar.edge(2)!.reflectRay(vector: vel).0
       moveAwayFrom(topBar, vel)
       hit = true
     }
-    else if ball.overlapWith(bottomBar)
+    else if let _ = ball.overlapWith(bottomBar)
     {
       vel = bottomBar.edge(0)!.reflectRay(vector: vel).0
       moveAwayFrom(bottomBar, vel)
       hit = true
     }
-    else if ball.overlapWith(leftBar)
+    else if let _ = ball.overlapWith(leftBar)
     {
       vel = leftBar.edge(1)!.reflectRay(vector: vel).0
       moveAwayFrom(leftBar, vel)
       hit = true
     }
-    else if ball.overlapWith(rightPaddle)
+    else if let _ = ball.overlapWith(rightPaddle)
     {
       vel = rightPaddle.edge(3)!.reflectRay(vector: vel).0
       moveAwayFrom(rightPaddle, vel)
@@ -256,7 +304,7 @@ func demoPong()
     {
       //print(vel)
       vel = vel * Double.random(in: 9 ... 15)
-      //Graf.playAudio(fileName: "./media/beep.mp3")
+      Graf.playAudio(fileName: "./media/beep.mp3")
     }
     
       
@@ -300,6 +348,43 @@ func demoPong()
   }
   
   Graf.run()
+}
+
+func pid()
+{
+  Graf.initialize()
+  let view = Graf.newView("PID", 800, 480)
+  let setRect = Graf.rect(200, 200, 100, 100)
+  let oval = Graf.ellipse(600, 200, 100, 100)
+  
+  //let pidX = CommonSwift.Math.P 
+  
+  view.draw
+  {
+    dc in
+    
+    dc.clear()
+    setRect.draw(dc, fill: false)
+    
+  }
+  
+  view.onInputEvent
+  {
+    evt in
+    
+    switch evt
+    {
+      case let .mousePressed(mouseX: mx, mouseY: my, button: _) :
+        setRect.moveTo(Double(mx), Double(my))
+      
+      default: break
+    }
+  }
+  
+  
+  
+  Graf.run()
+  
 }
 
 

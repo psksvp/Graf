@@ -4,6 +4,42 @@
 //
 //  Created by psksvp on 29/4/20.
 //
+/*
+*  The BSD 3-Clause License
+*  Copyright (c) 2018. by Pongsak Suvanpong (psksvp@gmail.com)
+*  All rights reserved.
+*
+*  Redistribution and use in source and binary forms, with or without modification,
+*  are permitted provided that the following conditions are met:
+*
+*  1. Redistributions of source code must retain the above copyright notice,
+*  this list of conditions and the following disclaimer.
+*
+*  2. Redistributions in binary form must reproduce the above copyright notice,
+*  this list of conditions and the following disclaimer in the documentation
+*  and/or other materials provided with the distribution.
+*
+*  3. Neither the name of the copyright holder nor the names of its contributors may
+*  be used to endorse or promote products derived from this software without
+*  specific prior written permission.
+*
+*  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+*  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+*  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+*  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+*  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+*  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+*  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+*  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+*  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+*  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*
+* This information is provided for personal educational purposes only.
+*
+* The author does not guarantee the accuracy of this information.
+*
+* By using the provided information, libraries or software, you solely take the risks of damaging your hardwares.
+*/
 
 import Foundation
 import CCairo
@@ -49,13 +85,13 @@ extension Graf
     public lazy var width: UInt32 = UInt32(context.width)
     public lazy var height: UInt32 = UInt32(context.height)
     
-    private let pixels: UnsafeMutablePointer<UInt8>
+    private let pixels: UnsafeMutableBufferPointer<UInt8>
     
     init(_ w: UInt32, _ h: UInt32, _ data: UnsafeMutablePointer<UInt8>, _ stride: Int32)
     {
       surface = Cairo.BitmapSurface(w, h, data, stride)
       context = surface.context
-      pixels = data
+      pixels = UnsafeMutableBufferPointer(start: data, count: Int(w) * Int(h) * 4)
     }
     
     public func clear(_ bgColor: Color = Color.white)
@@ -66,18 +102,17 @@ extension Graf
     
     public func setPixel(_ x: UInt32, _ y: UInt32, _ color: Color)
     {
-      guard x < UInt32(width) && y < UInt32(height) else
+      guard x < width && y < height else
       {
         Log.warn("x > width || y > height")
         return
       }
-      let addr = Int((y * UInt32(width) + x) * 4) // 4 channels per pix
-      let a = UnsafeMutableBufferPointer(start: pixels, count: Int(width) * Int(height) * 4)
-      let c = color.argbBytes
-      a[addr] = c[0]
-      a[addr + 1] = c[1]
-      a[addr + 2] = c[2]
-      a[addr + 3] = c[3]
+      let addr = Int((y * width + x) * 4) // 4 channels per pix
+      let c = color.bytes
+      pixels[addr]     = c[3]
+      pixels[addr + 1] = c[0]
+      pixels[addr + 2] = c[1]
+      pixels[addr + 3] = c[2]
     }
   } // DrawingContext
 }
