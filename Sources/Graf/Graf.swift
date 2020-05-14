@@ -123,14 +123,6 @@ public class Graf
   
   public class func run()
   {
-    func mouseState(_ e: SDL_Event) -> (Int32, Int32)
-    {
-      var x: Int32 = 0
-      var y: Int32 = 0
-      SDL_GetMouseState( &x, &y )
-      return (x, y)
-    }
-    
     func dispatchEvent(_ vid: UInt32, _ e: SDL_Event)
     {
       guard let v = Graf.single().views[vid] else { return }

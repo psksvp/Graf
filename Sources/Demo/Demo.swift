@@ -54,24 +54,30 @@ func demoSetPixel()
   Graf.initialize()
   let v = Graf.newView("static", 320, 240)
   
-  var x:UInt32 = v.width / 2
-  var y:UInt32 = v.height / 2
+  var x:Int32 = Int32(v.width / 2)
+  var y:Int32 = Int32(v.height / 2)
   
   v.draw
   {
     dc in
     dc.clear()
   
-    for _ in 0 ..< 300
+    
+    dc.fill = Graf.Fill.color(0, 0, 1)
+    Graf.ellipse(Double(v.width / 2), Double(v.height / 2), 100, 50).draw(dc)
+    
+    dc.strokeColor = Graf.Color(0, 1, 0, 0.5)
+    for x in 0 ..< dc.width
     {
-      let gx = UInt32.random(in: x - 20 ... x + 20)
-      let gy = UInt32.random(in: y - 20 ... y + 20)
-      dc.setPixel(gx, gy, Graf.Color.red)
+      Graf.QuickDraw(dc).vline(Int32(x), 0, length: v.height)
     }
     
-    dc.strokeColor = Graf.Color(1, 0, 0)
-    Graf.QuickDraw(dc).vline(v.width/2, 0, length: v.height)
-    Graf.ellipse(Double(x), Double(y), 100, 50).draw(dc, fill:false)
+    for _ in 0 ..< 100
+    {
+      let gx = Int32.random(in: x - 50 ... x + 50)
+      let gy = Int32.random(in: y - 50 ... y + 50)
+      dc.setPixel(gx, gy, Graf.Color(0, 1, 0, 0.5))
+    }
   }
   
   v.onInputEvent
@@ -82,8 +88,8 @@ func demoSetPixel()
     {
       case .mousePressed(let mx, let my, let button) :
         print("button \(button)")
-        x = UInt32(mx)
-        y = UInt32(my)
+        x = Int32(mx)
+        y = Int32(my)
       
       default: break
     }
@@ -395,6 +401,8 @@ func pid()
 //  let image = Graf.Image("./media/chessboard.png")
 //  image.rotate(0.5)
   
+  let deg = 180.0 / Double.pi
+  
   view.draw
   {
     dc in
@@ -412,6 +420,8 @@ func pid()
     oval.polygon.draw(dc)
     
     //let (mx, my) = Graf.mouseLocation
+    
+    print(target.angle * deg, oval.angle * deg)
     
   }
   

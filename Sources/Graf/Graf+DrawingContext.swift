@@ -102,19 +102,19 @@ extension Graf
       viewRect.draw(self, stroke: false)
     }
     
-    public func setPixel(_ x: UInt32, _ y: UInt32, _ color: Color)
+    public func setPixel(_ x: Int32, _ y: Int32, _ color: Color)
     {
-      guard x < width && y < height else
+      guard x < width && y < height && x >= 0 && y >= 0 else
       {
-        Log.warn("x > width || y > height")
+        Log.warn("x > width || y > height || x < 0 || y < 0")
         return
       }
-      let addr = Int((y * width + x) * 4) // 4 channels per pix
-      let c = color.bytes
-      pixels[addr]     = c[3]
-      pixels[addr + 1] = c[0]
-      pixels[addr + 2] = c[1]
-      pixels[addr + 3] = c[2]
+      let addr = Int((y * Int32(width) + x) * 4) // 4 channels per pix
+      
+      pixels[addr]     = UInt8(color.blueChannel * 255)  // blue
+      pixels[addr + 1] = UInt8(color.greenChannel * 255) // green
+      pixels[addr + 2] = UInt8(color.redChannel * 255)   // red
+      pixels[addr + 3] = UInt8(color.alphaChannel * 255) // alpha
     }
     
     public func saveFrameAsPNG(_ filename:String)

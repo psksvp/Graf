@@ -55,7 +55,7 @@ extension Graf
       self.dc = dc
     }
     
-    public func vline(_ x: UInt32, _ y: UInt32, length: UInt32)
+    public func vline(_ x: Int32, _ y: Int32, length: UInt32)
     {
       var cy = y
       while cy - y != length
@@ -65,7 +65,7 @@ extension Graf
       }
     }
     
-    public func hline(_ x: UInt32, _ y: UInt32, length: UInt32)
+    public func hline(_ x: Int32, _ y: Int32, length: UInt32)
     {
       var cx = x
       while cx - x != length
@@ -74,6 +74,8 @@ extension Graf
         cx = cx + 1
       }
     }
+    
+    //public func line(_ x0: UInt32, )
     
     /*
      plotLine(int x0, int y0, int x1, int y1)
