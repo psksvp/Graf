@@ -45,8 +45,8 @@ print(FileManager.default.currentDirectoryPath)
 //demoHitTest()
 //demoStaticDraw()
 
-//demoPong()
+demoPong()
 
 //pid()
 
-demoSetPixel()
+//demoSetPixel()
