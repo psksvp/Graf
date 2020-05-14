@@ -115,6 +115,8 @@ extension Graf
       pixels[addr + 1] = UInt8(color.greenChannel * 255) // green
       pixels[addr + 2] = UInt8(color.redChannel * 255)   // red
       pixels[addr + 3] = UInt8(color.alphaChannel * 255) // alpha
+      
+      cairo_surface_mark_dirty_rectangle(self.surface.csurface, x, y, 1, 1)
     }
     
     public func saveFrameAsPNG(_ filename:String)
