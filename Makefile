@@ -19,5 +19,8 @@ push: commit
 	git push bb
 	git push github
 	
+updateDepend:
+	swift package update
+	
 clean: 
 	rm -rf .build DerivedData Package.resolved

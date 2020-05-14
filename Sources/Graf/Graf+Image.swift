@@ -48,7 +48,9 @@ extension Graf
 {
   public class Image : Drawable
   {
-    private let surface: Cairo.PNGSurface
+    private let pngs: Cairo.PNGSurface
+    private let surface: Cairo.BitmapSurface
+
     private var x: Double = 0
     private var y: Double = 0
     
@@ -57,9 +59,11 @@ extension Graf
     
     public init(_ f: String)
     {
-      surface = Cairo.PNGSurface(f)
+      self.pngs = Cairo.PNGSurface(f)
+      self.surface = Cairo.BitmapSurface(UInt32(pngs.width), UInt32(pngs.height))
     }
     
+    @discardableResult
     public func moveTo(_ x: Double, _ y: Double) -> Image
     {
       self.x = x
@@ -67,10 +71,35 @@ extension Graf
       return self
     }
     
+    @discardableResult
+    public func rotate(_ angle: Double) -> Image
+    {
+      surface.context.translate(Double(width) / 2.0, Double(height) / 2.0)
+      surface.context.rotate(angle)
+      surface.context.translate(-Double(width) / 2.0, -Double(height) / 2.0)
+      return self
+    }
+    
+    @discardableResult
+    public func scale(_ sx: Double, _ sy: Double) -> Image
+    {
+      surface.context.scale(sx, sy)
+      return self
+    }
+    
+    private func clear()
+    {
+      cairo_set_source_rgba(surface.context.cr, 1, 0, 0, 1)
+      cairo_rectangle(surface.context.cr, x, y, Double(width), Double(height))
+      cairo_fill(surface.context.cr)
+      cairo_surface_flush(surface.csurface)
+    }
+    
     public func draw(_ dc: Graf.DrawingContext, stroke: Bool = true, fill: Bool = true)
     {
-      cairo_set_source_surface(dc.context.cr, surface.csurface, x + Double(width) / 2, y + Double(height) / 2)
-      cairo_paint(dc.context.cr)
+      clear()
+      //pngs.paintToContext(self.surface.context, 0, 0)
+      surface.paintToContext(dc.context, x, y)
     }
   }
 }

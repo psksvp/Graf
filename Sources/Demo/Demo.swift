@@ -352,19 +352,66 @@ func demoPong()
 
 func pid()
 {
+  class Object
+  {
+    let polygon: Graf.Polygon
+    
+    var angle: Double = 0
+    {
+      willSet
+      {
+        if newValue != angle
+        {
+          let delta = angle - newValue
+          polygon.rotate(delta)
+        }
+      }
+
+    }
+    
+    init(_ p: Graf.Polygon)
+    {
+      polygon = p
+    }
+  }
+  
   Graf.initialize()
   let view = Graf.newView("PID", 800, 480)
-  let setRect = Graf.rect(200, 200, 100, 100)
-  let oval = Graf.ellipse(600, 200, 100, 100)
+  let target = Object(Graf.rect(200, 200, 50, 130))
+  let oval = Object(Graf.ellipse(600, 200, 40, 120, step: 0.1))
+  let pidX = CommonSwift.Math.PID(setPoint: target.polygon.center.x,
+                                  kP: 0.003, kI: 0.005, kD: 0.003,
+                                  outputLimit: -180 ... 180)
+  let pidY = CommonSwift.Math.PID(setPoint: target.polygon.center.y,
+                                  kP: 0.003, kI: 0.005, kD: 0.003,
+                                  outputLimit: -180 ... 180)
   
-  //let pidX = CommonSwift.Math.P 
+  let pidA = CommonSwift.Math.PID(setPoint: target.angle,
+                                  kP: 0.003, kI: 0.005, kD: 0.003,
+                                  outputLimit: -180 ... 180)
+  
+  let pids = Math.PIDArray([pidX, pidY, pidA])
+  
+//  let image = Graf.Image("./media/chessboard.png")
+//  image.rotate(0.5)
   
   view.draw
   {
     dc in
     
     dc.clear()
-    setRect.draw(dc, fill: false)
+    
+    let deltas = pids.step(inputs:[oval.polygon.center.x, oval.polygon.center.y, oval.angle])
+    dc.fill = Graf.Fill.color(1, 0, 0, 0.5)
+    target.polygon.draw(dc)
+    
+    oval.polygon.translate(deltas[0], deltas[1])
+    oval.angle = oval.angle + deltas[2]
+      
+    dc.fill = Graf.Fill.color(0, 1, 0, 0.5)
+    oval.polygon.draw(dc)
+    
+    //let (mx, my) = Graf.mouseLocation
     
   }
   
@@ -374,8 +421,15 @@ func pid()
     
     switch evt
     {
-      case let .mousePressed(mouseX: mx, mouseY: my, button: _) :
-        setRect.moveTo(Double(mx), Double(my))
+      case let .mouseMoved(mouseX: mx, mouseY: my) :
+        target.polygon.moveTo(Double(mx), Double(my))
+        pids.updateSetPoint(newSetPoints: [Double(mx), Double(my), target.angle])
+      
+      case .mouseWheel(_ , let dy):
+        target.angle = target.angle + (0.1 * (dy >= 0 ? 1 : -1))
+        pids.updateSetPoint(newSetPoints: [target.polygon.center.x,
+                                           target.polygon.center.y,
+                                           target.angle])
       
       default: break
     }

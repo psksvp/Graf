@@ -201,6 +201,18 @@ public struct Cairo //namespace
     {
       cairo_surface_destroy(csurface)
     }
+    
+    func paintToContext(_ c: Context, _ x: Double, _ y: Double)
+    {
+      cairo_set_source_surface(c.cr, self.csurface, x, y)
+      cairo_paint(c.cr)
+    }
+    
+    static func fromRectOfSurface(_ s: Surface, x: Double, _ y: Double, _ width: Double, _ height: Double) -> Surface
+    {
+      let s = cairo_surface_create_for_rectangle(s.csurface, x, y, width, height)
+      return Surface(s!)
+    }
   }
   
   class BitmapSurface : Surface
@@ -210,15 +222,13 @@ public struct Cairo //namespace
       let s = cairo_image_surface_create_for_data(data, CAIRO_FORMAT_ARGB32, Int32(w), Int32(h), stride)
       super.init(s!)
     }
-  }
-  
-  class RectOfSurface : Surface
-  {
-    init(_ surface: Surface, x: Double, _ y: Double, _ width: Double, _ height: Double)
+    
+    init(_ w: UInt32, _ h: UInt32)
     {
-      let s = cairo_surface_create_for_rectangle(surface.csurface, x, y, width, height)
+      let s = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, Int32(w), Int32(h))
       super.init(s!)
     }
+    
   }
   
   class PNGSurface : Surface
@@ -279,15 +289,31 @@ public struct Cairo //namespace
       }
     }
     
-    func push()
+    func saveStates()
     {
       cairo_save(cr)
     }
     
-    func pop()
+    func restoreStates()
     {
       cairo_restore(cr)
     }
+    
+    func translate(_ dx: Double, _ dy: Double)
+    {
+      cairo_translate(cr, dx, dy)
+    }
+    
+    func rotate(_ angle: Double)
+    {
+      cairo_rotate(cr, angle)
+    }
+    
+    func scale(_ sx: Double, _ sy: Double)
+    {
+      cairo_scale(self.cr, sx, sy)
+    }
+    
   } // context
   
   

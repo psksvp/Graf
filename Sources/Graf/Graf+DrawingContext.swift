@@ -44,6 +44,7 @@
 import Foundation
 import CCairo
 import CommonSwift
+import SDL2
 
 extension Graf
 {
@@ -81,6 +82,7 @@ extension Graf
       }
     }
     
+    
     public lazy var viewRect = rect(0, 0, Double(width), Double(height))
     public lazy var width: UInt32 = UInt32(context.width)
     public lazy var height: UInt32 = UInt32(context.height)
@@ -113,6 +115,11 @@ extension Graf
       pixels[addr + 1] = c[0]
       pixels[addr + 2] = c[1]
       pixels[addr + 3] = c[2]
+    }
+    
+    public func saveFrameAsPNG(_ filename:String)
+    {
+      cairo_surface_write_to_png(self.surface.csurface, filename)
     }
   } // DrawingContext
 }

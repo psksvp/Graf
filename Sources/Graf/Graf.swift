@@ -88,6 +88,14 @@ public class Graf
   
   public typealias Color = Cairo.Color
   
+  static public var mouseLocation: (Int32, Int32)
+  {
+    var x: Int32 = 0
+    var y: Int32 = 0
+    SDL_GetMouseState( &x, &y )
+    return (x, y)
+  }
+  
   public class func initialize()
   {
     Graf.single()
