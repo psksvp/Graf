@@ -1,6 +1,6 @@
 /*
 *  The BSD 3-Clause License
-*  Copyright (c) 2018. by Pongsak Suvanpong (psksvp@gmail.com)
+*  Copyright (c) 2020. by Pongsak Suvanpong (psksvp@gmail.com)
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without modification,
@@ -45,8 +45,10 @@ print(FileManager.default.currentDirectoryPath)
 //demoHitTest()
 //demoStaticDraw()
 
-demoPong()
+//demoPong()
 
 //pid()
 
 //demoSetPixel()
+
+nonInteractive()

@@ -6,7 +6,7 @@
 //
 /*
 *  The BSD 3-Clause License
-*  Copyright (c) 2018. by Pongsak Suvanpong (psksvp@gmail.com)
+*  Copyright (c) 2020. by Pongsak Suvanpong (psksvp@gmail.com)
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without modification,
@@ -94,7 +94,7 @@ func demoSetPixel()
       default: break
     }
   }
-  Graf.run()
+  Graf.startRunloop()
 }
 
 func demoStaticDraw()
@@ -124,7 +124,7 @@ func demoStaticDraw()
     Graf.Text(200, 400, "Helloworld").draw(dc)
   }
   
-  Graf.run()
+  Graf.startRunloop()
 }
 
 func demoDrawWithEvent()
@@ -173,7 +173,7 @@ func demoDrawWithEvent()
       case let .keyPressed(code) :
         print("keycode \(code)")
       case .keyReleased(let code) where code == 44 :
-        Graf.quit()
+        Graf.stopRunloop()
       case let .mouseMoved(mx, my) :
         x = Double(mx)
         y = Double(my)
@@ -190,7 +190,7 @@ func demoDrawWithEvent()
     }
   }
   
-  Graf.run()
+  Graf.startRunloop()
 }
 
 func demoHitTest()
@@ -240,7 +240,7 @@ func demoHitTest()
       default: break
     }
   }
-  Graf.run()
+  Graf.startRunloop()
 }
 
 func demoPong()
@@ -353,7 +353,7 @@ func demoPong()
     }
   }
   
-  Graf.run()
+  Graf.startRunloop()
 }
 
 func pid()
@@ -447,7 +447,12 @@ func pid()
   
   
   
-  Graf.run()
+  Graf.startRunloop()
+  
+}
+
+func nonInteractive()
+{
   
 }
 

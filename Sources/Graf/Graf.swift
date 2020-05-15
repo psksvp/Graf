@@ -6,7 +6,7 @@
 //
 /*
 *  The BSD 3-Clause License
-*  Copyright (c) 2018. by Pongsak Suvanpong (psksvp@gmail.com)
+*  Copyright (c) 2020. by Pongsak Suvanpong (psksvp@gmail.com)
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without modification,
@@ -121,7 +121,7 @@ public class Graf
     return nil
   }
   
-  public class func run()
+  public class func startRunloop()
   {
     func dispatchEvent(_ vid: UInt32, _ e: SDL_Event)
     {
@@ -158,7 +158,7 @@ public class Graf
         
         case SDL_WINDOWEVENT where event.window.event == SDL_WINDOWEVENT_CLOSE.rawValue:
           Log.info("Quiting")
-          self.quit()
+          self.stopRunloop()
       
         default:
           break
@@ -181,7 +181,7 @@ public class Graf
     }
   }
   
-  public class func quit()
+  public class func stopRunloop()
   {
     Graf.single().looping = false
   }
