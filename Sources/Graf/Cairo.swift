@@ -55,25 +55,25 @@ public struct Cairo //namespace
     public var redChannel: Double
     {
       get { component[0] }
-      set { component[0] = newValue}
+      set { component[0] = newValue.clamped(to: 0 ... 1)}
     }
     
     public var greenChannel: Double
     {
       get { component[1] }
-      set { component[1] = newValue}
+      set { component[1] = newValue.clamped(to: 0 ... 1)}
     }
     
     public var blueChannel: Double
     {
       get { component[2] }
-      set { component[2] = newValue}
+      set { component[2] = newValue.clamped(to: 0 ... 1)}
     }
     
     public var alphaChannel: Double
     {
       get { component[3] }
-      set { component[3] = newValue}
+      set { component[3] = newValue.clamped(to: 0 ... 1)}
     }
     
     public static var transparent: Color
