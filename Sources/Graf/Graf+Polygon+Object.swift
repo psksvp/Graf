@@ -1,9 +1,15 @@
+//
+//  Graf+Polygon+Object.swift
+//  
+//
+//  Created by psksvp on 15/5/20.
+//
 /*
 *  The BSD 3-Clause License
-*  Copyright (c) 2020. by Pongsak Suvanpong (psksvp@gmail.com)
-*  All rights reserved.
-*
-*  Redistribution and use in source and binary forms, with or without modification,
+  *  Copyright (c) 2020. by Pongsak Suvanpong (psksvp@gmail.com)
+    *  All rights reserved.
+      *
+      *  Redistribution and use in source and binary forms, with or without modification,
 *  are permitted provided that the following conditions are met:
 *
 *  1. Redistributions of source code must retain the above copyright notice,
@@ -36,19 +42,57 @@
 */
 import Foundation
 
-
-print("Hello, world!")
-print(FileManager.default.currentDirectoryPath)
-
-
-//demoDrawWithEvent()
-//demoHitTest()
-//demoStaticDraw()
-
-demoPong()
-
-//pid()
-
-//demoSetPixel()
-
-
+extension Graf
+{
+  public class Object : Drawable
+  {
+    public var size: Double = 1
+    {
+      willSet
+      {
+        if newValue != size
+        {
+          let s = 1.0 + (newValue - size)
+          polygon.scale(s, s)
+        }
+      }
+    }
+    
+    public var angle: Double = 0
+    {
+      willSet
+      {
+        if newValue != angle
+        {
+          let delta = angle - newValue
+          polygon.rotate(delta)
+        }
+      }
+    }
+    
+    public var location: Vector3e
+    {
+      get
+      {
+        polygon.center
+      }
+      
+      set
+      {
+        polygon.moveTo(newValue.x, newValue.y)
+      }
+    }
+    
+    private let polygon: Graf.Polygon
+    
+    public init(_ p: Polygon)
+    {
+      self.polygon = p
+    }
+    
+    public func draw(_ dc: Graf.DrawingContext, stroke: Bool = true, fill: Bool = true)
+    {
+      polygon.draw(dc, stroke: stroke, fill: fill)
+    }
+  }
+}

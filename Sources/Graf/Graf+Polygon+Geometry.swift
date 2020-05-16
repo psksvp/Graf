@@ -53,7 +53,6 @@ import SGLMath
 extension Graf.Polygon
 {
   //https://developer.apple.com/documentation/accelerate/working_with_vectors
-  
   func matrix(_ r0: Vector3e, _ r1: Vector3e, _ r2: Vector3e) -> Matrix3e
   {
     #if os(macOS)
@@ -87,7 +86,8 @@ extension Graf.Polygon
     let m = matrix(Vector3e(sx,  0, 0),
                    Vector3e(0,  sy, 0),
                    Vector3e(0,   0, 1))
-    return transform(m)
+    let c = self.center
+    return transform(m).moveTo(c.x, c.y)
   }
   
   @discardableResult
@@ -188,14 +188,49 @@ extension Graf.Polygon
     
       return nil
     }
+    
+    // parallel inner loop check
+    func edgeIntersectedPar() -> Graf.Edge?
+    {
+      // any edge of Polygon polygon intersected with Edge e
+      func intersected(polygon: Graf.Polygon, withEdge e: Graf.Edge) -> Int?
+      {
+        var intersectedIdx = -1
+        DispatchQueue.concurrentPerform(iterations: polygon.vertices.count)
+        {
+          idx in
+          
+          //if unwrap fail    v, expr is false  vvvvv
+          if polygon.edge(idx)?.intersect(e) ?? false
+          {
+            intersectedIdx = idx
+          }
+        }
+        
+        return intersectedIdx >= 0 ? intersectedIdx : nil
+      }
+      
+      let (w, v) = self.vertices.count >= p.vertices.count ? (self, p) : (p, self)
+      
+      for i in 0 ..< v.vertices.count
+      {
+        if let e = v.edge(i),
+           let idx = intersected(polygon: w, withEdge: e),
+           idx >= 0
+        {
+          return v === self ? e : w.edge(idx)
+        }
+      }
+      return nil
+    }
 
     
     // would it do a short circult?
     //return boundaryIntersected() && edgeIntersected()
     
-    //
+    //if boundary has not touched?
     guard boundaryIntersected() else { return nil }
     
-    return edgeIntersected()
+    return edgeIntersectedPar()
   }
 }

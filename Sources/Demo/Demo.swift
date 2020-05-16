@@ -308,8 +308,8 @@ func demoPong()
     
     if hit
     {
-      //print(vel)
-      vel = vel * Double.random(in: 9 ... 15)
+      vel = vel * Double.random(in: 5 ... 9)
+      print(vel)
       Graf.playAudio(fileName: "./media/beep.mp3")
     }
     
@@ -358,37 +358,14 @@ func demoPong()
 
 func pid()
 {
-  class Object
-  {
-    let polygon: Graf.Polygon
-    
-    var angle: Double = 0
-    {
-      willSet
-      {
-        if newValue != angle
-        {
-          let delta = angle - newValue
-          polygon.rotate(delta)
-        }
-      }
-
-    }
-    
-    init(_ p: Graf.Polygon)
-    {
-      polygon = p
-    }
-  }
-  
   Graf.initialize()
-  let view = Graf.newView("PID", 800, 480)
-  let target = Object(Graf.rect(200, 200, 50, 130))
-  let oval = Object(Graf.ellipse(600, 200, 40, 120, step: 0.1))
-  let pidX = CommonSwift.Math.PID(setPoint: target.polygon.center.x,
+  let view = Graf.newView("PID", 600, 400)
+  let target = Graf.Object(Graf.rect(200, 200, 50, 130))
+  let oval = Graf.Object(Graf.ellipse(400, 200, 40, 120, step: 0.1))
+  let pidX = CommonSwift.Math.PID(setPoint: target.location.x,
                                   kP: 0.003, kI: 0.005, kD: 0.003,
                                   outputLimit: -180 ... 180)
-  let pidY = CommonSwift.Math.PID(setPoint: target.polygon.center.y,
+  let pidY = CommonSwift.Math.PID(setPoint: target.location.y,
                                   kP: 0.003, kI: 0.005, kD: 0.003,
                                   outputLimit: -180 ... 180)
   
@@ -396,12 +373,12 @@ func pid()
                                   kP: 0.003, kI: 0.005, kD: 0.003,
                                   outputLimit: -180 ... 180)
   
-  let pids = Math.PIDArray([pidX, pidY, pidA])
+  let pidS = CommonSwift.Math.PID(setPoint: target.size,
+                                  kP: 0.003, kI: 0.005, kD: 0.003,
+                                  outputLimit: -180 ... 180)
   
-//  let image = Graf.Image("./media/chessboard.png")
-//  image.rotate(0.5)
-  
-  let deg = 180.0 / Double.pi
+  let pids = Math.PIDArray([pidX, pidY, pidA, pidS])
+
   
   view.draw
   {
@@ -409,20 +386,42 @@ func pid()
     
     dc.clear()
     
-    let deltas = pids.step(inputs:[oval.polygon.center.x, oval.polygon.center.y, oval.angle])
+    let deltas = pids.step(inputs:[oval.location.x,
+                                   oval.location.y,
+                                   oval.angle,
+                                   oval.size])
     dc.fill = Graf.Fill.color(1, 0, 0, 0.5)
-    target.polygon.draw(dc)
+    target.draw(dc)
     
-    oval.polygon.translate(deltas[0], deltas[1])
+    oval.location = oval.location + Vector3e(deltas[0], deltas[1], 1)
     oval.angle = oval.angle + deltas[2]
+    oval.size = oval.size + deltas[3]
       
     dc.fill = Graf.Fill.color(0, 1, 0, 0.5)
-    oval.polygon.draw(dc)
+    oval.draw(dc)
     
     //let (mx, my) = Graf.mouseLocation
     
-    print(target.angle * deg, oval.angle * deg)
+    //print(target.angle * deg, oval.angle * deg)
     
+  }
+  
+  func resize(_ code: UInt32)
+  {
+    print(code)
+    
+    switch code
+    {
+      case 82: target.size = target.size + 0.05
+      case 81: target.size = target.size - 0.05
+
+      default: break
+    }
+    
+    pids.updateSetPoint(newSetPoints: [target.location.x,
+                                       target.location.y,
+                                       target.angle,
+                                       target.size])
   }
   
   view.onInputEvent
@@ -431,15 +430,19 @@ func pid()
     
     switch evt
     {
+      case let .keyPressed(keyCode: code) :
+        resize(code)
       case let .mouseMoved(mouseX: mx, mouseY: my) :
-        target.polygon.moveTo(Double(mx), Double(my))
-        pids.updateSetPoint(newSetPoints: [Double(mx), Double(my), target.angle])
+        target.location = Vector3e(Double(mx), Double(my), 1)
+        pids.updateSetPoint(newSetPoints: [Double(mx), Double(my), target.angle, target.size])
       
-      case .mouseWheel(_ , let dy):
-        target.angle = target.angle + (0.1 * (dy >= 0 ? 1 : -1))
-        pids.updateSetPoint(newSetPoints: [target.polygon.center.x,
-                                           target.polygon.center.y,
-                                           target.angle])
+      case .mouseWheel(let dx , let dy):
+        target.angle = (target.angle + (0.1 * (dy > 0 ? 1 : -1))).clamped(to: 0 ... 2 * Double.pi)
+        //target.size = (target.size + (0.01 * (dx > 0 ? 1 : -1)))
+        pids.updateSetPoint(newSetPoints: [target.location.x,
+                                           target.location.y,
+                                           target.angle,
+                                           target.size])
       
       default: break
     }
