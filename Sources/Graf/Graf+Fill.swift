@@ -50,20 +50,20 @@ extension Graf
   {
     let cPattern: Cairo.FillPattern
     
-    private init(_ c: Graf.Color)
+    public init(_ c: Graf.Color)
     {
       cPattern = Cairo.FillPattern(c)
     }
     
-    private init(_ f: String)
+    public init(_ s: Graf.Image)
     {
-      cPattern = Cairo.FillPattern(Cairo.PNGSurface(f))
+      cPattern = Cairo.FillPattern(s.surface)
     }
     
-    private init(_ x0: Double,
-                 _ y0: Double,
-                 _ x1: Double,
-                 _ y1: Double)
+    public init(_ x0: Double,
+                _ y0: Double,
+                _ x1: Double,
+                _ y1: Double)
     {
       cPattern = Cairo.FillPattern(x0, y1, x1, y1)
     }
@@ -86,11 +86,6 @@ extension Graf
     public static var colorRed = Fill.color(1, 0, 0)
     public static var colorGreen = Fill.color(0, 1, 0)
     public static var colorBlue = Fill.color(0, 0, 1)
-    
-    public class func image(_ f: String) -> Fill
-    {
-      return Fill(f)
-    }
     
     public class func linearGradient(_ x0: Double,
                                      _ y0: Double,

@@ -177,7 +177,7 @@ public struct Cairo //namespace
     func setAsSourceInContext(_ c: Context)
     {
       cairo_set_source(c.cr, pattern);
-      cairo_pattern_set_extend(cairo_get_source(c.cr), CAIRO_EXTEND_REPEAT);
+      cairo_pattern_set_extend(cairo_get_source(c.cr), CAIRO_EXTEND_PAD);
     }
   }
   

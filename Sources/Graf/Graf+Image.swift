@@ -48,9 +48,9 @@ extension Graf
 {
   public class Image : Drawable
   {
+    let surface: Cairo.BitmapSurface
+    
     private let pngs: Cairo.PNGSurface
-    private let surface: Cairo.BitmapSurface
-
     private var x: Double = 0
     private var y: Double = 0
     
@@ -59,18 +59,29 @@ extension Graf
     public lazy var width: UInt32 = UInt32(pngs.width)
     public lazy var height: UInt32 = UInt32(pngs.height)
     
+    public var boundary: Polygon
+    {
+      return Graf.rect(x, y, canSize, canSize)
+    }
+    
+    public var center: Vector3e
+    {
+      return Vector3e(x - canSize / 2, y - canSize / 2, 1)
+    }
+    
     public init(_ f: String)
     {
       self.pngs = Cairo.PNGSurface(f)
       canSize = sqrt(pngs.width * pngs.width + pngs.height * pngs.height)
       self.surface = Cairo.BitmapSurface(UInt32(canSize), UInt32(canSize))
+      composite()
     }
     
     @discardableResult
     public func moveTo(_ x: Double, _ y: Double) -> Image
     {
-      self.x = x
-      self.y = y
+      self.x = x - canSize / 2
+      self.y = y - canSize / 2
       return self
     }
     
@@ -91,22 +102,22 @@ extension Graf
       return self
     }
     
-    private func clear()
+    public func composite()
     {
+      cairo_set_operator(self.surface.context.cr, CAIRO_OPERATOR_OUT)
       cairo_rectangle(surface.context.cr, x, y, Double(width), Double(height))
       cairo_set_source_rgba(surface.context.cr, 0, 0, 0, 0)
       cairo_fill(surface.context.cr)
+      let xd = (canSize - Double(width)) / 2
+      let yd = (canSize - Double(height)) / 2
+      pngs.paintToContext(self.surface.context, xd, yd)
       cairo_surface_flush(surface.csurface)
     }
     
     public func draw(_ dc: Graf.DrawingContext, stroke: Bool = true, fill: Bool = true)
     {
-      cairo_set_operator(self.surface.context.cr, CAIRO_OPERATOR_OUT)
-      clear()
-      let xd = (canSize - Double(width)) / 2
-      let yd = (canSize - Double(height)) / 2
-      pngs.paintToContext(self.surface.context, xd, yd)
-      surface.paintToContext(dc.context, x - xd - Double(width) / 2 , y - yd - Double(height) / 2)
+      composite()
+      surface.paintToContext(dc.context, x, y)
     }
   }
 }

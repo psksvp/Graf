@@ -164,6 +164,7 @@ func demoDrawWithEvent()
     }
     
     image.moveTo(x, y).draw(dc)
+    image.boundary.draw(dc, fill: false)
   }
 
   v.onInputEvent
@@ -207,6 +208,7 @@ func demoHitTest()
   var x:Double = 0
   var y:Double = 0
   let angle = 0.01
+  let tex = Graf.Image("./media/chessboard.png")
   
   v.draw
   {
@@ -215,11 +217,12 @@ func demoHitTest()
     dc.clear()
     dc.strokeColor = Graf.Color.black
     poly[2].rotate(angle).draw(dc)
+    tex.rotate(angle).composite()
     for s in poly
     {
       if s.contains((x, y))
       {
-        dc.fill = Graf.Fill.image("./media/ball.png")
+        dc.fill = Graf.Fill(tex)
       }
       else
       {
