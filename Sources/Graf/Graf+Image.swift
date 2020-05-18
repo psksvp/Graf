@@ -61,6 +61,7 @@ extension Graf
     {
       self.pngs = Cairo.PNGSurface(f)
       self.surface = Cairo.BitmapSurface(UInt32(pngs.width), UInt32(pngs.height))
+      pngs.paintToContext(self.surface.context, 0, 0)
     }
     
     @discardableResult
@@ -77,6 +78,7 @@ extension Graf
       surface.context.translate(Double(width) / 2.0, Double(height) / 2.0)
       surface.context.rotate(angle)
       surface.context.translate(-Double(width) / 2.0, -Double(height) / 2.0)
+      
       return self
     }
     
@@ -89,16 +91,17 @@ extension Graf
     
     private func clear()
     {
-      cairo_set_source_rgba(surface.context.cr, 1, 0, 0, 1)
       cairo_rectangle(surface.context.cr, x, y, Double(width), Double(height))
+      cairo_set_source_rgba(surface.context.cr, 0, 0, 0, 1)
       cairo_fill(surface.context.cr)
       cairo_surface_flush(surface.csurface)
     }
     
     public func draw(_ dc: Graf.DrawingContext, stroke: Bool = true, fill: Bool = true)
     {
+      cairo_set_operator(self.surface.context.cr, CAIRO_OPERATOR_OUT)
       clear()
-      //pngs.paintToContext(self.surface.context, 0, 0)
+      pngs.paintToContext(self.surface.context, 0, 0)
       surface.paintToContext(dc.context, x, y)
     }
   }

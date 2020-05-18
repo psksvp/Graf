@@ -45,6 +45,15 @@ import SDL2
 import CCairo
 import CommonSwift
 
+//extension UnsafeMutableRawPointer
+//{
+//  func toArray<T>(to type: T.Type, capacity count: Int) -> [T]
+//  {
+//    let pointer = bindMemory(to: type, capacity: count)
+//    return Array(UnsafeBufferPointer(start: pointer, count: count))
+//  }
+//}
+
 extension Graf
 {
   public class View
@@ -52,6 +61,8 @@ extension Graf
     private let sdlWindow: OpaquePointer
     private let sdlRenderer: OpaquePointer
     private let sdlTexture: OpaquePointer
+  
+    private var pixels: UnsafeMutableRawPointer? = nil
     
     private var drawing = false
     private var drawFunc: ((DrawingContext) -> Void)? = nil
@@ -150,7 +161,7 @@ extension Graf
         Log.warn("View.endDraw called without matching beginDraw")
         return
       }
-      
+            
       SDL_UnlockTexture(sdlTexture)
       SDL_RenderCopy(sdlRenderer, sdlTexture, nil, nil);
       SDL_RenderPresent(sdlRenderer)

@@ -139,6 +139,8 @@ func demoDrawWithEvent()
   let l = Graf.rect(320, 200, 10, 400)
   let r = Graf.rect(300, 10, 100, 300)
   let angle = 0.01
+  
+  let image = Graf.Image("media/chessboard.png")
 
   v.draw
   {
@@ -161,7 +163,7 @@ func demoDrawWithEvent()
       l.boundary.draw(dc, fill: false)
     }
     
-    
+    image.moveTo(x, y).draw(dc)
   }
 
   v.onInputEvent
@@ -184,6 +186,7 @@ func demoDrawWithEvent()
       
       case let .mouseWheel(dx, dy) :
         print("wheel \(dx) \(dy)")
+        image.rotate(0.1 * (dy >= 0 ? 1 : -1))
       
       default:
         break
@@ -216,7 +219,7 @@ func demoHitTest()
     {
       if s.contains((x, y))
       {
-        dc.fill = Graf.Fill.image("./media/chessboard.png")
+        dc.fill = Graf.Fill.image("./media/ball.png")
       }
       else
       {
@@ -277,6 +280,8 @@ func demoPong()
     rightPaddle.draw(dc)
     dc.fill = Graf.Fill.colorRed
     ball.draw(dc)
+    let bc = ball.center
+    Graf.vectorLine(bc.x, bc.y, 6 * vel).draw(dc)
     ball.translate(vel.x, vel.y)
     
     var hit = false
@@ -456,6 +461,9 @@ func pid()
 
 func nonInteractive()
 {
+  //Graf.initialize()
+  
+  
   
 }
 

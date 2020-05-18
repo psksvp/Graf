@@ -145,18 +145,23 @@ extension Graf
     return Polygon([(x1, y1), (x2, y2)])
   }
   
+  public class func vectorLine(_ x: Double, _ y: Double, _ v: Vector3e) -> Polygon
+  {    
+    return line(x, y, x + v.x, y + v.y)
+  }
+  
   public class func rect(_ x: Double, _ y: Double, _ w: Double, _ h: Double) -> Polygon
   {
     return Polygon([(x, y), (x + w, y), (x + w, y + h), (x, y + h)])
   }
   
   public class func arc(_ xc: Double,
-                 _ yc: Double,
-                 _ w: Double,
-                 _ h: Double,
-                 startAngle: Double,
-                 endAngle: Double,
-                 step: Double = 0.1 ) -> Polygon
+                        _ yc: Double,
+                        _ w: Double,
+                        _ h: Double,
+                        startAngle: Double,
+                        endAngle: Double,
+                        step: Double = 0.1 ) -> Polygon
   {
     //https://stackoverflow.com/questions/11309596/how-to-get-a-point-on-an-ellipses-outline-given-an-angle
     func copySign(_ a: Double, _ b: Double) -> Double
@@ -193,10 +198,10 @@ extension Graf
   }
   
   public class func ellipse(_ xc: Double,
-                     _ yc: Double,
-                     _ w: Double,
-                     _ h: Double,
-                     step s: Double = 0.1) -> Polygon
+                            _ yc: Double,
+                            _ w: Double,
+                            _ h: Double,
+                            step s: Double = 0.1) -> Polygon
   {
     return arc(xc, yc, w, h, startAngle: 0.0, endAngle: 2 * Double.pi, step: s)
   }
@@ -207,8 +212,8 @@ extension Graf
   }
   
   public class func triangle(_ x1: Double, _ y1: Double,
-                      _ x2: Double, _ y2: Double,
-                      _ x3: Double, _ y3: Double) -> Polygon
+                             _ x2: Double, _ y2: Double,
+                             _ x3: Double, _ y3: Double) -> Polygon
   {
     return Polygon([(x1, y1), (x2, y2), (x3, y3)])
   }

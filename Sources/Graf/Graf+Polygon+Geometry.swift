@@ -189,7 +189,7 @@ extension Graf.Polygon
       return nil
     }
     
-    // parallel inner loop check
+    // parallel inner loop  of the above
     func edgeIntersectedPar() -> Graf.Edge?
     {
       // any edge of Polygon polygon intersected with Edge e

@@ -41,11 +41,11 @@ print("Hello, world!")
 print(FileManager.default.currentDirectoryPath)
 
 
-//demoDrawWithEvent()
+demoDrawWithEvent()
 //demoHitTest()
 //demoStaticDraw()
 
-demoPong()
+//demoPong()
 
 //pid()
 
