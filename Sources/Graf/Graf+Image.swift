@@ -54,14 +54,16 @@ extension Graf
     private var x: Double = 0
     private var y: Double = 0
     
-    public lazy var width: Int32 = cairo_image_surface_get_width(surface.csurface)
-    public lazy var height: Int32 = cairo_image_surface_get_height(surface.csurface)
+    private let canSize: Double
+    
+    public lazy var width: UInt32 = UInt32(pngs.width)
+    public lazy var height: UInt32 = UInt32(pngs.height)
     
     public init(_ f: String)
     {
       self.pngs = Cairo.PNGSurface(f)
-      self.surface = Cairo.BitmapSurface(UInt32(pngs.width), UInt32(pngs.height))
-      pngs.paintToContext(self.surface.context, 0, 0)
+      canSize = sqrt(pngs.width * pngs.width + pngs.height * pngs.height)
+      self.surface = Cairo.BitmapSurface(UInt32(canSize), UInt32(canSize))
     }
     
     @discardableResult
@@ -75,9 +77,9 @@ extension Graf
     @discardableResult
     public func rotate(_ angle: Double) -> Image
     {
-      surface.context.translate(Double(width) / 2.0, Double(height) / 2.0)
+      surface.context.translate(canSize / 2 , canSize / 2)
       surface.context.rotate(angle)
-      surface.context.translate(-Double(width) / 2.0, -Double(height) / 2.0)
+      surface.context.translate(-canSize / 2, -canSize / 2)
       
       return self
     }
@@ -92,7 +94,7 @@ extension Graf
     private func clear()
     {
       cairo_rectangle(surface.context.cr, x, y, Double(width), Double(height))
-      cairo_set_source_rgba(surface.context.cr, 0, 0, 0, 1)
+      cairo_set_source_rgba(surface.context.cr, 0, 0, 0, 0)
       cairo_fill(surface.context.cr)
       cairo_surface_flush(surface.csurface)
     }
@@ -101,8 +103,10 @@ extension Graf
     {
       cairo_set_operator(self.surface.context.cr, CAIRO_OPERATOR_OUT)
       clear()
-      pngs.paintToContext(self.surface.context, 0, 0)
-      surface.paintToContext(dc.context, x, y)
+      let xd = (canSize - Double(width)) / 2
+      let yd = (canSize - Double(height)) / 2
+      pngs.paintToContext(self.surface.context, xd, yd)
+      surface.paintToContext(dc.context, x - xd - Double(width) / 2 , y - yd - Double(height) / 2)
     }
   }
 }
