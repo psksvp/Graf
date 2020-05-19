@@ -48,16 +48,21 @@ extension Graf
 {
   public class Fill
   {
-    let cPattern: Cairo.FillPattern
+    let cPattern: Cairo.Pattern
     
     public init(_ c: Graf.Color)
     {
-      cPattern = Cairo.FillPattern(c)
+      cPattern = Cairo.Pattern(c)
+    }
+    
+    private init(_ s: Cairo.Surface)
+    {
+      cPattern = Cairo.Pattern(s)
     }
     
     public init(_ s: Graf.Image)
     {
-      cPattern = Cairo.FillPattern(s.surface)
+      cPattern = Cairo.Pattern(s.surface)
     }
     
     public init(_ x0: Double,
@@ -65,12 +70,17 @@ extension Graf
                 _ x1: Double,
                 _ y1: Double)
     {
-      cPattern = Cairo.FillPattern(x0, y1, x1, y1)
+      cPattern = Cairo.Pattern(x0, y1, x1, y1)
     }
     
     public class func color(_ c: Graf.Color) -> Fill
     {
       return Fill(c)
+    }
+    
+    public class func image(_ f: String) -> Fill
+    {
+      return Fill(Cairo.PNGSurface(f))
     }
     
     public class func color(_ r: Double,
@@ -98,7 +108,7 @@ extension Graf
       let interval = 1.0 / Double(stopColors.count)
       for c in stopColors
       {
-        cairo_pattern_add_color_stop_rgba(f.cPattern.pattern,
+        cairo_pattern_add_color_stop_rgba(f.cPattern.cpattern,
                                           offset,
                                           c.redChannel,
                                           c.greenChannel,
@@ -108,5 +118,6 @@ extension Graf
       }
       return f
     }
+    
   }
 }

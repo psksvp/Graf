@@ -140,7 +140,8 @@ func demoDrawWithEvent()
   let r = Graf.rect(300, 10, 100, 300)
   let angle = 0.01
   
-  let image = Graf.Image("media/chessboard.png")
+  let image = Graf.Image("./media/chessboard.png", enlargeCanvas: false)
+  
 
   v.draw
   {
@@ -208,7 +209,8 @@ func demoHitTest()
   var x:Double = 0
   var y:Double = 0
   let angle = 0.01
-  let tex = Graf.Image("./media/chessboard.png")
+  let tex = Graf.Image("./media/chessboard.png", enlargeCanvas: false)
+  let imgFill = Graf.Fill(tex)
   
   v.draw
   {
@@ -217,12 +219,12 @@ func demoHitTest()
     dc.clear()
     dc.strokeColor = Graf.Color.black
     poly[2].rotate(angle).draw(dc)
-    tex.rotate(angle).composite()
+    tex.rotate(angle)
     for s in poly
     {
       if s.contains((x, y))
       {
-        dc.fill = Graf.Fill(tex)
+        dc.fill = imgFill
       }
       else
       {
@@ -230,6 +232,9 @@ func demoHitTest()
       }
       s.draw(dc)
     }
+    
+    ///tex.moveTo(x, y)
+    ///tex.draw(dc)
   }
   
   v.onInputEvent

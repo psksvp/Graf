@@ -41,8 +41,8 @@ print("Hello, world!")
 print(FileManager.default.currentDirectoryPath)
 
 
-demoDrawWithEvent()
-//demoHitTest()
+//demoDrawWithEvent()
+demoHitTest()
 //demoStaticDraw()
 
 //demoPong()

@@ -136,18 +136,18 @@ public struct Cairo //namespace
     }
   }
   
-  class FillPattern
+  class Pattern
   {
-    let pattern: OpaquePointer
+    let cpattern: OpaquePointer
     
     init(_ s: Surface)
     {
-      self.pattern = cairo_pattern_create_for_surface(s.csurface)
+      self.cpattern = cairo_pattern_create_for_surface(s.csurface)
     }
     
     init(_ c: Color)
     {
-      self.pattern = cairo_pattern_create_rgba(c.redChannel,
+      self.cpattern = cairo_pattern_create_rgba(c.redChannel,
                                                c.greenChannel,
                                                c.blueChannel,
                                                c.alphaChannel)
@@ -155,13 +155,13 @@ public struct Cairo //namespace
     
     init(_ x0: Double, _ y0: Double, _ x1: Double, _ y1: Double)
     {
-      self.pattern = cairo_pattern_create_linear(x0, y0, x1, y1)
+      self.cpattern = cairo_pattern_create_linear(x0, y0, x1, y1)
     }
     
     init(_ cx0: Double, _ cy0: Double, _ radius0: Double,
          _ cx1: Double, _ cy1: Double, _ radius1: Double)
     {
-      self.pattern = cairo_pattern_create_radial(cx0,
+      self.cpattern = cairo_pattern_create_radial(cx0,
                                                  cy0,
                                                  radius0,
                                                  cx1,
@@ -171,13 +171,20 @@ public struct Cairo //namespace
     
     deinit
     {
-      cairo_pattern_destroy(pattern)
+      cairo_pattern_destroy(cpattern)
     }
     
     func setAsSourceInContext(_ c: Context)
     {
-      cairo_set_source(c.cr, pattern);
-      cairo_pattern_set_extend(cairo_get_source(c.cr), CAIRO_EXTEND_PAD);
+      cairo_set_source(c.cr, cpattern);
+      cairo_pattern_set_extend(cairo_get_source(c.cr), CAIRO_EXTEND_REPEAT);
+    }
+    
+    func rotate(_ r: Double)
+    {
+      let m = Matrix()
+      m.rotate(r)
+      cairo_pattern_set_matrix(cpattern, &m.cmatrix)
     }
   }
   
@@ -263,7 +270,7 @@ public struct Cairo //namespace
       cairo_destroy(cr)
     }
     
-    func fill(_ c: FillPattern, preserved: Bool = false)
+    func fill(_ c: Pattern, preserved: Bool = false)
     {
       c.setAsSourceInContext(self)
       if preserved
@@ -316,5 +323,34 @@ public struct Cairo //namespace
     
   } // context
   
+  class Matrix
+  {
+    var cmatrix: cairo_matrix_t = cairo_matrix_t()
   
+    init()
+    {
+      identity()
+    }
+    
+    func identity()
+    {
+      cairo_matrix_init_identity(&cmatrix)
+    }
+  
+    func rotate(_ r: Double)
+    {
+      cairo_matrix_rotate(&cmatrix, r)
+    }
+    
+    func translate(_ dx: Double, _ dy: Double)
+    {
+      cairo_matrix_translate(&cmatrix, dx, dy)
+    }
+    
+    func scale(_ sx: Double, _ sy: Double)
+    {
+      cairo_matrix_scale(&cmatrix, sx, sy)
+    }
+    
+  }
 }

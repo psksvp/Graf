@@ -54,43 +54,53 @@ extension Graf
     private var x: Double = 0
     private var y: Double = 0
     
-    private let canSize: Double
+    private let canWidth: Double
+    private let canHeight: Double
     
     public lazy var width: UInt32 = UInt32(pngs.width)
     public lazy var height: UInt32 = UInt32(pngs.height)
     
     public var boundary: Polygon
     {
-      return Graf.rect(x, y, canSize, canSize)
+      return Graf.rect(x, y, canWidth, canHeight)
     }
     
     public var center: Vector3e
     {
-      return Vector3e(x - canSize / 2, y - canSize / 2, 1)
+      return Vector3e(x - canWidth / 2, y - canWidth / 2, 1)
     }
     
-    public init(_ f: String)
+    public init(_ f: String, enlargeCanvas: Bool = true)
     {
       self.pngs = Cairo.PNGSurface(f)
-      canSize = sqrt(pngs.width * pngs.width + pngs.height * pngs.height)
-      self.surface = Cairo.BitmapSurface(UInt32(canSize), UInt32(canSize))
+      if enlargeCanvas
+      {
+        canWidth = sqrt(pngs.width * pngs.width + pngs.height * pngs.height)
+        canHeight = canWidth
+      }
+      else
+      {
+        canWidth = self.pngs.width
+        canHeight = self.pngs.height
+      }
+      self.surface = Cairo.BitmapSurface(UInt32(canWidth), UInt32(canHeight))
       composite()
     }
     
     @discardableResult
     public func moveTo(_ x: Double, _ y: Double) -> Image
     {
-      self.x = x - canSize / 2
-      self.y = y - canSize / 2
+      self.x = x - canWidth / 2
+      self.y = y - canHeight / 2
       return self
     }
     
     @discardableResult
     public func rotate(_ angle: Double) -> Image
     {
-      surface.context.translate(canSize / 2 , canSize / 2)
+      surface.context.translate(canWidth / 2 , canHeight / 2)
       surface.context.rotate(angle)
-      surface.context.translate(-canSize / 2, -canSize / 2)
+      surface.context.translate(-canWidth / 2, -canHeight / 2)
       
       return self
     }
@@ -108,8 +118,8 @@ extension Graf
       cairo_rectangle(surface.context.cr, x, y, Double(width), Double(height))
       cairo_set_source_rgba(surface.context.cr, 0, 0, 0, 0)
       cairo_fill(surface.context.cr)
-      let xd = (canSize - Double(width)) / 2
-      let yd = (canSize - Double(height)) / 2
+      let xd = (canWidth - Double(width)) / 2
+      let yd = (canHeight - Double(height)) / 2
       pngs.paintToContext(self.surface.context, xd, yd)
       cairo_surface_flush(surface.csurface)
     }
