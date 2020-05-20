@@ -449,7 +449,7 @@ func pid()
         target.location = Vector3e(Double(mx), Double(my), 1)
         pids.updateSetPoint(newSetPoints: [Double(mx), Double(my), target.angle, target.size])
       
-      case .mouseWheel(let dx , let dy):
+      case .mouseWheel(_ , let dy):
         target.angle = (target.angle + (0.1 * (dy > 0 ? 1 : -1))).clamped(to: 0 ... 2 * Double.pi)
         //target.size = (target.size + (0.01 * (dx > 0 ? 1 : -1)))
         pids.updateSetPoint(newSetPoints: [target.location.x,
@@ -464,15 +464,41 @@ func pid()
   
   
   Graf.startRunloop()
-  
 }
 
+
+// old school drawing
 func nonInteractive()
 {
-  //Graf.initialize()
+  Graf.initialize()
+  
+  let v = Graf.newView("noRunloop", 640, 480, retain: true)
+  
+  v.draw
+  {
+    dc in
+    dc.clear()
+    Graf.line(0, 0, 640, 480).draw(dc)
+    Graf.ellipse(320, 240, 100, 200).draw(dc)
+  }
   
   
+  if let s = readLine()
+  {
+    print (s)
+  }
   
+  v.draw
+  {
+    dc in
+    dc.fill = Graf.Fill.color(0, 0, 0.6)
+    Graf.circle(160, 120, 50).draw(dc)
+  }
+  
+  if let s = readLine()
+  {
+    print (s)
+  }
 }
 
 

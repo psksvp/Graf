@@ -58,12 +58,17 @@ extension Graf
 {
   public class View
   {
+    // sdl stuff
     private let sdlWindow: OpaquePointer
     private let sdlRenderer: OpaquePointer
     private let sdlTexture: OpaquePointer
   
+    // back buffering if needed
     private var pixels: UnsafeMutableRawPointer? = nil
+    private var backBuffer: UnsafeMutablePointer<UInt8>? = nil
+    private var bufferLength = 0
     
+    // drawing hooks
     private var drawing = false
     private var drawFunc: ((DrawingContext) -> Void)? = nil
     private var eventHandlerFunc: ((Event) -> Void)? = nil
@@ -77,7 +82,7 @@ extension Graf
     public let height: UInt32
     public let name: String
     
-    init(_ n: String, _ w: UInt32, _ h: UInt32)
+    init(_ n: String, _ w: UInt32, _ h: UInt32, retain: Bool = false)
     {
       self.name = n
       self.sdlWindow = SDL_CreateWindow(name,
@@ -102,6 +107,12 @@ extension Graf
       
       self.width = w
       self.height = h
+      
+      if retain
+      {
+        bufferLength = Int(w * h * 4)
+        backBuffer = UnsafeMutablePointer<UInt8>.allocate(capacity: bufferLength)
+      }
     }
     
     deinit
@@ -145,13 +156,23 @@ extension Graf
         endDraw()
       }
       var pitch: Int32 = 0
-      var pixels: UnsafeMutableRawPointer? = nil
+      
       SDL_LockTexture(self.sdlTexture,
                       nil,
                       &pixels,
                       &pitch)
+      
+      // retain?
+      if let buf = backBuffer
+      {
+        memcpy(pixels, buf, bufferLength)
+      }
+      
       drawing = true
-      return DrawingContext(UInt32(width), UInt32(height), UnsafeMutablePointer<UInt8>(OpaquePointer(pixels!)), pitch)
+      return DrawingContext(UInt32(width),
+                            UInt32(height),
+                            UnsafeMutablePointer<UInt8>(OpaquePointer(pixels!)),
+                            pitch)
     }
     
     public func endDraw()
@@ -161,7 +182,14 @@ extension Graf
         Log.warn("View.endDraw called without matching beginDraw")
         return
       }
-            
+      
+      // retain?
+      if let buf = backBuffer,
+         let tex = pixels
+      {
+        memcpy(buf, tex, bufferLength)
+      }
+          
       SDL_UnlockTexture(sdlTexture)
       SDL_RenderCopy(sdlRenderer, sdlTexture, nil, nil);
       SDL_RenderPresent(sdlRenderer)
@@ -172,6 +200,8 @@ extension Graf
     public func draw(_ df:  @escaping (DrawingContext) -> Void)
     {
       drawFunc = df
+      print("draw")
+      Graf.startRunloop(amount: 1)
     }
     
     public func onInputEvent(_ ehf: @escaping (Event) -> Void)

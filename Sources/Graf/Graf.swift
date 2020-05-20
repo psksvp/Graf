@@ -99,11 +99,14 @@ public class Graf
   public class func initialize()
   {
     Graf.single()
+    startRunloop(amount: 10)
   }
   
-  public class func newView(_ n: String, _ w: UInt32, _ h: UInt32) -> View
+  public class func newView(_ n: String,
+                            _ w: UInt32, _ h: UInt32,
+                            retain r: Bool = false) -> View
   {
-    let v = View(n, w, h)
+    let v = View(n, w, h, retain: r)
     Graf.single().views[v.id] = v
     return v
   }
@@ -121,7 +124,7 @@ public class Graf
     return nil
   }
   
-  public class func startRunloop()
+  public class func startRunloop(amount: Int = 0)
   {
     func dispatchEvent(_ vid: UInt32, _ e: SDL_Event)
     {
@@ -166,6 +169,7 @@ public class Graf
     }
     
     Graf.single().looping = true
+    var counter = 0
     var event: SDL_Event = SDL_Event()
     while Graf.single().looping
     {
@@ -173,12 +177,21 @@ public class Graf
       {
         v.render()
       }
-      
       while SDL_PollEvent(&event) != 0
       {
         dispatchEvent(event.window.windowID, event)
       }
+      
+      if amount > 0
+      {
+        counter = counter + 1
+        if counter >= amount
+        {
+          break
+        }
+      }
     }
+    print("exiting runloop")
   }
   
   public class func stopRunloop()
