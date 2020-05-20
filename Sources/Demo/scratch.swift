@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Sample.swift
 //  
 //
 //  Created by psksvp on 1/5/20.
@@ -61,15 +61,11 @@ func demoSetPixel()
   {
     dc in
     dc.clear()
-  
     
-    dc.fill = Graf.Fill.color(0, 0, 1)
-    Graf.ellipse(Double(v.width / 2), Double(v.height / 2), 100, 50).draw(dc)
-    
-    dc.strokeColor = Graf.Color(0, 1, 0, 0.5)
+    dc.strokeColor = Graf.Color(0, 0, 0, 0.1)
     for x in 0 ..< dc.width
     {
-      Graf.QuickDraw(dc).vline(Int32(x), 0, length: v.height)
+      Graf.DirectDraw(dc).line(0, 0, Int32(x), 120)
     }
     
     for _ in 0 ..< 100
@@ -476,7 +472,7 @@ func nonInteractive()
 {
   Graf.initialize()
   
-  let t = Graf.Text("Helloworld And Mooen")
+  let t = Graf.Text("Helloworld And Mooen", font: Graf.Font(name: "Impact", size: 40))
   let v = Graf.newView("noRunloop", 640, 480, retain: true)
   
   v.draw
@@ -486,7 +482,7 @@ func nonInteractive()
     Graf.line(0, 0, 640, 480).draw(dc)
     Graf.ellipse(320, 240, 100, 200).draw(dc)
     dc.fill = Graf.Fill.color(1, 0, 0, 1)
-    t.moveTo(100, 100).draw(dc)
+    t.moveTo(300, 100).draw(dc)
   }
   
   
@@ -513,7 +509,7 @@ func testText()
 {
   Graf.initialize()
   
-  let t = Graf.Text("Helloworld And Moon")
+  let t = Graf.Text("Helloworld And Moon", font: Graf.Font(name:"Impact", size: 40))
   let v = Graf.newView("noRunloop", 640, 480)
   
   v.draw
@@ -522,7 +518,7 @@ func testText()
     dc.clear()
     Graf.line(0, 0, 640, 480).draw(dc)
     Graf.ellipse(320, 240, 100, 200).draw(dc)
-    dc.fill = Graf.Fill.color(1, 0, 0, 1)
+    dc.fill = Graf.Fill.color(0.3, 0.4, 0.6, 1)
     
     let (mx, my) = Graf.mouseLocation
     

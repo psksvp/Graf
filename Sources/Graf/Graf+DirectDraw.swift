@@ -1,5 +1,5 @@
 //
-//  Graf+QuickDraw.swift
+//  Graf+DirectDraw.swift
 //  
 //
 //  Created by psksvp on 10/5/20.
@@ -46,7 +46,7 @@ import SDL2
 
 extension Graf
 {
-  public class QuickDraw
+  public class DirectDraw
   {
     private let dc:DrawingContext
   
@@ -75,29 +75,44 @@ extension Graf
       }
     }
     
-    //public func line(_ x0: UInt32, )
-    
-    /*
-     plotLine(int x0, int y0, int x1, int y1)
-     dx =  abs(x1-x0);
-     sx = x0<x1 ? 1 : -1;
-     dy = -abs(y1-y0);
-     sy = y0<y1 ? 1 : -1;
-     err = dx+dy;  /* error value e_xy */
-     while (true)   /* loop */
-         plot(x0, y0);
-         if (x0==x1 && y0==y1) break;
-         e2 = 2*err;
-         if (e2 >= dy)
-             err += dy; /* e_xy+e_x > 0 */
-             x0 += sx;
-         end if
-         if (e2 <= dx) /* e_xy+e_y < 0 */
-             err += dx;
-             y0 += sy;
-         end if
-     end while
-     */
+    public func rect(_ x: Int32, _ y: Int32, _ w: Int32, _ h: Int32)
+    {
+      hline(x, y, length: UInt32(w))
+      hline(x, y + h, length: UInt32(w))
+      vline(x, y, length: UInt32(h))
+      vline(x + w, y, length:UInt32(h))
+    }
+
+    // wikipedia line drawing algorithm
+    public func line(_ x0: Int32, _ y0: Int32, _ x1: Int32, _ y1: Int32)
+    {
+      let dx = abs(x1 - x0)
+      let sx = Int32(x0 < x1 ? 1 : -1)
+      let dy = -abs(y1 - y0)
+      let sy = Int32(y0 < y1 ? 1 : -1)
+      var err = dx + dy;  /* error value e_xy */
+      var xc = x0
+      var yc = y0
+      while (true)   /* loop */
+      {
+        dc.setPixel(xc, yc, dc.strokeColor)
+        if xc == x1 && yc == y1
+        {
+          break
+        }
+        let e2 = 2 * err
+        if e2 >= dy /* e_xy+e_x > 0 */
+        {
+          err = err +  dy
+          xc  = xc + sx
+        }
+        if e2 <= dx /* e_xy+e_y < 0 */
+        {
+          err = err + dx
+          yc = yc + sy
+        }
+      } //while
+    }
     
   }
 }

@@ -69,6 +69,7 @@ extension Graf
       textHeight = UInt32(h)
       textBoundary = Graf.rect(0, 0, w, h)
       self.font = font
+      //bitmap surface must be larger than actual text for rotation
       super.init(UInt32(w), UInt32(w))
     }
     

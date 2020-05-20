@@ -63,7 +63,6 @@ extension Graf
       }
     }
     
-    
     public lazy var viewRect = rect(0, 0, Double(width), Double(height))
     public lazy var width: UInt32 = UInt32(context.width)
     public lazy var height: UInt32 = UInt32(context.height)
@@ -84,11 +83,12 @@ extension Graf
       viewRect.draw(self, stroke: false)
     }
     
-    public func setPixel(_ x: Int32, _ y: Int32, _ color: Color)
+    // alpha does not work
+    public func setPixel(_ x: Int32, _ y: Int32, _ color: Graf.Color)
     {
       guard x < width && y < height && x >= 0 && y >= 0 else
       {
-        Log.warn("x > width || y > height || x < 0 || y < 0")
+        Log.error("x > width || y > height || x < 0 || y < 0")
         return
       }
       let addr = Int((y * Int32(width) + x) * 4) // 4 channels per pix
@@ -98,8 +98,25 @@ extension Graf
       pixels[addr + 2] = UInt8(color.redChannel * 255)   // red
       pixels[addr + 3] = UInt8(color.alphaChannel * 255) // alpha
       
-      //cairo_surface_mark_dirty_rectangle(self.surface.csurface, x, y, 1, 1)
+      cairo_surface_mark_dirty_rectangle(self.surface.csurface, x, y, 1, 1)
     }
+    
+    public func getPixel(_ x: Int32, _ y: Int32) -> Graf.Color?
+    {
+      guard x < width && y < height && x >= 0 && y >= 0 else
+      {
+        Log.error("x > width || y > height || x < 0 || y < 0")
+        return nil
+      }
+      let addr = Int((y * Int32(width) + x) * 4) // 4 channels per pix
+      
+      let b = Double(pixels[addr]    ) / 255.0 // blue
+      let g = Double(pixels[addr + 1]) / 255.0 // green
+      let r = Double(pixels[addr + 2]) / 255.0 // red
+      let a = Double(pixels[addr + 3]) / 255.0 // alpha
+      return Graf.Color(r, g, b, a)
+    }
+    
     
     public func saveFrameAsPNG(_ filename:String)
     {
@@ -113,4 +130,5 @@ protocol Drawable
 {
   func draw(_ dc: Graf.DrawingContext, stroke: Bool, fill: Bool)
 }
+
 
