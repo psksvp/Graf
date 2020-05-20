@@ -177,6 +177,7 @@ public class Graf
       {
         v.render()
       }
+      
       while SDL_PollEvent(&event) != 0
       {
         dispatchEvent(event.window.windowID, event)
@@ -191,7 +192,7 @@ public class Graf
         }
       }
     }
-    print("exiting runloop")
+    Log.info("exiting runloop")
   }
   
   public class func stopRunloop()

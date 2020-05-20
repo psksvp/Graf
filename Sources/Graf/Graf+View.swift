@@ -65,8 +65,8 @@ extension Graf
   
     // back buffering if needed
     private var pixels: UnsafeMutableRawPointer? = nil
-    private var backBuffer: UnsafeMutablePointer<UInt8>? = nil
-    private var bufferLength = 0
+    private var backPixels: UnsafeMutablePointer<UInt8>? = nil
+    private var pixelLength = 0
     
     // drawing hooks
     private var drawing = false
@@ -110,8 +110,8 @@ extension Graf
       
       if retain
       {
-        bufferLength = Int(w * h * 4)
-        backBuffer = UnsafeMutablePointer<UInt8>.allocate(capacity: bufferLength)
+        pixelLength = Int(w * h * 4)
+        backPixels = UnsafeMutablePointer<UInt8>.allocate(capacity: pixelLength)
       }
     }
     
@@ -149,7 +149,7 @@ extension Graf
       endDraw()
     }
      
-    public func beginDraw() -> DrawingContext
+    func beginDraw() -> DrawingContext
     {
       if drawing
       {
@@ -163,9 +163,9 @@ extension Graf
                       &pitch)
       
       // retain?
-      if let buf = backBuffer
+      if let buf = backPixels
       {
-        memcpy(pixels, buf, bufferLength)
+        memcpy(pixels, buf, pixelLength)
       }
       
       drawing = true
@@ -175,7 +175,7 @@ extension Graf
                             pitch)
     }
     
-    public func endDraw()
+    func endDraw()
     {
       guard drawing else
       {
@@ -184,10 +184,10 @@ extension Graf
       }
       
       // retain?
-      if let buf = backBuffer,
+      if let buf = backPixels,
          let tex = pixels
       {
-        memcpy(buf, tex, bufferLength)
+        memcpy(buf, tex, pixelLength)
       }
           
       SDL_UnlockTexture(sdlTexture)
@@ -200,7 +200,6 @@ extension Graf
     public func draw(_ df:  @escaping (DrawingContext) -> Void)
     {
       drawFunc = df
-      print("draw")
       Graf.startRunloop(amount: 1)
     }
     

@@ -115,7 +115,7 @@ extension Graf
     public func composite()
     {
       cairo_set_operator(self.surface.context.cr, CAIRO_OPERATOR_OUT)
-      cairo_rectangle(surface.context.cr, x, y, Double(width), Double(height))
+      cairo_rectangle(surface.context.cr, 0, 0, Double(width), Double(height))
       cairo_set_source_rgba(surface.context.cr, 0, 0, 0, 0)
       cairo_fill(surface.context.cr)
       let xd = (canWidth - Double(width)) / 2

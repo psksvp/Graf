@@ -47,43 +47,57 @@ import CommonSwift
 
 extension Graf
 {
-  public class Text : Drawable
+  public class Text : DrawableBitmap
   {
-    var text: String = ""
-    var coord: (Double, Double) = (0.0, 0.0)
-    var alignCenter: Bool = true
+    private let text: String
+    private let xBearing: Double
+    private let yBearing: Double
+    private let textHeight: UInt32
+    private let textBoundary: Polygon
+    private let font: Font
     
-    public init(_ x: Double, _ y: Double, _ s: String, centerAtCoord: Bool = true)
+    override public var height: UInt32 {textHeight}
+    override public var boundary: Polygon {textBoundary}
+    
+    public init(_ s: String, font: Font = Font(name: "Arial", size: UInt32(20)))
     {
       text = s
-      coord = (x, y)
-      alignCenter = centerAtCoord
+      let (w, h, xb, yb) = Cairo.dimensionOfText(s,
+                                                 inContext: Cairo.BitmapSurface(10, 10).context,
+                                                 usingFont: font)
+      (xBearing, yBearing) = (xb, yb)
+      textHeight = UInt32(h)
+      textBoundary = Graf.rect(0, 0, w, h)
+      self.font = font
+      super.init(UInt32(w), UInt32(w))
     }
     
-    public func draw(_ dc: Graf.DrawingContext, stroke: Bool = true, fill: Bool = true)
+    override public func moveTo(_ x: Double, _ y: Double) -> DrawableBitmap
     {
-      dc.fill.cPattern.setAsSourceInContext(dc.context)
-      
-      if(alignCenter)
-      {
-        let (w, h) = extend(dc)
-        let (x, y) = (coord.0 + w / 2, coord.1 + h / 2)
-        cairo_move_to(dc.context.cr, x, y)
-      }
-      else
-      {
-        cairo_move_to(dc.context.cr, coord.0, coord.1)
-      }
-      cairo_move_to(dc.context.cr, coord.0, coord.1)
-      cairo_show_text(dc.context.cr, text)
+      textBoundary.moveTo(x, y)
+      return super.moveTo(x, y)
     }
     
-    public func extend(_ dc: DrawingContext) -> (Double, Double)
+    override public func rotate(_ angle: Double) -> DrawableBitmap
     {
-      var ex = cairo_text_extents_t()
-      
-      cairo_text_extents(dc.context.cr, text, &ex)
-      return (ex.width, ex.height)
+      textBoundary.rotate(angle)
+      return super.rotate(angle)
     }
-  }
-}
+  
+  
+    override public func draw(_ dc: Graf.DrawingContext, stroke: Bool = true, fill: Bool = true)
+    {
+      super.clear()
+      
+      dc.fill.cPattern.setAsSourceInContext(super.surface.context)
+      self.font.setToCairoContext(super.surface.context)
+      cairo_move_to(super.surface.context.cr, xBearing,
+                                              yBearing / 2 + Double(super.height) / 2)
+      cairo_show_text(super.surface.context.cr, text)
+      cairo_surface_flush(super.surface.csurface)
+     
+      super.draw(dc)
+    }
+  
+  } //Text
+} //Graf

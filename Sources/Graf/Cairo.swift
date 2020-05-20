@@ -351,6 +351,17 @@ public struct Cairo //namespace
     {
       cairo_matrix_scale(&cmatrix, sx, sy)
     }
-    
+  }
+  
+  
+  //need to add font info as arg
+  static func dimensionOfText(_ t: String,
+                              inContext context: Cairo.Context,
+                              usingFont f: Graf.Font) -> (Double, Double, Double, Double)
+  {    
+    f.setToCairoContext(context)
+    var ex = cairo_text_extents_t()
+    cairo_text_extents(context.cr, t, &ex)
+    return (ex.width, ex.height, -ex.x_bearing, -ex.y_bearing)
   }
 }

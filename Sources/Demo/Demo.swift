@@ -119,9 +119,8 @@ func demoStaticDraw()
     dc.fill = Graf.Fill.color(0.2, 0.5, 0.3, 0.6)
     Graf.circle(Double(dc.width - 100), 50, 50).draw(dc)
     
-    dc.fontSize = 30
     dc.fill = Graf.Fill.color(0.2, 0.3, 0.6)
-    Graf.Text(200, 400, "Helloworld").draw(dc)
+    //Graf.Text(200, 400, "Helloworld").draw(dc)
   }
   
   Graf.startRunloop()
@@ -330,8 +329,7 @@ func demoPong()
     if(!dc.viewRect.contains(ball.center))
     {
       dc.fill = Graf.Fill.color(0, 0, 0)
-      dc.fontSize = 30
-      Graf.Text(Double(dc.width / 2), Double(dc.height / 2), "GAME OVER!").draw(dc)
+      //Graf.Text(Double(dc.width / 2), Double(dc.height / 2), "GAME OVER!").draw(dc)
     }
     
     
@@ -375,6 +373,9 @@ func pid()
   let view = Graf.newView("PID", 600, 400)
   let target = Graf.Object(Graf.rect(200, 200, 50, 130))
   let oval = Graf.Object(Graf.ellipse(400, 200, 40, 120, step: 0.1))
+  
+  let text = Graf.Text("HelloWorld")
+  
   let pidX = CommonSwift.Math.PID(setPoint: target.location.x,
                                   kP: 0.003, kI: 0.005, kD: 0.003,
                                   outputLimit: -180 ... 180)
@@ -413,7 +414,10 @@ func pid()
     dc.fill = Graf.Fill.color(0, 1, 0, 0.5)
     oval.draw(dc)
     
-    //let (mx, my) = Graf.mouseLocation
+    let (mx, my) = Graf.mouseLocation
+    
+    text.moveTo(Double(mx), Double(my)).draw(dc)
+
     
     //print(target.angle * deg, oval.angle * deg)
     
@@ -472,6 +476,7 @@ func nonInteractive()
 {
   Graf.initialize()
   
+  let t = Graf.Text("Helloworld And Mooen")
   let v = Graf.newView("noRunloop", 640, 480, retain: true)
   
   v.draw
@@ -480,6 +485,8 @@ func nonInteractive()
     dc.clear()
     Graf.line(0, 0, 640, 480).draw(dc)
     Graf.ellipse(320, 240, 100, 200).draw(dc)
+    dc.fill = Graf.Fill.color(1, 0, 0, 1)
+    t.moveTo(100, 100).draw(dc)
   }
   
   
@@ -499,6 +506,31 @@ func nonInteractive()
   {
     print (s)
   }
+}
+
+
+func testText()
+{
+  Graf.initialize()
+  
+  let t = Graf.Text("Helloworld And Moon")
+  let v = Graf.newView("noRunloop", 640, 480)
+  
+  v.draw
+  {
+    dc in
+    dc.clear()
+    Graf.line(0, 0, 640, 480).draw(dc)
+    Graf.ellipse(320, 240, 100, 200).draw(dc)
+    dc.fill = Graf.Fill.color(1, 0, 0, 1)
+    
+    let (mx, my) = Graf.mouseLocation
+    
+    t.moveTo(Double(mx), Double(my)).rotate(0.01).draw(dc)
+    t.boundary.draw(dc, fill: false)
+  }
+  
+  Graf.startRunloop()
 }
 
 

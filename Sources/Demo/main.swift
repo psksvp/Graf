@@ -39,20 +39,6 @@ import Foundation
 
 print("Hello, world!")
 print(FileManager.default.currentDirectoryPath)
-//let n = UnsafeMutablePointer<UInt8>.allocate(capacity: 10)
-//
-//let back = UnsafeMutablePointer<UInt8>.allocate(capacity: 10)
-//let tex = UnsafeMutableRawPointer(OpaquePointer(n))
-//
-////begin draw
-//
-////memcpy(tex, UnsafeRawPointer(OpaquePointer(back)), 10)
-//memcpy(tex, back, 10)
-//
-////end draw
-//
-//memcpy(back, tex, 10)
-
 
 //demoDrawWithEvent()
 //demoHitTest()
@@ -64,4 +50,6 @@ print(FileManager.default.currentDirectoryPath)
 
 //demoSetPixel()
 
-nonInteractive()
+//nonInteractive()
+
+testText()

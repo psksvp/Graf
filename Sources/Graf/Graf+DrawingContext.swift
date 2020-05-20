@@ -63,30 +63,12 @@ extension Graf
       }
     }
     
-    public var fontSize: Double = 14.0
-    {
-      didSet
-      {
-        cairo_set_font_size(context.cr, fabs(fontSize))
-      }
-    }
-    
-    public var fontFace: String = "Arial"
-    {
-      didSet
-      {
-        cairo_select_font_face(context.cr,
-                               fontFace,
-                               CAIRO_FONT_SLANT_NORMAL,
-                               CAIRO_FONT_WEIGHT_NORMAL)
-      }
-    }
-    
     
     public lazy var viewRect = rect(0, 0, Double(width), Double(height))
     public lazy var width: UInt32 = UInt32(context.width)
     public lazy var height: UInt32 = UInt32(context.height)
     
+    // for setPixel
     private let pixels: UnsafeMutableBufferPointer<UInt8>
     
     init(_ w: UInt32, _ h: UInt32, _ data: UnsafeMutablePointer<UInt8>, _ stride: Int32)
