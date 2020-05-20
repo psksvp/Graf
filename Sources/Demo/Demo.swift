@@ -139,7 +139,7 @@ func demoDrawWithEvent()
   let r = Graf.rect(300, 10, 100, 300)
   let angle = 0.01
   
-  let image = Graf.Image("./media/chessboard.png", enlargeCanvas: false)
+  let image = Graf.Image("./media/chessboard.png")
   
 
   v.draw
@@ -208,7 +208,7 @@ func demoHitTest()
   var x:Double = 0
   var y:Double = 0
   let angle = 0.01
-  let tex = Graf.Image("./media/chessboard.png", enlargeCanvas: false)
+  let tex = Graf.Image("./media/chessboard.png")
   let imgFill = Graf.Fill(tex)
   
   v.draw

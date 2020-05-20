@@ -46,88 +46,52 @@ import CCairo
 
 extension Graf
 {
-  public class Image : Drawable
+  public class Image : DrawableBitmap
   {
-    let surface: Cairo.BitmapSurface
-    
     private let pngs: Cairo.PNGSurface
-    private var x: Double = 0
-    private var y: Double = 0
+    private let imageBoundary: Polygon
     
     private let canWidth: Double
     private let canHeight: Double
     
-    public lazy var width: UInt32 = UInt32(pngs.width)
-    public lazy var height: UInt32 = UInt32(pngs.height)
+    override public var width: UInt32 {UInt32(pngs.width)}
+    override public var height: UInt32 {UInt32(pngs.height)}
     
-    public var boundary: Polygon
-    {
-      return Graf.rect(x, y, canWidth, canHeight)
-    }
+    override public var boundary: Polygon {imageBoundary}
     
-    public var center: Vector3e
-    {
-      return Vector3e(x - canWidth / 2, y - canWidth / 2, 1)
-    }
     
-    public init(_ f: String, enlargeCanvas: Bool = true)
+    public init(_ f: String)
     {
       self.pngs = Cairo.PNGSurface(f)
-      if enlargeCanvas
-      {
-        canWidth = sqrt(pngs.width * pngs.width + pngs.height * pngs.height)
-        canHeight = canWidth
-      }
-      else
-      {
-        canWidth = self.pngs.width
-        canHeight = self.pngs.height
-      }
-      self.surface = Cairo.BitmapSurface(UInt32(canWidth), UInt32(canHeight))
-      composite()
+      canWidth = sqrt(pngs.width * pngs.width + pngs.height * pngs.height)
+      canHeight = canWidth
+      imageBoundary = Graf.rect(0, 0, pngs.width, pngs.height)
+      super.init(UInt32(canWidth), UInt32(canHeight))
     }
     
     @discardableResult
-    public func moveTo(_ x: Double, _ y: Double) -> Image
+    override public func moveTo(_ x: Double, _ y: Double) -> DrawableBitmap
     {
-      self.x = x - canWidth / 2
-      self.y = y - canHeight / 2
-      return self
+      imageBoundary.moveTo(x, y)
+      return super.moveTo(x, y)
     }
     
     @discardableResult
-    public func rotate(_ angle: Double) -> Image
+    override public func rotate(_ angle: Double) -> DrawableBitmap
     {
-      surface.context.translate(canWidth / 2 , canHeight / 2)
-      surface.context.rotate(angle)
-      surface.context.translate(-canWidth / 2, -canHeight / 2)
-      
-      return self
+      imageBoundary.rotate(angle)
+      return super.rotate(angle)
     }
     
-    @discardableResult
-    public func scale(_ sx: Double, _ sy: Double) -> Image
-    {
-      surface.context.scale(sx, sy)
-      return self
-    }
     
-    public func composite()
+    override public func draw(_ dc: Graf.DrawingContext, stroke: Bool = true, fill: Bool = true)
     {
-      cairo_set_operator(self.surface.context.cr, CAIRO_OPERATOR_OUT)
-      cairo_rectangle(surface.context.cr, 0, 0, Double(width), Double(height))
-      cairo_set_source_rgba(surface.context.cr, 0, 0, 0, 0)
-      cairo_fill(surface.context.cr)
+      clear()
       let xd = (canWidth - Double(width)) / 2
       let yd = (canHeight - Double(height)) / 2
-      pngs.paintToContext(self.surface.context, xd, yd)
-      cairo_surface_flush(surface.csurface)
-    }
-    
-    public func draw(_ dc: Graf.DrawingContext, stroke: Bool = true, fill: Bool = true)
-    {
-      composite()
-      surface.paintToContext(dc.context, x, y)
+      pngs.paintToContext(super.surface.context, xd, yd)
+      cairo_surface_flush(super.surface.csurface)
+      super.draw(dc)
     }
   }
 }
