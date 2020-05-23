@@ -112,6 +112,7 @@ extension Graf
       {
         pixelLength = Int(w * h * 4)
         backPixels = UnsafeMutablePointer<UInt8>.allocate(capacity: pixelLength)
+        backPixels?.initialize(repeating: 255, count: pixelLength)
       }
     }
     

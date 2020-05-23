@@ -233,4 +233,94 @@ extension Graf.Polygon
     
     return edgeIntersectedPar()
   }
+} // Extension Graf.Polygon
+
+extension Graf
+{
+  /**
+   
+   */
+  public class func intersected(_ e1: Graf.Edge, _ e2: Graf.Edge) -> Bool
+  {
+    //http://web.archive.org/web/20141127210836/http://content.gpwiki.org/index.php/Polygon_Collision
+    func determinant(_ v1: Vector3e, _ v2: Vector3e) -> Double
+    {
+      return v1.x * v2.y - v1.y * v2.x
+    }
+    
+    let a = e1.p1
+    let b = e1.p2
+    let c = e2.p1
+    let d = e2.p2
+    let det = determinant(b - a, c - d);
+    let t   = determinant(c - a, c - d) / det;
+    let u   = determinant(b - a, c - a) / det;
+    
+    return !((t < 0) || (u < 0) || (t > 1) || (u > 1))
+  }
+  
+  //////
+  public class  func intersected(_ p: Graf.Polygon,
+                                 _ q: Graf.Polygon) -> (Graf.Edge, Graf.Edge)?
+  {
+    // cheapest but less accurate
+    func boundaryIntersected() -> Bool
+    {
+      let b1 = q.boundary
+      let r1 = NSRect(x: b1.vertices[0].x,
+                      y: b1.vertices[0].y,
+                      width: b1.vertices[2].x - b1.vertices[0].x,
+                      height: b1.vertices[2].y - b1.vertices[0].y)
+      
+      let b2 = p.boundary
+      let r2 = NSRect(x: b2.vertices[0].x,
+                      y: b2.vertices[0].y,
+                      width: b2.vertices[2].x - b2.vertices[0].x,
+                      height: b2.vertices[2].y - b2.vertices[0].y)
+      
+      return NSIntersectsRect(r1, r2)
+    }
+    
+    // parallel inner loop  of the above
+    func edgeIntersectedPar() -> (Graf.Edge, Graf.Edge)?
+    {
+      // any edge of Polygon polygon intersected with Edge e
+      func intersected(polygon: Graf.Polygon, withEdge e: Graf.Edge) -> Int?
+      {
+        var intersectedIdx = -1
+        DispatchQueue.concurrentPerform(iterations: polygon.vertices.count)
+        {
+          idx in
+          
+          //if unwrap fail    v, expr is false  vvvvv
+          if polygon.edge(idx)?.intersect(e) ?? false
+          {
+            intersectedIdx = idx
+          }
+        }
+        
+        return intersectedIdx >= 0 ? intersectedIdx : nil
+      }
+      
+      let (w, v) = p.vertices.count >= q.vertices.count ? (p, q) : (q, p)
+      
+      for i in 0 ..< v.vertices.count
+      {
+        if let e = v.edge(i),
+          let idx = intersected(polygon: w, withEdge: e),
+          idx >= 0
+        {
+          return v === p ? (e, w.edge(idx)!) : (w.edge(idx)!, e)
+        }
+      }
+      return nil
+    }
+    
+    guard p.vertices.count > 0 &&
+          q.vertices.count > 0 else {return nil}
+    //if boundary has not touched?
+    guard boundaryIntersected() else { return nil }
+    
+    return edgeIntersectedPar()
+  }
 }

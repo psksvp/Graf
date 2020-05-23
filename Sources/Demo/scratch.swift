@@ -289,7 +289,7 @@ func demoPong()
     
     var hit = false
     
-    if let _ = ball.overlapWith(topBar)
+    if let _ = Graf.intersected(ball, topBar)
     {
       vel = topBar.edge(2)!.reflectRay(vector: vel).0
       moveAwayFrom(topBar, vel)

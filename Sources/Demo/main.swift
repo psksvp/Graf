@@ -44,7 +44,7 @@ print(FileManager.default.currentDirectoryPath)
 //demoHitTest()
 //demoStaticDraw()
 
-//demoPong()
+demoPong()
 
 //pid()
 
@@ -52,4 +52,10 @@ print(FileManager.default.currentDirectoryPath)
 
 //nonInteractive()
 
-testText()
+//testText()
+
+//simpleStaticWithEvent()
+
+//randomShapes()
+
+//animation103()

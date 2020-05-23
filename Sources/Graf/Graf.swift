@@ -168,6 +168,8 @@ public class Graf
       }
     }
     
+    guard false == Graf.single().looping else {return} // running already?
+    
     Graf.single().looping = true
     var counter = 0
     var event: SDL_Event = SDL_Event()
@@ -188,7 +190,7 @@ public class Graf
         counter = counter + 1
         if counter >= amount
         {
-          break
+          stopRunloop()
         }
       }
     }
