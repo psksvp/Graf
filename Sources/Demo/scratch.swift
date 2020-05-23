@@ -508,22 +508,24 @@ func nonInteractive()
 func testText()
 {
   Graf.initialize()
-  
+  let i = Graf.Image("media/a.png")
   let t = Graf.Text("Helloworld And Moon", font: Graf.Font(name:"Impact", size: 40))
-  let v = Graf.newView("noRunloop", 640, 480)
+  let v = Graf.newView("text & Image", 640, 480)
   
   v.draw
   {
     dc in
     dc.clear()
-    Graf.line(0, 0, 640, 480).draw(dc)
-    Graf.ellipse(320, 240, 100, 200).draw(dc)
-    dc.fill = Graf.Fill.color(0.3, 0.4, 0.6, 1)
-    
+    dc.fill = Graf.Fill.color(0.3, 0.8, 0.6, 1)
     let (mx, my) = Graf.mouseLocation
-    
     t.moveTo(Double(mx), Double(my)).rotate(0.01).draw(dc)
-    t.boundary.draw(dc, fill: false)
+    i.moveTo(200, 200).rotate(0.01).draw(dc)
+    
+    if let _ = i.boundary.overlapWith(t.boundary)
+    {
+      t.boundary.draw(dc, fill: false)
+      i.boundary.draw(dc, fill: false)
+    }
   }
   
   Graf.startRunloop()

@@ -40,7 +40,7 @@ import Foundation
 print("Hello, world!")
 print(FileManager.default.currentDirectoryPath)
 
-demoDrawWithEvent()
+//demoDrawWithEvent()
 //demoHitTest()
 //demoStaticDraw()
 
@@ -52,4 +52,4 @@ demoDrawWithEvent()
 
 //nonInteractive()
 
-//testText()
+testText()
