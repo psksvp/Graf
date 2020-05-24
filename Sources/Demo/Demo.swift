@@ -180,38 +180,50 @@ func Bouncy()
   let h = Double(v.height)
   let thick = 20.0
   let wood = Graf.Fill.image("./media/wood.png")
-  var vel = Vector3e(Double.random(in: 2 ... 8), Double.random(in: 2 ... 8), 1)
+  var vel = Vector3e(Double.random(in: 1 ... 2), Double.random(in: 1 ... 2), 1)
 
   let walls = [Graf.Shape(Graf.rect(0, 0, w, thick), texture: wood).moveTo(w / 2, thick / 2),
                Graf.Shape(Graf.rect(0, 0, thick, h), texture: wood).moveTo(thick / 2, h / 2),
                Graf.Shape(Graf.rect(0, h - thick, w, thick), texture: wood).moveTo(w / 2, h - thick / 2),
                Graf.Shape(Graf.rect(w - thick, 0, thick, h), texture: wood).moveTo(w - thick / 2, h / 2)]
   
-  var x = w / 2
-  var y = h / 2
-  let ball = Graf.Shape(Graf.rect(x,  y, 50, 100), texture: Graf.Fill.image("./media/brick.png"))
-  var rot = 0.02
+  let rect = Graf.Shape(Graf.rect(w / 2,  h / 2, 50, 100), texture: Graf.Fill.image("./media/brick.png"))
+  let ball = Graf.Shape(Graf.triangle(100, 100, 200, 100, 150, 250),
+                        texture: Graf.Fill.image("./media/brick.png"))
+  
+  let bouncers = [rect, ball]
+  
+  var rot = 0.05
   
   
-  func collideWithWalls(_ a: Graf.Shape)
+  func collider()
   {
-    for w in walls
+    for a in bouncers
     {
-      if let (aEdge, wEdge) = Graf.intersected(a.boundary, w.boundary)
+      for w in walls
       {
-        vel = wEdge.reflectRay(vector: vel).0
-        while nil != Graf.intersected(a.boundary, w.boundary)
+        if let (aEdge, wEdge) = Graf.intersected(a.boundary, w.boundary)
         {
-          x = x + vel.x
-          y = y + vel.y
-          a.moveTo(x, y)
-          //a.translate(vel.x, vel.y)
+          vel = wEdge.reflectRay(vector: vel).0
+          while nil != Graf.intersected(a.boundary, w.boundary)
+          {
+            a.translate(vel.x, vel.y)
+          }
+          vel = vel * Double.random(in: 1.5 ... 5.0)
+          rot = -rot
+          intersectedEdges.append(contentsOf: [aEdge, wEdge])
+          return
         }
-        vel = vel * Double.random(in: 1.5 ... 5.0)
-        rot = -rot
-        intersectedEdges.append(contentsOf: [aEdge, wEdge])
-        return
       }
+    }
+  }
+  
+  func boundChecker(_ a: Graf.Shape)
+  {
+    let c = a.boundary.center
+    if c.x <= 0 || c.x >= w || c.y <= 0 || c.y >= h
+    {
+      a.moveTo(w / 2, h / 2)
     }
   }
   
@@ -224,22 +236,27 @@ func Bouncy()
     {
       w.draw(dc)
     }
-    x = x + vel.x
-    y = y + vel.y
-    //ball.translate(vel.x, vel.y).rotate(rot).draw(dc, stroke: false)
-    ball.moveTo(x, y).rotate(rot).draw(dc, stroke: false)
-    //ball.boundary.draw(dc, fill: false)
-    collideWithWalls(ball)
+    for b in bouncers
+    {
+      b.translate(vel.x, vel.y).rotate(rot).draw(dc, stroke: false)
+      //ball.boundary.draw(dc, fill: false)
+    }
+    collider()
     
     for e in intersectedEdges
     {
       dc.strokeColor = Graf.Color.red
-      dc.strokeWeight = 10
+      dc.strokeWeight = 20
       e.draw(dc)
     }
     intersectedEdges.removeAll(keepingCapacity: true)
     dc.strokeColor = Graf.Color.black
     dc.strokeWeight = 1
+    
+    for b in bouncers
+    {
+      boundChecker(b)
+    }
   }
   
   Graf.startRunloop()

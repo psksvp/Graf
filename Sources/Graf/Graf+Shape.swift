@@ -31,8 +31,9 @@ extension Graf
       let s =  sqrt(w * w + h * h) + (3 == polygon.vertices.count ? h / 2 : 0)
       polygon.moveTo(s / 2, s / 2)
       
-      super.init(UInt32(s), UInt32(s), worldX: r.vertices[0].x,
-                                       worldY: r.vertices[0].y)
+      super.init(UInt32(s), UInt32(s))
+      
+      self.moveTo(r.vertices[0].x, r.vertices[0].y)
     }
     
     @discardableResult
