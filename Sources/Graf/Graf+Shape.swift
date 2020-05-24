@@ -33,7 +33,9 @@ extension Graf
       
       super.init(UInt32(s), UInt32(s))
       
-      self.moveTo(r.vertices[0].x, r.vertices[0].y)
+      // move our backing bitmap into aligement the boundary polygon
+      let c = boundary.center
+      super.moveTo(c.x, c.y)
     }
     
     @discardableResult

@@ -173,44 +173,92 @@ func randomShapes()
 
 func Bouncy()
 {
+  class Drifter
+  {
+    let shape: Graf.Shape
+    var velocity: Vector3e
+    var rotationRate: Double
+    
+    init(_ s: Graf.Shape, velocity v: Vector3e = Vector3e.random(in: -5 ... 5),
+                      rotationRate r: Double = Double.random(in: 0.01 ... 0.05))
+    {
+      self.shape = s
+      self.velocity = v
+      self.rotationRate = r
+    }
+    
+    func drift(_ dc: Graf.DrawingContext)
+    {
+      shape.translate(self.velocity.x, self.velocity.y).rotate(self.rotationRate).draw(dc)
+    }
+  }
+  
   Graf.initialize()
   var intersectedEdges:[Graf.Edge] = []
-  let v = Graf.newView("Bouncy", 640, 480)
-  let w = Double(v.width)
-  let h = Double(v.height)
+  let view = Graf.newView("Bouncy", 640, 480)
+  let w = Double(view.width)
+  let h = Double(view.height)
   let thick = 20.0
   let wood = Graf.Fill.image("./media/wood.png")
-  var vel = Vector3e(Double.random(in: 1 ... 2), Double.random(in: 1 ... 2), 1)
 
-  let walls = [Graf.Shape(Graf.rect(0, 0, w, thick), texture: wood).moveTo(w / 2, thick / 2),
-               Graf.Shape(Graf.rect(0, 0, thick, h), texture: wood).moveTo(thick / 2, h / 2),
-               Graf.Shape(Graf.rect(0, h - thick, w, thick), texture: wood).moveTo(w / 2, h - thick / 2),
-               Graf.Shape(Graf.rect(w - thick, 0, thick, h), texture: wood).moveTo(w - thick / 2, h / 2)]
+  let walls = [Graf.Shape(Graf.rect(0, 0, w, thick), texture: wood),
+               Graf.Shape(Graf.rect(0, 0, thick, h), texture: wood),
+               Graf.Shape(Graf.rect(0, h - thick, w, thick), texture: wood),
+               Graf.Shape(Graf.rect(w - thick, 0, thick, h), texture: wood)]
   
-  let rect = Graf.Shape(Graf.rect(w / 2,  h / 2, 50, 100), texture: Graf.Fill.image("./media/brick.png"))
-  let ball = Graf.Shape(Graf.triangle(100, 100, 200, 100, 150, 250),
+  let rect = Graf.Shape(Graf.rect(w / 2,  h / 2, 25, 80), texture: Graf.Fill.image("./media/brick.png"))
+  let triangle = Graf.Shape(Graf.triangle(100, 100, 150, 100, 150, 150),
                         texture: Graf.Fill.image("./media/brick.png"))
+  let ellipse = Graf.Shape(Graf.ellipse(200, 200, 100, 70, step: 0.4),
+                           texture: Graf.Fill.image("./media/chessboard.png"))
   
-  let bouncers = [rect, ball]
-  
-  var rot = 0.05
+  let difters = [Drifter(rect), Drifter(triangle), Drifter(ellipse)]
   
   
-  func collider()
+  func wallCollider()
   {
-    for a in bouncers
+    for a in difters
     {
       for w in walls
       {
-        if let (aEdge, wEdge) = Graf.intersected(a.boundary, w.boundary)
+        if let (aEdge, wEdge) = Graf.intersected(a.shape.boundary, w.boundary)
         {
-          vel = wEdge.reflectRay(vector: vel).0
-          while nil != Graf.intersected(a.boundary, w.boundary)
+          let v = wEdge.reflectRay(vector: a.velocity).0
+          while nil != Graf.intersected(a.shape.boundary, w.boundary)
           {
-            a.translate(vel.x, vel.y)
+            a.shape.translate(v.x, v.y)
           }
-          vel = vel * Double.random(in: 1.5 ... 5.0)
-          rot = -rot
+          a.velocity = v * Double.random(in: 1.5 ... 4.0)
+          a.rotationRate = -a.rotationRate
+          intersectedEdges.append(contentsOf: [aEdge, wEdge])
+          return
+        }
+      }
+    }
+  }
+  
+  func diftersCollider()
+  {
+    for i in 0 ..< difters.count
+    {
+      for j in i + 1 ..< difters.count
+      {
+        let a = difters[i]
+        let w = difters[j]
+        if let (aEdge, wEdge) = Graf.intersected(a.shape.boundary, w.shape.boundary)
+        {
+          let v = wEdge.reflectRay(vector: a.velocity).0
+          let u = aEdge.reflectRay(vector: w.velocity).0
+          while nil != Graf.intersected(a.shape.boundary, w.shape.boundary)
+          {
+            a.shape.translate(v.x, v.y)
+            w.shape.translate(u.x, u.y)
+            
+          }
+          a.velocity = v * Double.random(in: 1.5 ... 3.0)
+          a.rotationRate = -a.rotationRate
+          w.velocity = u * Double.random(in: 1.5 ... 3.0)
+          w.rotationRate = -w.rotationRate
           intersectedEdges.append(contentsOf: [aEdge, wEdge])
           return
         }
@@ -227,7 +275,7 @@ func Bouncy()
     }
   }
   
-  v.draw
+  view.draw
   {
     dc in
     dc.clear()
@@ -236,26 +284,27 @@ func Bouncy()
     {
       w.draw(dc)
     }
-    for b in bouncers
+    
+    for b in difters
     {
-      b.translate(vel.x, vel.y).rotate(rot).draw(dc, stroke: false)
-      //ball.boundary.draw(dc, fill: false)
+      b.drift(dc)
     }
-    collider()
+    wallCollider()
+    diftersCollider()
     
     for e in intersectedEdges
     {
-      dc.strokeColor = Graf.Color.red
-      dc.strokeWeight = 20
+      dc.strokeColor = Graf.Color.random
+      dc.strokeWeight = 10
       e.draw(dc)
     }
     intersectedEdges.removeAll(keepingCapacity: true)
     dc.strokeColor = Graf.Color.black
     dc.strokeWeight = 1
     
-    for b in bouncers
+    for b in difters
     {
-      boundChecker(b)
+      boundChecker(b.shape)
     }
   }
   
