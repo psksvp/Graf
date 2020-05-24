@@ -85,7 +85,7 @@ extension Graf
     
     private let polygon: Graf.Polygon
     
-    public init(_ p: Polygon, texture: Image? = nil)
+    public init(_ p: Polygon)
     {
       self.polygon = p
     }

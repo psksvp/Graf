@@ -30,7 +30,9 @@ extension Graf
                                   /// V V triangle case
       let s =  sqrt(w * w + h * h) + (3 == polygon.vertices.count ? h / 2 : 0)
       polygon.moveTo(s / 2, s / 2)
-      super.init(UInt32(s), UInt32(s))
+      
+      super.init(UInt32(s), UInt32(s), worldX: r.vertices[0].x,
+                                       worldY: r.vertices[0].y)
     }
     
     @discardableResult
@@ -38,6 +40,13 @@ extension Graf
     {
       boundary.moveTo(x, y)
       return super.moveTo(x, y)
+    }
+    
+    @discardableResult
+    override public func translate(_ dx: Double, _ dy: Double) -> DrawableBitmap
+    {
+      boundary.translate(dx, dy)
+      return super.translate(dx, dy)
     }
     
     @discardableResult

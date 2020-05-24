@@ -42,6 +42,7 @@
  */
 import Foundation
 import CCairo
+import CommonSwift
 
 extension Graf
 {
@@ -65,9 +66,13 @@ extension Graf
       return Vector3e(x - surface.width / 2, y - surface.width / 2, 1)
     }
     
-    public init(_ w: UInt32, _ h: UInt32)
+    init(_ w: UInt32, _ h: UInt32, worldX: Double = 0, worldY: Double = 0)
     {
       self.surface = Cairo.BitmapSurface(w, h)
+      self.x = worldX
+      self.y = worldY
+      
+      //print(self.x, self.y)
     }
     
     @discardableResult
@@ -75,6 +80,14 @@ extension Graf
     {
       self.x = x - surface.width / 2
       self.y = y - surface.height / 2
+      return self
+    }
+    
+    @discardableResult
+    public func translate(_ dx: Double, _ dy: Double) -> DrawableBitmap
+    {
+      self.x = (self.x + dx)
+      self.y = (self.y + dy)
       return self
     }
     
@@ -90,7 +103,8 @@ extension Graf
     @discardableResult
     public func scale(_ sx: Double, _ sy: Double) -> DrawableBitmap
     {
-      surface.context.scale(sx, sy)
+      //surface.context.scale(sx, sy)
+      Log.info("func is a dummy")
       return self
     }
     

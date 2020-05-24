@@ -77,6 +77,13 @@ extension Graf
     }
     
     @discardableResult
+    override public func translate(_ dx: Double, _ dy: Double) -> DrawableBitmap
+    {
+      imageBoundary.translate(dx, dy)
+      return super.translate(dx, dy)
+    }
+    
+    @discardableResult
     override public func rotate(_ angle: Double) -> DrawableBitmap
     {
       imageBoundary.rotate(angle)

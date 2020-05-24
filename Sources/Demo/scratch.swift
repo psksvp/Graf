@@ -556,8 +556,8 @@ func testShape()
     //q.moveTo(200, 200).rotate(0.01).draw(dc)
     
     let (mx, my) = Graf.mouseLocation
-    s.moveTo(Double(mx), Double(my)).rotate(0.01).draw(dc)
-    //s.boundary.draw(dc, fill: false)
+    s.moveTo(Double(mx), Double(my)).rotate(0.01).draw(dc, stroke: false)
+    s.boundary.draw(dc, fill: false)
 
   }
 

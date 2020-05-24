@@ -79,6 +79,13 @@ extension Graf
       return super.moveTo(x, y)
     }
     
+    @discardableResult
+    override public func translate(_ dx: Double, _ dy: Double) -> DrawableBitmap
+    {
+      textBoundary.translate(dx, dy)
+      return super.translate(dx, dy)
+    }
+    
     override public func rotate(_ angle: Double) -> DrawableBitmap
     {
       textBoundary.rotate(angle)
