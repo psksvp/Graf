@@ -44,7 +44,7 @@ print(FileManager.default.currentDirectoryPath)
 //demoHitTest()
 //demoStaticDraw()
 
-demoPong()
+//demoPong()
 
 //pid()
 
@@ -59,3 +59,5 @@ demoPong()
 //randomShapes()
 
 //animation103()
+
+testShape()

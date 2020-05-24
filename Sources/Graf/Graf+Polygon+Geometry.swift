@@ -125,13 +125,13 @@ extension Graf.Polygon
     // cheapest but less accurate
     func boundaryIntersected() -> Bool
     {
-      let b1 = self.boundary
+      let b1 = self.boundingRect
       let r1 = NSRect(x: b1.vertices[0].x,
                       y: b1.vertices[0].y,
                       width: b1.vertices[2].x - b1.vertices[0].x,
                       height: b1.vertices[2].y - b1.vertices[0].y)
 
-      let b2 = p.boundary
+      let b2 = p.boundingRect
       let r2 = NSRect(x: b2.vertices[0].x,
                       y: b2.vertices[0].y,
                       width: b2.vertices[2].x - b2.vertices[0].x,
@@ -266,13 +266,13 @@ extension Graf
     // cheapest but less accurate
     func boundaryIntersected() -> Bool
     {
-      let b1 = q.boundary
+      let b1 = q.boundingRect
       let r1 = NSRect(x: b1.vertices[0].x,
                       y: b1.vertices[0].y,
                       width: b1.vertices[2].x - b1.vertices[0].x,
                       height: b1.vertices[2].y - b1.vertices[0].y)
       
-      let b2 = p.boundary
+      let b2 = p.boundingRect
       let r2 = NSRect(x: b2.vertices[0].x,
                       y: b2.vertices[0].y,
                       width: b2.vertices[2].x - b2.vertices[0].x,

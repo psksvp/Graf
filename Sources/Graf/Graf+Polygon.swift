@@ -65,17 +65,17 @@ extension Graf
       let sum = vertices.reduce(Vector3e(0, 0, 0))
                 {
                   a, b in
-                
+
                   Vector3e(a.x + b.x, a.y + b.y, a.z + b.z)
                 }
-      
+
       let n = Double(vertices.count)
       return Vector3e(sum.x / n,
                       sum.y / n,
                       sum.z / n)
     }
     
-    public var boundary: Polygon
+    public var boundingRect: Polygon
     {
       guard vertices.count > 0 else {return rect(0, 0, 0, 0)}
       

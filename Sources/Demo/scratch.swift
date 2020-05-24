@@ -155,8 +155,8 @@ func demoDrawWithEvent()
     
     if let _ = l.overlapWith(cross)
     {
-      cross.boundary.draw(dc, fill: false)
-      l.boundary.draw(dc, fill: false)
+      cross.boundingRect.draw(dc, fill: false)
+      l.boundingRect.draw(dc, fill: false)
     }
     
     image.moveTo(x, y).draw(dc)
@@ -529,6 +529,40 @@ func testText()
   }
   
   Graf.startRunloop()
+}
+
+func testShape()
+{
+  Graf.initialize()
+  
+  let p = Graf.ellipse(0, 0, 100, 200)
+  let q = Graf.triangle(100, 100, 200, 100, 160, 300)
+  let r = Graf.rect(0, 0, 200, 300)
+  let s = Graf.Shape(q, texture: Graf.Fill.image("./media/chessboard.png"))
+  let t = Graf.Text("Helloworld And Moon", font: Graf.Font(name:"Impact", size: 40))
+  
+  let v = Graf.newView("Hello", 640, 480)
+  
+  v.draw
+  {
+    dc in
+    
+    dc.clear()
+    dc.fill = Graf.Fill.color(0, 1, 0)
+    t.moveTo(200, 200).draw(dc)
+    
+    //let m = Graf.rect(0, 0, 224, 224)
+    //m.moveTo(200, 200).draw(dc, fill: false)
+    //q.moveTo(200, 200).rotate(0.01).draw(dc)
+    
+    let (mx, my) = Graf.mouseLocation
+    s.moveTo(Double(mx), Double(my)).rotate(0.01).draw(dc)
+    //s.boundary.draw(dc, fill: false)
+
+  }
+
+  Graf.startRunloop()
+  
 }
 
 
