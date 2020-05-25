@@ -34,7 +34,8 @@ func bouncy404()
                       self.velocity.y).rotate(self.rotationRate).draw(dc, stroke: false)
       let c = shape.boundary.center
       dc.strokeColor = Graf.Color.green
-      Graf.vectorLine(c.x, c.y, velocity * 10).draw(dc)
+      dc.strokeWeight = 0.5
+      Graf.vectorLine(c.x, c.y, velocity * 20, headDegree: 0.5).draw(dc)
     }
   }
   

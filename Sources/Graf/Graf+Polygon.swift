@@ -149,14 +149,33 @@ extension Graf
     
   } // Polygon
   
+  
+  ///// funcs
+  
   public class func line(_ x1: Double, _ y1: Double, _ x2: Double, _ y2: Double) -> Polygon
   {
     return Polygon([(x1, y1), (x2, y2)])
   }
   
-  public class func vectorLine(_ x: Double, _ y: Double, _ v: Vector3e) -> Polygon
-  {    
-    return line(x, y, x + v.x, y + v.y)
+  public class func vectorLine(_ x: Double,
+                               _ y: Double,
+                               _ v: Vector3e,
+                               headLength: Double = 10,
+                               headDegree: Double = 0.2) -> Polygon
+  {
+    func arrowHead(_ length: Double, _ degree: Double) -> (Double, Double, Double, Double)
+    {
+      let angle = atan2(v.y, v.x) + Double.pi
+      
+      return (x + v.x + length * cos(angle - degree),
+              y + v.y + length * sin(angle - degree),
+              x + v.x + length * cos(angle + degree),
+              y + v.y + length * sin(angle + degree))
+    }
+    
+    let (hx1, hy1, hx2, hy2) = arrowHead(headLength, headDegree)
+    return  Polygon([(x, y), (x + v.x, y + v.y),
+                     (hx1, hy1), (hx2, hy2), (x + v.x, y + v.y)])
   }
   
   public class func rect(_ x: Double, _ y: Double, _ w: Double, _ h: Double) -> Polygon
