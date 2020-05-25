@@ -54,7 +54,7 @@ public typealias Matrix3e = Matrix3x3<Double>
 
 extension Vector3e
 {
-  public class func random(in r:ClosedRange<Double>)
+  public staic func random(in r:ClosedRange<Double>) -> Vector3e
   {
     return Vector3e(Double.random(in: r), Double.random(in: r), Double.random(in: r))
   }
