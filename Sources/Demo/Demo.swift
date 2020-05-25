@@ -189,7 +189,10 @@ func Bouncy()
     
     func drift(_ dc: Graf.DrawingContext)
     {
-      shape.translate(self.velocity.x, self.velocity.y).rotate(self.rotationRate).draw(dc)
+      shape.translate(self.velocity.x, self.velocity.y).rotate(self.rotationRate).draw(dc, stroke: false)
+      let c = shape.boundary.center
+      dc.strokeColor = Graf.Color.green
+      Graf.vectorLine(c.x, c.y, velocity * 10).draw(dc)
     }
   }
   
@@ -198,7 +201,7 @@ func Bouncy()
   let view = Graf.newView("Bouncy", 640, 480)
   let w = Double(view.width)
   let h = Double(view.height)
-  let thick = 20.0
+  let thick = 10.0
   let wood = Graf.Fill.image("./media/wood.png")
 
   let walls = [Graf.Shape(Graf.rect(0, 0, w, thick), texture: wood),
@@ -209,7 +212,7 @@ func Bouncy()
   let rect = Graf.Shape(Graf.rect(w / 2,  h / 2, 25, 80), texture: Graf.Fill.image("./media/brick.png"))
   let triangle = Graf.Shape(Graf.triangle(100, 100, 150, 100, 150, 150),
                         texture: Graf.Fill.image("./media/brick.png"))
-  let ellipse = Graf.Shape(Graf.ellipse(200, 200, 100, 70, step: 0.4),
+  let ellipse = Graf.Shape(Graf.ellipse(200, 200, 70, 40, step: 0.4),
                            texture: Graf.Fill.image("./media/chessboard.png"))
   
   let difters = [Drifter(rect), Drifter(triangle), Drifter(ellipse)]
@@ -253,7 +256,6 @@ func Bouncy()
           {
             a.shape.translate(v.x, v.y)
             w.shape.translate(u.x, u.y)
-            
           }
           a.velocity = v * Double.random(in: 1.5 ... 3.0)
           a.rotationRate = -a.rotationRate
@@ -278,24 +280,25 @@ func Bouncy()
   view.draw
   {
     dc in
-    dc.clear()
+    //dc.clear()
     
     for w in walls
     {
-      w.draw(dc)
+      w.draw(dc, stroke: false)
     }
     
     for b in difters
     {
       b.drift(dc)
     }
-    wallCollider()
+    
     diftersCollider()
+    wallCollider()
     
     for e in intersectedEdges
     {
       dc.strokeColor = Graf.Color.random
-      dc.strokeWeight = 10
+      dc.strokeWeight = 20
       e.draw(dc)
     }
     intersectedEdges.removeAll(keepingCapacity: true)
