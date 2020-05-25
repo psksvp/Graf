@@ -164,9 +164,10 @@ extension Graf
                       &pitch)
       
       // retain?
-      if let buf = backPixels
+      if let buf = backPixels,
+         let tex = pixels
       {
-        memcpy(pixels, buf, pixelLength)
+        memcpy(tex, buf, pixelLength)
       }
       
       drawing = true
