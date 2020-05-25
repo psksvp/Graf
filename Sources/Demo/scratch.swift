@@ -535,14 +535,28 @@ func testShape()
 {
   Graf.initialize()
   let v = Graf.newView("Hello", 640, 480)
+  var s = 3.0
+  let vl = Graf.vectorLine(320, 240, Vector3e(100, 100, 1))
+  let np = Graf.nSidesPolygon(200, 200, 100, sides: 5)
   
   v.draw
   {
     dc in
-    
     dc.clear()
+    vl.rotate(0.01).draw(dc)
+    np.rotate(0.01).draw(dc)
+  }
+  
+  v.onInputEvent
+  {
+    evt in
     
-    Graf.vectorLine(320, 240, Vector3e(100, 100, 1)).draw(dc)
+    switch evt
+    {
+      case .keyPressed(keyCode: _) : s = s + 1
+      default : break
+      
+    }
   }
   
   Graf.startRunloop()

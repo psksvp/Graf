@@ -160,9 +160,10 @@ extension Graf
   public class func vectorLine(_ x: Double,
                                _ y: Double,
                                _ v: Vector3e,
-                               headLength: Double = 10,
-                               headDegree: Double = 0.2) -> Polygon
+                               headLength: Double = 15,
+                               headDegree: Double = 0.5) -> Polygon
   {
+    //http://kapo-cpp.blogspot.com/2008/10/drawing-arrows-with-cairo.html
     func arrowHead(_ length: Double, _ degree: Double) -> (Double, Double, Double, Double)
     {
       let angle = atan2(v.y, v.x) + Double.pi
@@ -244,5 +245,11 @@ extension Graf
                              _ x3: Double, _ y3: Double) -> Polygon
   {
     return Polygon([(x1, y1), (x2, y2), (x3, y3)])
+  }
+  
+  public class func nSidesPolygon(_ cx: Double, _ cy: Double, _ r: Double, sides: Double) -> Polygon
+  {
+    let s = (Double.pi * 2) / fabs(sides)
+    return circle(cx, cy, r, step: s)
   }
 }
