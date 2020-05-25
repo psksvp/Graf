@@ -69,7 +69,7 @@ func bouncy404()
           {
             a.shape.translate(v.x, v.y)
           }
-          a.velocity = v * Double.random(in: 1.5 ... 4.0)
+          a.velocity = Double.random(in: 1.5 ... 4.0) * v
           a.rotationRate = -a.rotationRate
           intersectedEdges.append(contentsOf: [aEdge, wEdge])
           return
@@ -95,9 +95,9 @@ func bouncy404()
             a.shape.translate(v.x, v.y)
             w.shape.translate(u.x, u.y)
           }
-          a.velocity = v * Double.random(in: 1.5 ... 3.0)
+          a.velocity = Double.random(in: 1.5 ... 3.0) * v
           a.rotationRate = -a.rotationRate
-          w.velocity = u * Double.random(in: 1.5 ... 3.0)
+          w.velocity = Double.random(in: 1.5 ... 3.0) * u
           w.rotationRate = -w.rotationRate
           intersectedEdges.append(contentsOf: [aEdge, wEdge])
           return

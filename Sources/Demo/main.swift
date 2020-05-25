@@ -54,11 +54,11 @@ print(FileManager.default.currentDirectoryPath)
 
 //testText()
 
-simpleStaticWithEvent()
+//simpleStaticWithEvent()
 
 //randomShapes()
 
 //animation103()
 
 //testShape()
-//bouncy404()
+bouncy404()
