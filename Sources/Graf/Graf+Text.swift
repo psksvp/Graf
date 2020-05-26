@@ -47,7 +47,7 @@ import CommonSwift
 
 extension Graf
 {
-  public class Text : DrawableBitmap
+  public class Text : Movable
   {
     private let text: String
     private let xBearing: Double
@@ -56,6 +56,7 @@ extension Graf
     private let textBoundary: Polygon
     private let font: Font
     
+    public var color: Graf.Color = Graf.Color.black
     override public var height: UInt32 {textHeight}
     override public var boundary: Polygon {textBoundary}
     
@@ -73,20 +74,22 @@ extension Graf
       super.init(UInt32(w), UInt32(w))
     }
     
-    override public func moveTo(_ x: Double, _ y: Double) -> DrawableBitmap
+    @discardableResult
+    override public func moveTo(_ x: Double, _ y: Double) -> Movable
     {
       textBoundary.moveTo(x, y)
       return super.moveTo(x, y)
     }
     
     @discardableResult
-    override public func translate(_ dx: Double, _ dy: Double) -> DrawableBitmap
+    override public func translate(_ dx: Double, _ dy: Double) -> Movable
     {
       textBoundary.translate(dx, dy)
       return super.translate(dx, dy)
     }
     
-    override public func rotate(_ angle: Double) -> DrawableBitmap
+    @discardableResult
+    override public func rotate(_ angle: Double) -> Movable
     {
       textBoundary.rotate(angle)
       return super.rotate(angle)
@@ -97,7 +100,8 @@ extension Graf
     {
       super.clear()
       
-      dc.fill.cPattern.setAsSourceInContext(super.surface.context)
+      //dc.fill.cPattern.setAsSourceInContext(super.surface.context)
+      self.color.setAsSourceInContext(super.surface.context)
       self.font.setToCairoContext(super.surface.context)
       cairo_move_to(super.surface.context.cr, xBearing,
                                               yBearing / 2 + Double(super.height) / 2)

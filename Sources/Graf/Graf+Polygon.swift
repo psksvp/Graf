@@ -42,6 +42,7 @@
 */
 
 import Foundation
+import CommonSwift
 
 #if os(macOS)
 import simd
@@ -152,11 +153,17 @@ extension Graf
   
   ///// funcs
   
+  /**
+    
+   */
   public class func line(_ x1: Double, _ y1: Double, _ x2: Double, _ y2: Double) -> Polygon
   {
     return Polygon([(x1, y1), (x2, y2)])
   }
   
+  /**
+   
+   */
   public class func vectorLine(_ x: Double,
                                _ y: Double,
                                _ v: Vector3e,
@@ -179,11 +186,17 @@ extension Graf
                      (hx1, hy1), (hx2, hy2), (x + v.x, y + v.y)])
   }
   
+  /**
+   
+   */
   public class func rect(_ x: Double, _ y: Double, _ w: Double, _ h: Double) -> Polygon
   {
     return Polygon([(x, y), (x + w, y), (x + w, y + h), (x, y + h)])
   }
   
+  /**
+   
+   */
   public class func arc(_ xc: Double,
                         _ yc: Double,
                         _ w: Double,
@@ -226,6 +239,9 @@ extension Graf
     return Polygon(coords)
   }
   
+  /**
+   
+   */
   public class func ellipse(_ xc: Double,
                             _ yc: Double,
                             _ w: Double,
@@ -235,11 +251,17 @@ extension Graf
     return arc(xc, yc, w, h, startAngle: 0.0, endAngle: 2 * Double.pi, step: s)
   }
   
+  /**
+   
+   */
   public class func circle(_ xc: Double, _ yc: Double, _ r: Double, step s: Double = 0.1)-> Polygon
   {
     return ellipse(xc, yc, r + r, r + r, step: s)
   }
   
+  /**
+   
+   */
   public class func triangle(_ x1: Double, _ y1: Double,
                              _ x2: Double, _ y2: Double,
                              _ x3: Double, _ y3: Double) -> Polygon
@@ -247,9 +269,17 @@ extension Graf
     return Polygon([(x1, y1), (x2, y2), (x3, y3)])
   }
   
-  public class func nSidesPolygon(_ cx: Double, _ cy: Double, _ r: Double, sides: Double) -> Polygon
+  /**
+   
+   */
+  public class func nSidesPolygon(_ cx: Double, _ cy: Double, _ r: Double, sides: Double) -> Polygon?
   {
-    let s = (Double.pi * 2) / fabs(sides)
-    return circle(cx, cy, r, step: s)
+    guard  sides > 1 else
+    {
+      Log.error("sides must be > 1")
+      return nil
+    }
+    
+    return circle(cx, cy, r, step: (Double.pi * 2) / sides)
   }
 }

@@ -544,7 +544,7 @@ func testShape()
     dc in
     dc.clear()
     vl.rotate(0.01).draw(dc)
-    np.rotate(0.01).draw(dc)
+    np?.rotate(0.01).draw(dc)
   }
   
   v.onInputEvent

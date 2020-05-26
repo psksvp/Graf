@@ -1,5 +1,5 @@
 //
-//  Graf+BitmapCanvas.swift
+//  Graf+Movable.swift
 //  
 //
 //  Created by psksvp on 20/5/20.
@@ -46,7 +46,7 @@ import CommonSwift
 
 extension Graf
 {
-  public class DrawableBitmap : Drawable
+  public class Movable : Drawable
   {
     let surface: Cairo.BitmapSurface
 
@@ -66,17 +66,13 @@ extension Graf
       return Vector3e(x - surface.width / 2, y - surface.width / 2, 1)
     }
     
-    init(_ w: UInt32, _ h: UInt32, worldX: Double = 0, worldY: Double = 0)
+    init(_ w: UInt32, _ h: UInt32)
     {
       self.surface = Cairo.BitmapSurface(w, h)
-      self.x = worldX
-      self.y = worldY
-      
-      //print(self.x, self.y)
     }
     
     @discardableResult
-    public func moveTo(_ x: Double, _ y: Double) -> DrawableBitmap
+    public func moveTo(_ x: Double, _ y: Double) -> Movable
     {
       self.x = x - surface.width / 2
       self.y = y - surface.height / 2
@@ -84,7 +80,7 @@ extension Graf
     }
     
     @discardableResult
-    public func translate(_ dx: Double, _ dy: Double) -> DrawableBitmap
+    public func translate(_ dx: Double, _ dy: Double) -> Movable
     {
       self.x = (self.x + dx)
       self.y = (self.y + dy)
@@ -92,7 +88,7 @@ extension Graf
     }
     
     @discardableResult
-    public func rotate(_ angle: Double) -> DrawableBitmap
+    public func rotate(_ angle: Double) -> Movable
     {
       surface.context.translate(surface.width / 2 , surface.height / 2)
       surface.context.rotate(angle)
@@ -101,7 +97,7 @@ extension Graf
     }
     
     @discardableResult
-    public func scale(_ sx: Double, _ sy: Double) -> DrawableBitmap
+    public func scale(_ sx: Double, _ sy: Double) -> Movable
     {
       //surface.context.scale(sx, sy)
       Log.info("func is a dummy")

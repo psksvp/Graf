@@ -16,32 +16,32 @@ func bouncy404()
 {
   class Drifter
   {
-    let shape: Graf.Shape
+    let movable: Graf.Movable
     var velocity: Vector3e
     var rotationRate: Double
     
-    init(_ s: Graf.Shape, velocity v: Vector3e = Vector3e.random(in: -5 ... 5),
+    init(_ s: Graf.Movable, velocity v: Vector3e = Vector3e.random(in: -5 ... 5),
                       rotationRate r: Double = Double.random(in: 0.01 ... 0.05))
     {
-      self.shape = s
+      self.movable = s
       self.velocity = v
       self.rotationRate = r
     }
     
     func drift(_ dc: Graf.DrawingContext)
     {
-      shape.translate(self.velocity.x,
+      movable.translate(self.velocity.x,
                       self.velocity.y).rotate(self.rotationRate).draw(dc, stroke: false)
-      let c = shape.boundary.center
+      let c = movable.boundary.center
       dc.strokeColor = Graf.Color.green
-      dc.strokeWeight = 0.5
-      Graf.vectorLine(c.x, c.y, velocity * 20, headDegree: 0.5).draw(dc)
+      dc.fill = Graf.Fill.color(0.3, 0.4, 0.6, 0.5)
+      Graf.vectorLine(c.x, c.y, velocity * 15, headDegree: 0.5).draw(dc)
     }
   }
   
   Graf.initialize()
   var intersectedEdges:[Graf.Edge] = []
-  let view = Graf.newView("Bouncy", 640, 480)
+  let view = Graf.newView("Bouncy", 800, 480)
   let w = Double(view.width)
   let h = Double(view.height)
   let thick = 10.0
@@ -58,7 +58,14 @@ func bouncy404()
   let ellipse = Graf.Shape(Graf.ellipse(200, 200, 70, 40, step: 0.4),
                            texture: Graf.Fill.image("./media/chessboard.png"))
   
-  let difters = [Drifter(rect), Drifter(triangle), Drifter(ellipse)]
+  let text = Graf.Text("Hello Graf", font: Graf.Font(name: "Arial", size: 30))
+  text.moveTo(w - 100, h - 100)
+  text.color = Graf.Color.blue
+  
+  let image = Graf.Image("./media/joker2.png")
+  image.moveTo(100, h - 100)
+  
+  let difters = [Drifter(rect), Drifter(triangle), Drifter(ellipse), Drifter(text), Drifter(image)]
   
   
   func wallCollider()
@@ -67,12 +74,12 @@ func bouncy404()
     {
       for w in walls
       {
-        if let (aEdge, wEdge) = Graf.intersected(a.shape.boundary, w.boundary)
+        if let (aEdge, wEdge) = Graf.intersected(a.movable.boundary, w.boundary)
         {
           let v = wEdge.reflectRay(vector: a.velocity).0
-          while nil != Graf.intersected(a.shape.boundary, w.boundary)
+          while nil != Graf.intersected(a.movable.boundary, w.boundary)
           {
-            a.shape.translate(v.x, v.y)
+            a.movable.translate(v.x, v.y)
           }
           a.velocity = v * Double.random(in: 1.5 ... 4.0)
           a.rotationRate = -a.rotationRate
@@ -91,27 +98,26 @@ func bouncy404()
       {
         let a = difters[i]
         let w = difters[j]
-        if let (aEdge, wEdge) = Graf.intersected(a.shape.boundary, w.shape.boundary)
+        if let (aEdge, wEdge) = Graf.intersected(a.movable.boundary, w.movable.boundary)
         {
           let v = wEdge.reflectRay(vector: a.velocity).0
           let u = aEdge.reflectRay(vector: w.velocity).0
-          while nil != Graf.intersected(a.shape.boundary, w.shape.boundary)
+          while nil != Graf.intersected(a.movable.boundary, w.movable.boundary)
           {
-            a.shape.translate(v.x, v.y)
-            w.shape.translate(u.x, u.y)
+            a.movable.translate(v.x, v.y)
+            w.movable.translate(u.x, u.y)
           }
           a.velocity = v * Double.random(in: 1.5 ... 3.0)
           a.rotationRate = -a.rotationRate
           w.velocity = u * Double.random(in: 1.5 ... 3.0)
           w.rotationRate = -w.rotationRate
           intersectedEdges.append(contentsOf: [aEdge, wEdge])
-          return
         }
       }
     }
   }
   
-  func boundChecker(_ a: Graf.Shape)
+  func boundChecker(_ a: Graf.Movable)
   {
     let c = a.boundary.center
     if c.x <= 0 || c.x >= w || c.y <= 0 || c.y >= h
@@ -123,7 +129,6 @@ func bouncy404()
   view.draw
   {
     dc in
-    //dc.clear()
     
     for w in walls
     {
@@ -140,8 +145,8 @@ func bouncy404()
     
     for e in intersectedEdges
     {
-      dc.strokeColor = Graf.Color.random
-      dc.strokeWeight = 20
+      dc.strokeColor = Graf.Color.red
+      dc.strokeWeight = 10
       e.draw(dc)
     }
     intersectedEdges.removeAll(keepingCapacity: true)
@@ -150,7 +155,7 @@ func bouncy404()
     
     for b in difters
     {
-      boundChecker(b.shape)
+      boundChecker(b.movable)
     }
   }
   
