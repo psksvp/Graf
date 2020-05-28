@@ -67,8 +67,8 @@ func bouncy404()
   
   let difters = [Drifter(rect), Drifter(triangle), Drifter(ellipse), Drifter(text), Drifter(image)]
   
-  var timeTotal = 0.0
-  var frameCount = 0
+  //var timeTotal = 0.0
+  //var frameCount = 0
   
   func wallCollider()
   {
@@ -198,24 +198,14 @@ func bouncy404()
       b.drift(dc)
     }
     
-    let startTime = CFAbsoluteTimeGetCurrent()
     diftersCollider()
     wallCollider()
-    let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
-    //print("time taken \(timeElapsed)")
-    timeTotal = timeTotal + timeElapsed
-    frameCount = frameCount + 1
-    Graf.Text("frame \(frameCount) \(Double(timeElapsed) / Double(frameCount))",
-              color: Graf.Color.blue).moveTo(w / 2, h - 50).draw(dc)
-    if 1000 == frameCount
-    {
-      //Graf.stopRunloop()
-    }
+    
     
     for e in intersectedEdges
     {
       dc.strokeColor = Graf.Color.red
-      dc.strokeWeight = 10
+      dc.strokeWeight = 5
       e.draw(dc)
     }
     intersectedEdges.removeAll(keepingCapacity: true)
@@ -229,5 +219,4 @@ func bouncy404()
   }
   
   Graf.startRunloop()
-  print("ave time \(timeTotal / Double(frameCount))")
 }
