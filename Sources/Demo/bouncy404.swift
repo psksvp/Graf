@@ -62,11 +62,13 @@ func bouncy404()
   text.moveTo(w - 100, h - 100)
   text.color = Graf.Color.blue
   
-  let image = Graf.Image("./media/joker2.png")
+  let image = Graf.Image("./media/monalisa.png")
   image.moveTo(100, h - 100)
   
   let difters = [Drifter(rect), Drifter(triangle), Drifter(ellipse), Drifter(text), Drifter(image)]
   
+  var timeTotal = 0.0
+  var frameCount = 0
   
   func wallCollider()
   {
@@ -84,11 +86,35 @@ func bouncy404()
           a.velocity = v * Double.random(in: 1.5 ... 4.0)
           a.rotationRate = -a.rotationRate
           intersectedEdges.append(contentsOf: [aEdge, wEdge])
-          return
         }
       }
     }
   }
+  
+  func wallColliderPar()
+  {
+    for a in difters
+    {
+      //for w in walls
+      DispatchQueue.concurrentPerform(iterations: walls.count)
+      {
+        idx in
+        let w = walls[idx]
+        if let (aEdge, wEdge) = Graf.intersected(a.movable.boundary, w.boundary)
+        {
+          let v = wEdge.reflectRay(vector: a.velocity).0
+          while nil != Graf.intersected(a.movable.boundary, w.boundary)
+          {
+            a.movable.translate(v.x, v.y)
+          }
+          a.velocity = v * Double.random(in: 1.5 ... 4.0)
+          a.rotationRate = -a.rotationRate
+          intersectedEdges.append(contentsOf: [aEdge, wEdge])
+        }
+      }
+    }
+  }
+  
   
   func diftersCollider()
   {
@@ -117,7 +143,37 @@ func bouncy404()
     }
   }
   
-  func boundChecker(_ a: Graf.Movable)
+  func diftersColliderPar()
+  {
+    //for i in 0 ..< difters.count
+    DispatchQueue.concurrentPerform(iterations: difters.count)
+    {
+      i in
+      let a = difters[i]
+      for j in i + 1 ..< difters.count
+      {
+        
+        let w = difters[j]
+        if let (aEdge, wEdge) = Graf.intersected(a.movable.boundary, w.movable.boundary)
+        {
+          let v = wEdge.reflectRay(vector: a.velocity).0
+          let u = aEdge.reflectRay(vector: w.velocity).0
+          while nil != Graf.intersected(a.movable.boundary, w.movable.boundary)
+          {
+            a.movable.translate(v.x, v.y)
+            w.movable.translate(u.x, u.y)
+          }
+          a.velocity = v * Double.random(in: 1.5 ... 3.0)
+          a.rotationRate = -a.rotationRate
+          w.velocity = u * Double.random(in: 1.5 ... 3.0)
+          w.rotationRate = -w.rotationRate
+          intersectedEdges.append(contentsOf: [aEdge, wEdge])
+        }
+      }
+    }
+  }
+  
+  func boundPolicing(_ a: Graf.Movable)
   {
     let c = a.boundary.center
     if c.x <= 0 || c.x >= w || c.y <= 0 || c.y >= h
@@ -130,6 +186,8 @@ func bouncy404()
   {
     dc in
     
+    dc.clear()
+    
     for w in walls
     {
       w.draw(dc, stroke: false)
@@ -140,8 +198,19 @@ func bouncy404()
       b.drift(dc)
     }
     
+    let startTime = CFAbsoluteTimeGetCurrent()
     diftersCollider()
     wallCollider()
+    let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
+    //print("time taken \(timeElapsed)")
+    timeTotal = timeTotal + timeElapsed
+    frameCount = frameCount + 1
+    Graf.Text("frame \(frameCount) \(Double(timeElapsed) / Double(frameCount))",
+              color: Graf.Color.blue).moveTo(w / 2, h - 50).draw(dc)
+    if 1000 == frameCount
+    {
+      //Graf.stopRunloop()
+    }
     
     for e in intersectedEdges
     {
@@ -155,10 +224,10 @@ func bouncy404()
     
     for b in difters
     {
-      boundChecker(b.movable)
+      boundPolicing(b.movable)
     }
   }
   
   Graf.startRunloop()
-
+  print("ave time \(timeTotal / Double(frameCount))")
 }

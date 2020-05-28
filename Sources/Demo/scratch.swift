@@ -52,7 +52,7 @@ import SGLMath
 func demoSetPixel()
 {
   Graf.initialize()
-  let v = Graf.newView("static", 320, 240)
+  let v = Graf.newView("static", 320, 240, retain: true)
   
   var x:Int32 = Int32(v.width / 2)
   var y:Int32 = Int32(v.height / 2)
@@ -60,20 +60,16 @@ func demoSetPixel()
   v.draw
   {
     dc in
-    dc.clear()
     
-    dc.strokeColor = Graf.Color(0, 0, 0, 0.1)
-    for x in 0 ..< dc.width
-    {
-      Graf.DirectDraw(dc).line(0, 0, Int32(x), 120)
-    }
+    let x = Int32.random(in: 0 ... 320)
+    let y = Int32.random(in: 0 ... 240)
+    let w = Int32.random(in: 20 ... 200)
+    let h = Int32.random(in: 20 ... 200)
     
-    for _ in 0 ..< 100
-    {
-      let gx = Int32.random(in: x - 50 ... x + 50)
-      let gy = Int32.random(in: y - 50 ... y + 50)
-      dc.setPixel(gx, gy, Graf.Color(0, 1, 0, 0.5))
-    }
+    let dd = Graf.DirectDraw(dc)
+    dd.fillRect(x, y, w, h, color: Graf.Color.random)
+    dd.line(x, y, w, h)
+    
   }
   
   v.onInputEvent

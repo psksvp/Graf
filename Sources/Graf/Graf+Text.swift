@@ -60,7 +60,8 @@ extension Graf
     override public var height: UInt32 {textHeight}
     override public var boundary: Polygon {textBoundary}
     
-    public init(_ s: String, font: Font = Font(name: "Arial", size: UInt32(20)))
+    public init(_ s: String, font: Font = Font(name: "Arial", size: UInt32(20)),
+                          color c: Graf.Color = Graf.Color.black)
     {
       text = s
       let (w, h, xb, yb) = Cairo.dimensionOfText(s,
@@ -70,6 +71,7 @@ extension Graf
       textHeight = UInt32(h)
       textBoundary = Graf.rect(0, 0, w, h)
       self.font = font
+      self.color = c
       //bitmap surface must be larger than actual text for rotation
       super.init(UInt32(w), UInt32(w))
     }

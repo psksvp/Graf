@@ -46,6 +46,7 @@ import SDL2
 
 extension Graf
 {
+  // DirectDraw is slow, do not use
   public class DirectDraw
   {
     private let dc:DrawingContext
@@ -81,6 +82,17 @@ extension Graf
       hline(x, y + h, length: UInt32(w))
       vline(x, y, length: UInt32(h))
       vline(x + w, y, length:UInt32(h))
+    }
+    
+    public func fillRect(_ x: Int32, _ y: Int32, _ w: Int32, _ h: Int32, color: Graf.Color)
+    {
+      let savedColor = dc.strokeColor
+      dc.strokeColor = color
+      for cy in y ... y + h
+      {
+        hline(x, cy, length: UInt32(w))
+      }
+      dc.strokeColor = savedColor
     }
 
     // wikipedia line drawing algorithm

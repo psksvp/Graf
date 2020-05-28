@@ -88,7 +88,7 @@ extension Graf
     {
       guard x < width && y < height && x >= 0 && y >= 0 else
       {
-        Log.error("x > width || y > height || x < 0 || y < 0")
+        Log.warn("x > width || y > height || x < 0 || y < 0")
         return
       }
       let addr = Int((y * Int32(width) + x) * 4) // 4 channels per pix
@@ -105,7 +105,7 @@ extension Graf
     {
       guard x < width && y < height && x >= 0 && y >= 0 else
       {
-        Log.error("x > width || y > height || x < 0 || y < 0")
+        Log.warn("x > width || y > height || x < 0 || y < 0")
         return nil
       }
       let addr = Int((y * Int32(width) + x) * 4) // 4 channels per pix
