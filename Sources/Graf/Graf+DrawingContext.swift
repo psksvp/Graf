@@ -126,9 +126,3 @@ extension Graf
 }
 
 
-protocol Drawable
-{
-  func draw(_ dc: Graf.DrawingContext, stroke: Bool, fill: Bool)
-}
-
-

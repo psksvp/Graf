@@ -16,11 +16,11 @@ func bouncy404()
 {
   class Drifter
   {
-    let movable: Graf.Movable
+    let movable: Graf.Drawable
     var velocity: Vector3e
     var rotationRate: Double
     
-    init(_ s: Graf.Movable, velocity v: Vector3e = Vector3e.random(in: -5 ... 5),
+    init(_ s: Graf.Drawable, velocity v: Vector3e = Vector3e.random(in: -5 ... 5),
                       rotationRate r: Double = Double.random(in: 0.01 ... 0.05))
     {
       self.movable = s
@@ -173,7 +173,7 @@ func bouncy404()
     }
   }
   
-  func boundPolicing(_ a: Graf.Movable)
+  func boundPolicing(_ a: Graf.Drawable)
   {
     let c = a.boundary.center
     if c.x <= 0 || c.x >= w || c.y <= 0 || c.y >= h

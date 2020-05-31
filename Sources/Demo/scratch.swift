@@ -363,8 +363,8 @@ func pid()
 {
   Graf.initialize()
   let view = Graf.newView("PID", 600, 400)
-  let target = Graf.Object(Graf.rect(200, 200, 50, 130))
-  let oval = Graf.Object(Graf.ellipse(400, 200, 40, 120, step: 0.1))
+  let target = Graf.Movable(Graf.rect(200, 200, 50, 130))
+  let oval = Graf.Movable(Graf.ellipse(400, 200, 40, 120, step: 0.1))
   
   let text = Graf.Text("HelloWorld")
   
