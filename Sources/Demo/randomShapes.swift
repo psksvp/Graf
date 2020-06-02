@@ -4,9 +4,7 @@ import Graf
 
 func randomShapes()
 {
-  Graf.initialize()
-  
-  let view = Graf.newView("Hello Graf", 800, 600, retain: true)
+  let view = Graf.newView("Hello Graf", 320, 240, retain: true)
   
   view.draw
   {
@@ -28,7 +26,5 @@ func randomShapes()
     }
     
   }
-  
-  Graf.startRunloop()
 }
 

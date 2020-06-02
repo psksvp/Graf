@@ -45,7 +45,7 @@ import Foundation
 import CCairo
 import CommonSwift
 
-extension Graf.Polygon 
+extension Graf.Polygon : Drawable
 {
   public func draw(_ dc: Graf.DrawingContext, stroke: Bool = true, fill: Bool = true)
   {

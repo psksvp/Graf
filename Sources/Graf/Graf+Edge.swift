@@ -77,25 +77,6 @@ extension Graf
       p1 = p
       p2 = q
     }
-  
-    public func intersect(_ e: Edge) -> Bool
-    {
-      //http://web.archive.org/web/20141127210836/http://content.gpwiki.org/index.php/Polygon_Collision
-      func determinant(_ v1: Vector3e, _ v2: Vector3e) -> Double
-      {
-        return v1.x * v2.y - v1.y * v2.x
-      }
-  
-      let a = self.p1
-      let b = self.p2
-      let c = e.p1
-      let d = e.p2
-      let det = determinant(b - a, c - d);
-      let t   = determinant(c - a, c - d) / det;
-      let u   = determinant(b - a, c - a) / det;
-  
-      return !((t < 0) || (u < 0) || (t > 1) || (u > 1))
-    }
     
     public func reflectRay(vector v: Vector3e) -> (Vector3e, Vector3e)
     {

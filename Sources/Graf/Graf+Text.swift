@@ -47,7 +47,7 @@ import CommonSwift
 
 extension Graf
 {
-  public class Text : Drawable
+  public class Text : Geometry
   {
     private let text: String
     private let xBearing: Double
@@ -77,21 +77,21 @@ extension Graf
     }
     
     @discardableResult
-    override public func moveTo(_ x: Double, _ y: Double) -> Drawable
+    override public func moveTo(_ x: Double, _ y: Double) -> Tranformable
     {
       textBoundary.moveTo(x, y)
       return super.moveTo(x, y)
     }
     
     @discardableResult
-    override public func translate(_ dx: Double, _ dy: Double) -> Drawable
+    override public func translate(_ dx: Double, _ dy: Double) -> Tranformable
     {
       textBoundary.translate(dx, dy)
       return super.translate(dx, dy)
     }
     
     @discardableResult
-    override public func rotate(_ angle: Double) -> Drawable
+    override public func rotate(_ angle: Double) -> Tranformable
     {
       textBoundary.rotate(angle)
       return super.rotate(angle)

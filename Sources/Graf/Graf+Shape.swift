@@ -10,7 +10,7 @@ import CCairo
 
 extension Graf
 {
-  public class Shape : Drawable
+  public class Shape : Geometry
   {
     private let polygon: Polygon
     private let bound: Polygon
@@ -39,21 +39,21 @@ extension Graf
     }
     
     @discardableResult
-    public override func moveTo(_ x: Double, _ y: Double) -> Drawable
+    public override func moveTo(_ x: Double, _ y: Double) -> Tranformable
     {
       boundary.moveTo(x, y)
       return super.moveTo(x, y)
     }
     
     @discardableResult
-    override public func translate(_ dx: Double, _ dy: Double) -> Drawable
+    override public func translate(_ dx: Double, _ dy: Double) -> Tranformable
     {
       boundary.translate(dx, dy)
       return super.translate(dx, dy)
     }
     
     @discardableResult
-    public override func rotate(_ angle: Double) -> Drawable
+    public override func rotate(_ angle: Double) -> Tranformable
     {
       boundary.rotate(angle)
       return super.rotate(angle)

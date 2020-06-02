@@ -50,7 +50,7 @@ import simd
 import SGLMath
 #endif
 
-extension Graf.Polygon
+extension Graf.Polygon : Tranformable
 {
   //https://developer.apple.com/documentation/accelerate/working_with_vectors
   func matrix(_ r0: Vector3e, _ r1: Vector3e, _ r2: Vector3e) -> Matrix3e
@@ -64,14 +64,14 @@ extension Graf.Polygon
 
   
   @discardableResult
-  public func moveTo(_ x: Double, _ y: Double) -> Graf.Polygon
+  public func moveTo(_ x: Double, _ y: Double) -> Tranformable
   {
     let c = self.center
     return translate(x - c.x, y - c.y)
   }
   
   @discardableResult
-  public func translate(_ dx: Double, _ dy: Double) -> Graf.Polygon
+  public func translate(_ dx: Double, _ dy: Double) -> Tranformable
   {
     let m = matrix(Vector3e(1,   0, 0),
                    Vector3e(0,   1, 0),
@@ -81,7 +81,7 @@ extension Graf.Polygon
   }
   
   @discardableResult
-  public func scale(_ sx: Double, _ sy: Double) -> Graf.Polygon
+  public func scale(_ sx: Double, _ sy: Double) -> Tranformable
   {
     let m = matrix(Vector3e(sx,  0, 0),
                    Vector3e(0,  sy, 0),
@@ -91,7 +91,7 @@ extension Graf.Polygon
   }
   
   @discardableResult
-  public func shear(_ sx: Double, _ sy: Double) -> Graf.Polygon
+  public func shear(_ sx: Double, _ sy: Double) -> Tranformable
   {
     let m = matrix(Vector3e(1,  sx, 0),
                   Vector3e(sy,  1, 0),
@@ -100,138 +100,22 @@ extension Graf.Polygon
   }
   
   @discardableResult
-  public func rotate(_ angle: Double) -> Graf.Polygon
+  public func rotate(_ angle: Double) -> Tranformable
   {
     let m = matrix(Vector3e(cos(angle), sin(angle), 0),
                    Vector3e(-sin(angle), cos(angle), 0),
                    Vector3e(0, 0, 1))
     
     let c = self.center
-    return moveTo(0, 0).transform(m).moveTo(c.x, c.y)
+    moveTo(0, 0)
+    return transform(m).moveTo(c.x, c.y)
   }
   
   @discardableResult
-  public func transform(_ m: Matrix3e) -> Graf.Polygon
+  public func transform(_ m: Matrix3e) -> Tranformable
   {
     vertices = vertices.map { $0 * m }
     return self
-  }
-  
-  public func overlapWith(_ p: Graf.Polygon) -> Graf.Edge?
-  {
-    guard self.vertices.count > 0 &&
-             p.vertices.count > 0 else {return nil}
-    
-    // cheapest but less accurate
-    func boundaryIntersected() -> Bool
-    {
-      let b1 = self.boundingRect
-      let r1 = NSRect(x: b1.vertices[0].x,
-                      y: b1.vertices[0].y,
-                      width: b1.vertices[2].x - b1.vertices[0].x,
-                      height: b1.vertices[2].y - b1.vertices[0].y)
-
-      let b2 = p.boundingRect
-      let r2 = NSRect(x: b2.vertices[0].x,
-                      y: b2.vertices[0].y,
-                      width: b2.vertices[2].x - b2.vertices[0].x,
-                      height: b2.vertices[2].y - b2.vertices[0].y)
-      
-      return NSIntersectsRect(r1, r2)
-    }
-    
-    // more expensive but has flaws
-    func vertexInShape() -> Bool
-    {
-      for v in self.vertices
-      {
-        if p.contains((v.x, v.y))
-        {
-          return true
-        }
-      }
-
-      for v in p.vertices
-      {
-        if self.contains((v.x, v.y))
-        {
-          return true
-        }
-      }
-
-      return false
-    }
-    
-    // the most expensive but very accurate.
-    func edgeIntersected() -> Graf.Edge?
-    {
-      // fucking n^2
-      for i in 0 ..< self.vertices.count
-      {
-        for j in 0 ..< p.vertices.count
-        {
-          if let e1 = self.edge(i),
-             let e2 = p.edge(j)
-          {
-            if e1.intersect(e2)
-            {
-              return e2
-            }
-          }
-          else
-          {
-            Log.error("i -> \(i) or j -> \(j) is out of range")
-            return nil
-          }
-        }
-      }
-    
-      return nil
-    }
-    
-    // parallel inner loop  of the above
-    func edgeIntersectedPar() -> Graf.Edge?
-    {
-      // any edge of Polygon polygon intersected with Edge e
-      func intersected(polygon: Graf.Polygon, withEdge e: Graf.Edge) -> Int?
-      {
-        var intersectedIdx = -1
-        DispatchQueue.concurrentPerform(iterations: polygon.vertices.count)
-        {
-          idx in
-          
-          //if unwrap fail    v, expr is false  vvvvv
-          if polygon.edge(idx)?.intersect(e) ?? false
-          {
-            intersectedIdx = idx
-          }
-        }
-        
-        return intersectedIdx >= 0 ? intersectedIdx : nil
-      }
-      
-      let (w, v) = self.vertices.count >= p.vertices.count ? (self, p) : (p, self)
-      
-      for i in 0 ..< v.vertices.count
-      {
-        if let e = v.edge(i),
-           let idx = intersected(polygon: w, withEdge: e),
-           idx >= 0
-        {
-          return v === self ? e : w.edge(idx)
-        }
-      }
-      return nil
-    }
-
-    
-    // would it do a short circult?
-    //return boundaryIntersected() && edgeIntersected()
-    
-    //if boundary has not touched?
-    guard boundaryIntersected() else { return nil }
-    
-    return edgeIntersectedPar()
   }
 } // Extension Graf.Polygon
 
@@ -292,8 +176,7 @@ extension Graf
         {
           idx in
           
-          //if unwrap fail    v, expr is false  vvvvv
-          if polygon.edge(idx)?.intersect(e) ?? false
+          if Graf.intersected(polygon.edge(idx)!, e)
           {
             intersectedIdx = idx
           }

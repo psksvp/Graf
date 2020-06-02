@@ -4,7 +4,6 @@ import Graf
 
 func simpleStaticWithEvent()
 {
-  Graf.initialize()
   let view = Graf.newView("Hello Graf", 640, 480, retain: true)
   
   view.onInputEvent
@@ -27,6 +26,4 @@ func simpleStaticWithEvent()
       default : break
     }
   }
-  
-  Graf.startRunloop()
 }

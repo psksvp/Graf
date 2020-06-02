@@ -228,3 +228,16 @@ public class Graf
     
   }
 } //Graf
+
+public protocol Tranformable
+{
+  func moveTo(_ x: Double, _ y: Double) -> Tranformable
+  func translate(_ dx: Double, _ dy: Double) -> Tranformable
+  func rotate(_ angle: Double) -> Tranformable
+  func scale(_ sx: Double, _ sy: Double) -> Tranformable
+}
+
+public protocol Drawable
+{
+  func draw(_ dc: Graf.DrawingContext, stroke: Bool, fill: Bool)
+}

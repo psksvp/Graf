@@ -3,7 +3,6 @@ import Graf
 
 func animation102()
 {
-  Graf.initialize()
   let view = Graf.newView("Hello Graf", 640, 480)
   
   var x = 0.0
@@ -32,5 +31,4 @@ func animation102()
       default: break
     }
   }
-  Graf.startRunloop()
 }

@@ -16,11 +16,11 @@ func bouncy404()
 {
   class Drifter
   {
-    let movable: Graf.Drawable
+    let movable: Graf.Geometry
     var velocity: Vector3e
     var rotationRate: Double
     
-    init(_ s: Graf.Drawable, velocity v: Vector3e = Vector3e.random(in: -5 ... 5),
+    init(_ s: Graf.Geometry, velocity v: Vector3e = Vector3e.random(in: -5 ... 5),
                       rotationRate r: Double = Double.random(in: 0.01 ... 0.05))
     {
       self.movable = s
@@ -31,7 +31,8 @@ func bouncy404()
     func drift(_ dc: Graf.DrawingContext)
     {
       movable.translate(self.velocity.x,
-                      self.velocity.y).rotate(self.rotationRate).draw(dc, stroke: false)
+                      self.velocity.y).rotate(self.rotationRate)
+      movable.draw(dc, stroke: false)
       let c = movable.boundary.center
       dc.strokeColor = Graf.Color.green
       dc.fill = Graf.Fill.color(0.3, 0.4, 0.6, 0.5)
@@ -39,7 +40,6 @@ func bouncy404()
     }
   }
   
-  Graf.initialize()
   var intersectedEdges:[Graf.Edge] = []
   let view = Graf.newView("Bouncy", 800, 480)
   let w = Double(view.width)
@@ -107,7 +107,7 @@ func bouncy404()
           {
             a.movable.translate(v.x, v.y)
           }
-          a.velocity = v * Double.random(in: 1.5 ... 4.0)
+          a.velocity = v * Double.random(in: 1.5 ... 2.0)
           a.rotationRate = -a.rotationRate
           intersectedEdges.append(contentsOf: [aEdge, wEdge])
         }
@@ -133,9 +133,9 @@ func bouncy404()
             a.movable.translate(v.x, v.y)
             w.movable.translate(u.x, u.y)
           }
-          a.velocity = v * Double.random(in: 1.5 ... 3.0)
+          a.velocity = v * Double.random(in: 1.5 ... 2.0)
           a.rotationRate = -a.rotationRate
-          w.velocity = u * Double.random(in: 1.5 ... 3.0)
+          w.velocity = u * Double.random(in: 1.5 ... 2.0)
           w.rotationRate = -w.rotationRate
           intersectedEdges.append(contentsOf: [aEdge, wEdge])
         }
@@ -173,7 +173,7 @@ func bouncy404()
     }
   }
   
-  func boundPolicing(_ a: Graf.Drawable)
+  func boundPolicing(_ a: Graf.Geometry)
   {
     let c = a.boundary.center
     if c.x <= 0 || c.x >= w || c.y <= 0 || c.y >= h
@@ -217,6 +217,4 @@ func bouncy404()
       boundPolicing(b.movable)
     }
   }
-  
-  Graf.startRunloop()
 }

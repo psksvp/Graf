@@ -142,20 +142,24 @@ func demoDrawWithEvent()
     dc.strokeColor = Graf.Color.black
     dc.fill = Graf.Fill.color(0, 0.8, 0, 0.5)
     
-    cross.rotate(angle).moveTo(x, y).draw(dc)
+    cross.rotate(angle).moveTo(x, y)
+    cross.draw(dc)
     
     
-    l.rotate(angle).draw(dc)
-    r.rotate(angle).draw(dc)
+    l.rotate(angle)
+    l.draw(dc)
+    r.rotate(angle)
+    r.draw(dc)
    
     
-    if let _ = l.overlapWith(cross)
+    if let _ = Graf.intersected(l, cross)
     {
       cross.boundingRect.draw(dc, fill: false)
       l.boundingRect.draw(dc, fill: false)
     }
     
-    image.moveTo(x, y).draw(dc)
+    image.moveTo(x, y)
+    image.draw(dc)
     image.boundary.draw(dc, fill: false)
   }
 
@@ -209,7 +213,8 @@ func demoHitTest()
     
     dc.clear()
     dc.strokeColor = Graf.Color.black
-    poly[2].rotate(angle).draw(dc)
+    poly[2].rotate(angle)
+    poly[2].draw(dc)
     tex.rotate(angle)
     for s in poly
     {
@@ -259,7 +264,7 @@ func demoPong()
   
   func moveAwayFrom(_ p: Graf.Polygon, _ reflectRay: Vector3e)
   {
-    while nil != ball.overlapWith(p)
+    while nil != Graf.intersected(ball, p)
     {
       ball.translate(reflectRay.x, reflectRay.y)
       //print("moving away \(reflectRay)")
@@ -291,19 +296,19 @@ func demoPong()
       moveAwayFrom(topBar, vel)
       hit = true
     }
-    else if let _ = ball.overlapWith(bottomBar)
+    else if let _ = Graf.intersected(ball, bottomBar)
     {
       vel = bottomBar.edge(0)!.reflectRay(vector: vel).0
       moveAwayFrom(bottomBar, vel)
       hit = true
     }
-    else if let _ = ball.overlapWith(leftBar)
+    else if let _ = Graf.intersected(ball, leftBar)
     {
       vel = leftBar.edge(1)!.reflectRay(vector: vel).0
       moveAwayFrom(leftBar, vel)
       hit = true
     }
-    else if let _ = ball.overlapWith(rightPaddle)
+    else if let _ =  Graf.intersected(ball, rightPaddle)
     {
       vel = rightPaddle.edge(3)!.reflectRay(vector: vel).0
       moveAwayFrom(rightPaddle, vel)
@@ -408,7 +413,8 @@ func pid()
     
     let (mx, my) = Graf.mouseLocation
     
-    text.moveTo(Double(mx), Double(my)).draw(dc)
+    text.moveTo(Double(mx), Double(my))
+    text.draw(dc)
 
     
     //print(target.angle * deg, oval.angle * deg)
@@ -478,7 +484,8 @@ func nonInteractive()
     Graf.line(0, 0, 640, 480).draw(dc)
     Graf.ellipse(320, 240, 100, 200).draw(dc)
     dc.fill = Graf.Fill.color(1, 0, 0, 1)
-    t.moveTo(300, 100).draw(dc)
+    t.moveTo(300, 100)
+    t.draw(dc)
   }
   
   
@@ -514,10 +521,12 @@ func testText()
     dc.clear()
     dc.fill = Graf.Fill.color(0.3, 0.8, 0.6, 1)
     let (mx, my) = Graf.mouseLocation
-    t.moveTo(Double(mx), Double(my)).rotate(0.01).draw(dc)
-    i.moveTo(200, 200).rotate(0.01).draw(dc)
+    t.moveTo(Double(mx), Double(my)).rotate(0.01)
+    t.draw(dc)
+    i.moveTo(200, 200).rotate(0.01)
+    i.draw(dc)
     
-    if let _ = i.boundary.overlapWith(t.boundary)
+    if let _ = Graf.intersected(i.boundary, t.boundary)
     {
       t.boundary.draw(dc, fill: false)
       i.boundary.draw(dc, fill: false)
@@ -539,8 +548,10 @@ func testShape()
   {
     dc in
     dc.clear()
-    vl.rotate(0.01).draw(dc)
-    np?.rotate(0.01).draw(dc)
+    vl.rotate(0.01)
+    vl.draw(dc)
+    np?.rotate(0.01)
+    np?.draw(dc)
   }
   
   v.onInputEvent
@@ -559,39 +570,7 @@ func testShape()
   
 }
 
-//func testShape()
-//{
-//  Graf.initialize()
-//
-//  let p = Graf.ellipse(0, 0, 100, 200)
-//  let q = Graf.triangle(100, 100, 200, 100, 160, 300)
-//  let r = Graf.rect(0, 0, 200, 300)
-//  let s = Graf.Shape(q, texture: Graf.Fill.image("./media/chessboard.png"))
-//  let t = Graf.Text("Helloworld And Moon", font: Graf.Font(name:"Impact", size: 40))
-//
-//  let v = Graf.newView("Hello", 640, 480)
-//
-//  v.draw
-//  {
-//    dc in
-//
-//    dc.clear()
-//    dc.fill = Graf.Fill.color(0, 1, 0)
-//    t.moveTo(200, 200).draw(dc)
-//
-//    //let m = Graf.rect(0, 0, 224, 224)
-//    //m.moveTo(200, 200).draw(dc, fill: false)
-//    //q.moveTo(200, 200).rotate(0.01).draw(dc)
-//
-//    let (mx, my) = Graf.mouseLocation
-//    s.moveTo(Double(mx), Double(my)).rotate(0.01).draw(dc, stroke: false)
-//    s.boundary.draw(dc, fill: false)
-//
-//  }
-//
-//  Graf.startRunloop()
-//
-//}
+
 
 
 

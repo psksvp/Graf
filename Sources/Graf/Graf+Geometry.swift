@@ -1,5 +1,5 @@
 //
-//  Graf+Drawable.swift
+//  Graf+Geometry.swift
 //  
 //
 //  Created by psksvp on 20/5/20.
@@ -46,7 +46,7 @@ import CommonSwift
 
 extension Graf
 {
-  public class Drawable 
+  public class Geometry : Tranformable, Drawable
   {
     let surface: Cairo.BitmapSurface
 
@@ -72,7 +72,7 @@ extension Graf
     }
     
     @discardableResult
-    public func moveTo(_ x: Double, _ y: Double) -> Drawable
+    public func moveTo(_ x: Double, _ y: Double) -> Tranformable
     {
       self.x = x - surface.width / 2
       self.y = y - surface.height / 2
@@ -80,7 +80,7 @@ extension Graf
     }
     
     @discardableResult
-    public func translate(_ dx: Double, _ dy: Double) -> Drawable
+    public func translate(_ dx: Double, _ dy: Double) -> Tranformable
     {
       self.x = (self.x + dx)
       self.y = (self.y + dy)
@@ -88,7 +88,7 @@ extension Graf
     }
     
     @discardableResult
-    public func rotate(_ angle: Double) -> Drawable
+    public func rotate(_ angle: Double) -> Tranformable
     {
       surface.context.translate(surface.width / 2 , surface.height / 2)
       surface.context.rotate(angle)
@@ -97,7 +97,7 @@ extension Graf
     }
     
     @discardableResult
-    public func scale(_ sx: Double, _ sy: Double) -> Drawable
+    public func scale(_ sx: Double, _ sy: Double) -> Tranformable
     {
       //surface.context.scale(sx, sy)
       Log.info("func is a dummy")

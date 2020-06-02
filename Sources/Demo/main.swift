@@ -37,32 +37,12 @@
 import Foundation
 import CommonSwift
 
-
 print("Hello, world!")
 print(FileManager.default.currentDirectoryPath)
 
-//demoDrawWithEvent()
-//demoHitTest()
-//demoStaticDraw()
 
-//demoPong()
 
-//pid()
 
-//demoSetPixel()
-
-//nonInteractive()
-
-//testText()
-
-//simpleStaticWithEvent()
-
-//randomShapes()
-
-//animation103()
-
-//testShape()
-bouncy404()
 
 
 

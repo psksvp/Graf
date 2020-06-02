@@ -46,7 +46,7 @@ import CCairo
 
 extension Graf
 {
-  public class Image : Drawable
+  public class Image : Geometry
   {
     private let pngs: Cairo.PNGSurface
     private let imageBoundary: Polygon
@@ -70,21 +70,21 @@ extension Graf
     }
     
     @discardableResult
-    override public func moveTo(_ x: Double, _ y: Double) -> Drawable
+    override public func moveTo(_ x: Double, _ y: Double) -> Tranformable
     {
       imageBoundary.moveTo(x, y)
       return super.moveTo(x, y)
     }
     
     @discardableResult
-    override public func translate(_ dx: Double, _ dy: Double) -> Drawable
+    override public func translate(_ dx: Double, _ dy: Double) -> Tranformable
     {
       imageBoundary.translate(dx, dy)
       return super.translate(dx, dy)
     }
     
     @discardableResult
-    override public func rotate(_ angle: Double) -> Drawable
+    override public func rotate(_ angle: Double) -> Tranformable
     {
       imageBoundary.rotate(angle)
       return super.rotate(angle)
