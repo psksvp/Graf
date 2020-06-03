@@ -41,7 +41,7 @@ func bouncy404()
   }
   
   var intersectedEdges:[Graf.Edge] = []
-  let view = Graf.newView("Bouncy", 800, 480)
+  let view = Graf.newView("Bouncy", 640, 480)
   let w = Double(view.width)
   let h = Double(view.height)
   let thick = 10.0

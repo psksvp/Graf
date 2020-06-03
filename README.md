@@ -76,6 +76,9 @@ func animation102()
 
 ## Example
 
+![HelloGraf](./media/HelloGraf.gif)
+![Bouncy](./media/Bouncy.gif)
+
 ## Credit
 
 

@@ -40,7 +40,7 @@ import CommonSwift
 print("Hello, world!")
 print(FileManager.default.currentDirectoryPath)
 
-
+demoMain()
 
 
 

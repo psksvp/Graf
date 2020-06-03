@@ -12,6 +12,6 @@ func demoMain()
 {
   Graf.initialize()
   bouncy404()
-  randomShapes()
+  //randomShapes()
   Graf.startRunloop()
 }
