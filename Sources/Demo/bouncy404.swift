@@ -36,7 +36,7 @@ func bouncy404()
       let c = movable.boundary.center
       dc.strokeColor = Graf.Color.green
       dc.fill = Graf.Fill.color(0.3, 0.4, 0.6, 0.5)
-      Graf.vectorLine(c.x, c.y, velocity * 15, headDegree: 0.5).draw(dc)
+      Graf.vectorLine(c.x, c.y, velocity * 20, headDegree: 0.5).draw(dc)
     }
   }
   

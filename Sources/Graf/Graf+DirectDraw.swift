@@ -126,5 +126,14 @@ extension Graf
       } //while
     }
     
+    public func triangle(_ x0: Int32, _ y0: Int32,
+                         _ x1: Int32, _ y1: Int32,
+                         _ x2: Int32, _ y2: Int32)
+    {
+      line(x0, y0, x1, y1)
+      line(x1, y1, x2, y2)
+      line(x2, y2, x0, y0)
+    }
+    
   }
 }

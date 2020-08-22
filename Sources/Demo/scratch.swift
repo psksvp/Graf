@@ -45,9 +45,12 @@ import Foundation
 import Graf
 import CommonSwift
 
-#if os(Linux)
+#if os(macOS)
+import simd
+#else
 import SGLMath
 #endif
+
 
 func demoSetPixel()
 {
@@ -571,6 +574,55 @@ func testShape()
 }
 
 
+
+func breaking()
+{
+  let m = Graf.nSidesPolygon(320, 240, 30, sides: 4)!
+  let a = Graf.sides(m)
+  var broke = false
+  
+  Graf.initialize()
+  let v = Graf.newView("breaking", 640, 420)
+  v.draw
+  {
+    dc in
+    
+    dc.clear()
+    
+    if !broke
+    {
+      m.draw(dc)
+    }
+    else
+    {
+      for (l, e) in zip(a, m.edges)
+      {
+        let n = simd_normalize(e.normal.1)
+        l.rotate(0.04)
+        l.translate(n.x, n.y)
+        l.draw(dc)
+      }
+    }
+  }
+  
+  v.onInputEvent
+  {
+    evt in
+    
+    switch evt
+    {
+      case .mousePressed(let mx, let my, _) :
+        if m.contains((Double(mx), Double(my)))
+        {
+          broke = true
+        }
+      
+      default : break
+    }
+  }
+  
+  Graf.startRunloop()
+}
 
 
 

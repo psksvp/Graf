@@ -45,15 +45,6 @@ import SDL2
 import CCairo
 import CommonSwift
 
-//extension UnsafeMutableRawPointer
-//{
-//  func toArray<T>(to type: T.Type, capacity count: Int) -> [T]
-//  {
-//    let pointer = bindMemory(to: type, capacity: count)
-//    return Array(UnsafeBufferPointer(start: pointer, count: count))
-//  }
-//}
-
 extension Graf
 {
   public class View

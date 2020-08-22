@@ -121,6 +121,24 @@ extension Graf.Polygon : Tranformable
 
 extension Graf
 {
+  public class func transform(_ p: Polygon, _ m: Matrix3e) -> Polygon
+  {
+    return Polygon(p.vertices.map{$0 * m})
+  }
+  
+  public class func sides(_ p: Polygon) -> [Polygon]
+  {
+    return (0 ..< p.vertices.count - 1).map { line(p.vertices[$0], p.vertices[$0 + 1])} +
+           [Graf.line(p.vertices.last!, p.vertices.first!)]
+  }
+  
+//  public class func triangleMash(_ p: Polygon) -> [Polygon]
+//  {
+//    guard p.vertices.count > 3 else {return [p]}
+//    
+//    
+//  }
+  
   /**
    
    */

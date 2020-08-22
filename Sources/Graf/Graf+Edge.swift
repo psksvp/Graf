@@ -96,5 +96,10 @@ extension Graf
       return (r1, r2)
       #endif
     }
+    
+    public func asLine() -> Polygon
+    {
+      return Graf.line(p1, p2)
+    }
   } // class Edge
 } // extension Graf

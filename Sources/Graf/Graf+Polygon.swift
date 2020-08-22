@@ -97,6 +97,11 @@ extension Graf
       return rect(minX, minY, maxX - minX, maxY - minY)
     }
     
+    public var edges: [Edge]
+    {
+      return (0 ..< vertices.count).map { self.edge($0)! }
+    }
+    
     
     public init(_ p: [(Double, Double)])
     {
@@ -146,8 +151,6 @@ extension Graf
       }
       return hit
     }
-    
-    
   } // Polygon
   
   
@@ -159,6 +162,11 @@ extension Graf
   public class func line(_ x1: Double, _ y1: Double, _ x2: Double, _ y2: Double) -> Polygon
   {
     return Polygon([(x1, y1), (x2, y2)])
+  }
+  
+  public class func line(_ vs: Vector3e, _ ve: Vector3e) -> Polygon
+  {
+    return Polygon([vs, ve])
   }
   
   /**
@@ -193,6 +201,12 @@ extension Graf
   {
     return Polygon([(x, y), (x + w, y), (x + w, y + h), (x, y + h)])
   }
+  
+  public class func rect(width: Double, height: Double) -> Polygon
+  {
+    return rect(0, 0, width, height)
+  }
+  
   
   /**
    
@@ -249,6 +263,11 @@ extension Graf
                             step s: Double = 0.1) -> Polygon
   {
     return arc(xc, yc, w, h, startAngle: 0.0, endAngle: 2 * Double.pi, step: s)
+  }
+  
+  public class func ellipse(width: Double, height: Double, step s: Double) -> Polygon
+  {
+    return ellipse(0, 0, width, height, step: s);
   }
   
   /**
