@@ -10,7 +10,8 @@ let package = Package(
     name: "Graf",
     products: [
          .library(name: "Graf", targets: ["Graf"]),
-         .executable(name: "Demo", targets: ["Demo"])
+         .executable(name: "Demo", targets: ["Demo"]),
+         .executable(name: "X3D", targets: ["X3D"])
         ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -26,6 +27,9 @@ let package = Package(
             dependencies: ["SDL2", "CCairo", "CommonSwift", "SGLMath"]),
         .target(
             name: "Demo",
+            dependencies: ["Graf"]),
+        .target(
+            name: "X3D",
             dependencies: ["Graf"]),
         .testTarget(
             name: "GrafTests",

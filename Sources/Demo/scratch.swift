@@ -377,18 +377,18 @@ func pid()
   let text = Graf.Text("HelloWorld")
   
   let pidX = CommonSwift.Math.PID(setPoint: target.location.x,
-                                  kP: 0.003, kI: 0.005, kD: 0.003,
+                                  kP: 0.03, kI: 0.05, kD: 0.03,
                                   outputLimit: -180 ... 180)
   let pidY = CommonSwift.Math.PID(setPoint: target.location.y,
-                                  kP: 0.003, kI: 0.005, kD: 0.003,
+                                  kP: 0.03, kI: 0.05, kD: 0.03,
                                   outputLimit: -180 ... 180)
   
   let pidA = CommonSwift.Math.PID(setPoint: target.angle,
-                                  kP: 0.003, kI: 0.005, kD: 0.003,
+                                  kP: 0.03, kI: 0.05, kD: 0.03,
                                   outputLimit: -180 ... 180)
   
   let pidS = CommonSwift.Math.PID(setPoint: target.size,
-                                  kP: 0.003, kI: 0.005, kD: 0.003,
+                                  kP: 0.03, kI: 0.05, kD: 0.03,
                                   outputLimit: -180 ... 180)
   
   let pids = Math.PIDArray([pidX, pidY, pidA, pidS])
@@ -404,6 +404,7 @@ func pid()
                                    oval.location.y,
                                    oval.angle,
                                    oval.size])
+    print(deltas)
     dc.fill = Graf.Fill.color(1, 0, 0, 0.5)
     target.draw(dc)
     
