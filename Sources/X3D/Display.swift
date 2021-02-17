@@ -12,6 +12,6 @@ protocol Display
 {
   var width:Int {get}
   var height:Int {get}
-  func setPixel(_ x: Int, _ y: Int, _ color: vec4)
-  func clear(_ color: vec4)
+  func setPixel(_ x: Int, _ y: Int, _ c: Color)
+  func clear(_ c: Color)
 }

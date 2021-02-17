@@ -8,3 +8,6 @@
 import Foundation
 import SGLMath
 
+typealias Color = vec4
+typealias Vertex = vec3
+typealias Triangle = (Vertex, Vertex, Vertex)
